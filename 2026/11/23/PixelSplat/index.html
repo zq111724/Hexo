@@ -1,0 +1,2883 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="PixelSplat 论文交互式精读报告 论文： pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction阅读方式： 按 AI 科研论文交互式精读导师 V1.5 的完整顺序执行；本报告按用户要求一次性完成，不在各题之间暂停。证据规则： 以用户上传的 HTML 与配套 ZI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PixelSplat 论文交互式精读报告">
+<meta property="og:url" content="https://zhangq.github.io/2026/11/23/PixelSplat/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="PixelSplat 论文交互式精读报告 论文： pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction阅读方式： 按 AI 科研论文交互式精读导师 V1.5 的完整顺序执行；本报告按用户要求一次性完成，不在各题之间暂停。证据规则： 以用户上传的 HTML 与配套 ZI">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhangq.github.io/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser_bigger_text.png">
+<meta property="article:published_time" content="2026-11-23T09:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-23T14:11:45.306Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="3D Gaussian Splatting">
+<meta property="article:tag" content="3D Reconstruction">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zhangq.github.io/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser_bigger_text.png">
+  
+  
+  
+  <title>PixelSplat 论文交互式精读报告 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zhangq.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="PixelSplat 论文交互式精读报告"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-23 17:00" pubdate>
+          2026年11月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          38k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          315 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">PixelSplat 论文交互式精读报告</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="PixelSplat-论文交互式精读报告"><a href="#PixelSplat-论文交互式精读报告" class="headerlink" title="PixelSplat 论文交互式精读报告"></a>PixelSplat 论文交互式精读报告</h1><blockquote>
+<p><strong>论文：</strong> <em>pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction</em><br><strong>阅读方式：</strong> 按 AI 科研论文交互式精读导师 V1.5 的完整顺序执行；本报告按用户要求一次性完成，不在各题之间暂停。<br><strong>证据规则：</strong> 以用户上传的 HTML 与配套 ZIP 为唯一论文来源。论文原文、背景知识、独立推断和评价分别标注。未访问作者主页、项目网站、GitHub、其他论文版本或外部搜索结果。</p>
+</blockquote>
+<hr>
+<h2 id="0-自动初始化"><a href="#0-自动初始化" class="headerlink" title="0. 自动初始化"></a>0. 自动初始化</h2><h3 id="0-1-论文基本信息"><a href="#0-1-论文基本信息" class="headerlink" title="0.1 论文基本信息"></a>0.1 论文基本信息</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>英文标题</td>
+<td>pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction</td>
+</tr>
+<tr>
+<td>中文译名</td>
+<td>PixelSplat：从图像对生成 3D Gaussian Splat，以实现可扩展的泛化三维重建</td>
+</tr>
+<tr>
+<td>作者</td>
+<td>David Charatan、Sizhe Lester Li、Andrea Tagliasacchi、Vincent Sitzmann</td>
+</tr>
+<tr>
+<td>作者单位</td>
+<td>MIT；Simon Fraser University；University of Toronto（按论文作者栏）</td>
+</tr>
+<tr>
+<td>论文版本</td>
+<td>arXiv:2312.12337v4</td>
+</tr>
+<tr>
+<td>版本日期</td>
+<td>2024-04-04</td>
+</tr>
+<tr>
+<td>arXiv 分类</td>
+<td>cs.CV</td>
+</tr>
+<tr>
+<td>主要任务</td>
+<td>基于图像条件的泛化新视角合成与显式 3D 表示重建</td>
+</tr>
+<tr>
+<td>主要方法</td>
+<td>pixelSplat</td>
+</tr>
+<tr>
+<td>核心表示</td>
+<td>3D Gaussian primitives &#x2F; 3D Gaussian Splatting</td>
+</tr>
+<tr>
+<td>主要数据集</td>
+<td>RealEstate10k、ACID</td>
+</tr>
+</tbody></table>
+<h3 id="0-2-实际读取范围"><a href="#0-2-实际读取范围" class="headerlink" title="0.2 实际读取范围"></a>0.2 实际读取范围</h3><p>本次读取了压缩包内的论文 HTML 正文及配套资源。HTML 中可访问的结构包括：</p>
+<ul>
+<li>Abstract；</li>
+<li>Section 1–6：Introduction、Related Work、Background、Method、Experiments、Conclusion；</li>
+<li>References；</li>
+<li>Appendix A–D：Training Details、Using More Reference Views、Limitations、Additional Results。</li>
+</ul>
+<p>因此，本报告覆盖了所提供 HTML 中的正文、附录和参考文献列表。论文中提到的项目网站及外部引用论文没有另行访问。</p>
+<h3 id="0-3-Figure、Table-与-Algorithm-数量"><a href="#0-3-Figure、Table-与-Algorithm-数量" class="headerlink" title="0.3 Figure、Table 与 Algorithm 数量"></a>0.3 Figure、Table 与 Algorithm 数量</h3><table>
+<thead>
+<tr>
+<th>对象</th>
+<th align="right">正文</th>
+<th align="right">附录</th>
+<th align="right">全文合计</th>
+<th>编号情况</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Figure</td>
+<td align="right">7</td>
+<td align="right">4</td>
+<td align="right"><strong>11</strong></td>
+<td>Figure 1–11，连续，无重复</td>
+</tr>
+<tr>
+<td>Table</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right"><strong>3</strong></td>
+<td>Table 1–3，连续，无重复</td>
+</tr>
+<tr>
+<td>Algorithm</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right"><strong>1</strong></td>
+<td>Algorithm 1</td>
+</tr>
+</tbody></table>
+<p>统计说明：</p>
+<ul>
+<li>Figure 1–7 位于正文；Figure 8 位于 Appendix A；Figure 9 位于 Appendix B；Figure 10–11 位于 Appendix D。</li>
+<li>Table 1–2 位于正文；Table 3 位于 Appendix B。</li>
+<li>一幅 Figure 内的多个子图均按一幅 Figure 统计。</li>
+<li>Algorithm 1 单独统计，不计入 Figure 或 Table。</li>
+<li>HTML 中的 11 个论文 Figure 均有对应的 <code>img</code> 引用；没有发现以 <code>object</code>、<code>embed</code> 或 <code>picture</code> 作为论文 Figure 资源的情况。页面内存在的内联 SVG 属于页面结构&#x2F;图标，不作为论文 Figure 统计。</li>
+</ul>
+<h3 id="0-4-原图资源检查"><a href="#0-4-原图资源检查" class="headerlink" title="0.4 原图资源检查"></a>0.4 原图资源检查</h3><p>压缩包中有 11 个与 Figure 一一对应的 PNG 文件。它们均已定位、读取并完成视觉检查；原始文件名、格式和内容未修改。</p>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>HTML 引用的原始文件</th>
+<th align="right">原图尺寸</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fig. 1</td>
+<td><code>teaser_bigger_text.png</code></td>
+<td align="right">400 × 202</td>
+</tr>
+<tr>
+<td>Fig. 2</td>
+<td><code>scale_ambiguity_fig.png</code></td>
+<td align="right">400 × 209</td>
+</tr>
+<tr>
+<td>Fig. 3</td>
+<td><code>sampling_v2.png</code></td>
+<td align="right">834 × 334</td>
+</tr>
+<tr>
+<td>Fig. 4</td>
+<td><code>point_clouds_fig.png</code></td>
+<td align="right">834 × 264</td>
+</tr>
+<tr>
+<td>Fig. 5</td>
+<td><code>x1.png</code></td>
+<td align="right">625 × 579</td>
+</tr>
+<tr>
+<td>Fig. 6</td>
+<td><code>attention_fig.png</code></td>
+<td align="right">300 × 148</td>
+</tr>
+<tr>
+<td>Fig. 7</td>
+<td><code>x2.png</code></td>
+<td align="right">300 × 237</td>
+</tr>
+<tr>
+<td>Fig. 8</td>
+<td><code>architecture_pdf.png</code></td>
+<td align="right">700 × 392</td>
+</tr>
+<tr>
+<td>Fig. 9</td>
+<td><code>x3.png</code></td>
+<td align="right">625 × 546</td>
+</tr>
+<tr>
+<td>Fig. 10</td>
+<td><code>x4.png</code></td>
+<td align="right">625 × 806</td>
+</tr>
+<tr>
+<td>Fig. 11</td>
+<td><code>x5.png</code></td>
+<td align="right">625 × 806</td>
+</tr>
+</tbody></table>
+<p><strong>资源追溯关系：</strong></p>
+<p><code>Figure 编号 → HTML 中的 figure 节点及 img src → ZIP 内同名 PNG → 本报告 assets 目录中的同名原图</code></p>
+<p>所有 Figure 图像均为 PNG。压缩包内另有 <code>arxiv-logo.svg</code>，它是网页标识资源，不是论文 Figure；因此没有将它混入论文图表目录。报告中的图片使用原始 PNG 文件，不经过转换或重新绘制。</p>
+<h3 id="0-5-当前阅读阶段"><a href="#0-5-当前阅读阶段" class="headerlink" title="0.5 当前阅读阶段"></a>0.5 当前阅读阶段</h3><p>阶段 0 已完成。以下依次完成阶段 1（全局认识）、阶段 2（图表阅读）、阶段 3（正文精读）和阶段 4（综合评价）。</p>
+<hr>
+<h1 id="1-阶段-1：论文全局认识"><a href="#1-阶段-1：论文全局认识" class="headerlink" title="1. 阶段 1：论文全局认识"></a>1. 阶段 1：论文全局认识</h1><h2 id="1-1-标题（Title）"><a href="#1-1-标题（Title）" class="headerlink" title="1.1 标题（Title）"></a>1.1 标题（Title）</h2><h3 id="原文"><a href="#原文" class="headerlink" title="原文"></a>原文</h3><p><em>pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction</em></p>
+<h3 id="中文翻译"><a href="#中文翻译" class="headerlink" title="中文翻译"></a>中文翻译</h3><p><strong>PixelSplat：从图像对生成 3D Gaussian Splat，以实现可扩展的泛化三维重建。</strong></p>
+<h3 id="核心术语"><a href="#核心术语" class="headerlink" title="核心术语"></a>核心术语</h3><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+<th>在本文中的具体指向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pixelSplat</td>
+<td>方法名称</td>
+<td>从少量输入图像预测显式 3D Gaussian 场景表示的前馈模型</td>
+</tr>
+<tr>
+<td>3D Gaussian Splats</td>
+<td>三维高斯泼溅表示</td>
+<td>使用一组具有位置、协方差、不透明度和球谐外观系数的三维高斯基元表示场景</td>
+</tr>
+<tr>
+<td>Image Pairs</td>
+<td>图像对</td>
+<td>推理时使用两张带有相机参数的参考图像</td>
+</tr>
+<tr>
+<td>Scalable</td>
+<td>可扩展</td>
+<td>主要强调相较于逐射线密集采样的渲染方式，Gaussian rasterization 能降低训练&#x2F;渲染资源开销</td>
+</tr>
+<tr>
+<td>Generalizable</td>
+<td>可泛化</td>
+<td>网络在多个训练场景上学习，推理时可对未见场景的图像对进行前馈重建，而非对每个新场景从头优化全部 Gaussian 参数</td>
+</tr>
+<tr>
+<td>3D Reconstruction</td>
+<td>三维重建</td>
+<td>由输入图像和相机参数推断一个可渲染的显式三维辐射场表示</td>
+</tr>
+</tbody></table>
+<h3 id="标题能够确定什么？"><a href="#标题能够确定什么？" class="headerlink" title="标题能够确定什么？"></a>标题能够确定什么？</h3><p>【原文事实】</p>
+<ol>
+<li>输入形式是图像对。</li>
+<li>输出表示是 3D Gaussian Splats。</li>
+<li>目标是 generalizable 3D reconstruction，而不只是单场景拟合。</li>
+<li>作者强调可扩展性。</li>
+</ol>
+<p>【需要正文确认】</p>
+<ol>
+<li>图像是否必须带相机位姿和内参：正文 Section 4 明确要求图像及其 camera parameters。</li>
+<li>是否恢复真实世界的米制尺度：不能仅从标题判断；正文 Section 4.1 表明相机位姿具有 SfM 尺度歧义，模型需要与该任意尺度保持一致，并非直接恢复绝对米制尺度。</li>
+<li>是否能够处理任意数量输入图像：正文以两张图像为主要设置；Appendix B 展示了三视图扩展，并讨论固定数量多视图扩展。</li>
+<li>是否保证准确的真实几何：标题不能证明；正文实验主要以新视角图像质量指标评价，几何证据主要是定性点云和深度可视化。</li>
+</ol>
+<h3 id="标题所指向的研究任务"><a href="#标题所指向的研究任务" class="headerlink" title="标题所指向的研究任务"></a>标题所指向的研究任务</h3><p>【原文事实 + 归纳】</p>
+<p>给定两张带有相机参数的参考图像，模型需要通过一个在多个场景上训练好的前馈网络，直接预测场景的显式 3D Gaussian 表示，并利用 Gaussian Splatting 高效渲染未观察到的视角。</p>
+<p>这里的关键不是重新提出 3D Gaussian Splatting 渲染器，而是研究如何从稀疏图像输入中<strong>泛化地推断 Gaussian primitives</strong>。</p>
+<hr>
+<h2 id="1-2-摘要（Abstract）"><a href="#1-2-摘要（Abstract）" class="headerlink" title="1.2 摘要（Abstract）"></a>1.2 摘要（Abstract）</h2><h3 id="原文-1"><a href="#原文-1" class="headerlink" title="原文"></a>原文</h3><blockquote>
+<p>We introduce pixelSplat, a feed-forward model that learns to reconstruct 3D radiance fields parameterized by 3D Gaussian primitives from pairs of images. Our model features real-time and memory-efficient rendering for scalable training as well as fast 3D reconstruction at inference time. To overcome local minima inherent to sparse and locally supported representations, we predict a dense probability distribution over 3D and sample Gaussian means from that probability distribution. We make this sampling operation differentiable via a reparameterization trick, allowing us to back-propagate gradients through the Gaussian splatting representation. We benchmark our method on wide-baseline novel view synthesis on the real-world RealEstate10k and ACID datasets, where we outperform state-of-the-art light field transformers and accelerate rendering by 2.5 orders of magnitude while reconstructing an interpretable and editable 3D radiance field.</p>
+</blockquote>
+<h3 id="中文翻译-1"><a href="#中文翻译-1" class="headerlink" title="中文翻译"></a>中文翻译</h3><p>我们提出 pixelSplat，这是一种前馈模型，能够从图像对中学习重建由三维高斯基元参数化的三维辐射场。</p>
+<p>我们的方法具有实时且内存高效的渲染能力，从而支持可扩展的训练，并能够在推理阶段快速完成三维重建。</p>
+<p>为了解决稀疏且具有局部支持的表示中固有的局部最优问题，我们预测一个稠密的三维概率分布，并从该概率分布中采样高斯基元的均值位置。</p>
+<p>我们通过一种重参数化技巧使这一采样操作能够参与梯度传播，从而允许梯度通过 Gaussian Splatting 表示反向传播。</p>
+<p>我们在真实世界的 RealEstate10k 和 ACID 数据集上，对宽基线新视角合成任务进行了评估。结果显示，pixelSplat 优于当时的先进光场 Transformer 方法，渲染速度提高了 2.5 个数量级，同时重建出可解释、可编辑的三维辐射场。</p>
+<h3 id="按摘要逻辑拆解"><a href="#按摘要逻辑拆解" class="headerlink" title="按摘要逻辑拆解"></a>按摘要逻辑拆解</h3><p><strong>第一层：研究对象</strong></p>
+<ul>
+<li>输入：两张图像。</li>
+<li>输出：由 3D Gaussian primitives 参数化的 3D radiance field。</li>
+<li>模型形式：feed-forward，而不是每个测试场景都从头执行长时间的逐场景优化。</li>
+</ul>
+<p><strong>第二层：表示与计算优势</strong></p>
+<p>传统 NeRF 类方法通常沿每条相机射线采样多个三维点，再通过体渲染计算像素颜色。Gaussian Splatting 则可以将三维基元投影到图像平面，通过 rasterization 进行渲染。</p>
+<p>作者希望将这种高效的显式表示引入 generalizable novel view synthesis。</p>
+<p><strong>第三层：核心技术困难</strong></p>
+<p>作者指出，直接优化或回归 Gaussian primitive 的位置容易陷入局部最优。原因与 Gaussian 的局部支持有关：当基元位置离正确位置过远时，正确位置可能无法获得有效梯度；即使存在梯度，也未必存在一条使损失持续下降的移动路径。</p>
+<p><strong>第四层：方法设计</strong></p>
+<p>作者不直接为每个像素预测唯一的 Gaussian 深度，而是预测沿该像素射线分布的离散深度概率，再从中采样 Gaussian 位置，并将采样深度对应的概率用作 Gaussian opacity。</p>
+<p><strong>第五层：实验主张</strong></p>
+<p>作者在 RealEstate10k 和 ACID 上评估宽基线新视角合成，报告图像质量、渲染速度和显式三维表示方面的优势。</p>
+<h3 id="摘要中最重要的逻辑关系"><a href="#摘要中最重要的逻辑关系" class="headerlink" title="摘要中最重要的逻辑关系"></a>摘要中最重要的逻辑关系</h3><ol>
+<li><strong>3D Gaussian Splatting</strong> 提供高效的显式三维表示和渲染方式。</li>
+<li><strong>Epipolar Transformer</strong> 利用双视图几何信息处理 SfM 相机位姿的尺度歧义。</li>
+<li><strong>概率式深度采样</strong> 处理直接预测 Gaussian 位置时的局部最优问题。</li>
+<li>两者结合，使网络能够从图像对中前馈预测可渲染的 Gaussian 场景。</li>
+</ol>
+<h3 id="结论边界"><a href="#结论边界" class="headerlink" title="结论边界"></a>结论边界</h3><p>【原文事实】摘要报告了两个数据集上的新视角合成结果和渲染效率优势。</p>
+<p>【尚未证实】摘要本身没有提供独立的几何精度评价，也没有证明输出 Gaussian 的位置等同于真实物体表面。摘要中的“interpretable and editable 3D radiance field”首先是表示形式的性质，不应直接理解为真实几何已经被精确恢复。</p>
+<hr>
+<h2 id="1-3-核心贡献（Contributions）"><a href="#1-3-核心贡献（Contributions）" class="headerlink" title="1.3 核心贡献（Contributions）"></a>1.3 核心贡献（Contributions）</h2><p>论文没有设置一个独立的、编号式的 Contributions 列表。以下内容是根据 Abstract、Introduction、Section 4、Experiments 和 Conclusion 提取的作者贡献主张，并非作者原有的编号列表。</p>
+<h3 id="贡献一：从图像对前馈预测显式-3D-Gaussian-表示"><a href="#贡献一：从图像对前馈预测显式-3D-Gaussian-表示" class="headerlink" title="贡献一：从图像对前馈预测显式 3D Gaussian 表示"></a>贡献一：从图像对前馈预测显式 3D Gaussian 表示</h3><p>【原文事实】</p>
+<p>作者提出 pixelSplat，从两张带相机参数的图像直接预测 3D Gaussian primitives，并将其用于新视角合成。</p>
+<ul>
+<li>解决的问题：传统逐场景优化式 3DGS 通常需要大量输入图像和逐场景优化过程。</li>
+<li>技术性质：泛化式三维表示推断与方法集成。</li>
+<li>主要依据：Introduction、Section 4、Figure 1、Figure 8。</li>
+<li>实验依据：Table 1、Figure 5、Figure 4。</li>
+</ul>
+<p><strong>理解重点：</strong> 本文不是提出 Gaussian Splatting 本身，而是将 Gaussian primitives 的预测从逐场景优化转为跨场景训练后的前馈推断。</p>
+<h3 id="贡献二：利用带深度位置编码的双视图-Epipolar-Transformer-处理尺度歧义"><a href="#贡献二：利用带深度位置编码的双视图-Epipolar-Transformer-处理尺度歧义" class="headerlink" title="贡献二：利用带深度位置编码的双视图 Epipolar Transformer 处理尺度歧义"></a>贡献二：利用带深度位置编码的双视图 Epipolar Transformer 处理尺度歧义</h3><p>【原文事实】</p>
+<p>作者在两张参考图像之间建立 epipolar sampling 和 cross-attention。沿极线采样的特征不仅包含图像特征，还拼接了通过三角化得到的深度位置编码。</p>
+<ul>
+<li>解决的问题：SfM 相机位姿只有每个场景内部一致的任意尺度，网络需要预测与相机位姿尺度一致的几何。</li>
+<li>技术性质：双视图特征融合、几何编码与尺度感知。</li>
+<li>主要依据：Section 4.1，Equations (1)–(4)，Figure 2，Figure 6，Figure 8。</li>
+<li>实验依据：Table 2 中 <code>No Epipolar Encoder</code> 和 <code>No Depth Encoding</code> 两项消融。</li>
+</ul>
+<h3 id="贡献三：基于离散深度概率分布的-Gaussian-位置预测机制"><a href="#贡献三：基于离散深度概率分布的-Gaussian-位置预测机制" class="headerlink" title="贡献三：基于离散深度概率分布的 Gaussian 位置预测机制"></a>贡献三：基于离散深度概率分布的 Gaussian 位置预测机制</h3><p>【原文事实】</p>
+<p>作者预测每个像素沿射线的离散深度概率分布，从中采样 Gaussian 的位置，并将采样深度桶的概率设为该 Gaussian 的 opacity。</p>
+<ul>
+<li>解决的问题：直接预测 Gaussian 位置时容易受到局部最优影响，且不能直接依赖原始 3DGS 的非可微 pruning&#x2F;splitting 操作。</li>
+<li>技术性质：参数化方式与梯度传播机制创新。</li>
+<li>主要依据：Section 3、Section 4.2，Equations (5)–(8)，Algorithm 1，Figure 3。</li>
+<li>实验依据：Table 2 中 <code>No Probabilistic Sampling</code>，以及 Figure 7 的定性消融。</li>
+</ul>
+<h3 id="贡献四：在真实场景宽基线-NVS-上验证质量与效率"><a href="#贡献四：在真实场景宽基线-NVS-上验证质量与效率" class="headerlink" title="贡献四：在真实场景宽基线 NVS 上验证质量与效率"></a>贡献四：在真实场景宽基线 NVS 上验证质量与效率</h3><p>【原文事实】</p>
+<p>作者在 RealEstate10k 和 ACID 上比较 pixelNeRF、GPNR 和 Du et al. 方法，报告 PSNR、SSIM、LPIPS、编码&#x2F;渲染时间及内存。</p>
+<ul>
+<li>解决的问题：验证前馈 Gaussian 表示能否在图像质量、渲染效率和内存需求方面形成实际优势。</li>
+<li>技术性质：实验贡献。</li>
+<li>主要依据：Section 5、Table 1、Figure 5。</li>
+<li>边界：这些指标主要验证 novel-view image quality 和计算成本，不等价于几何真值精度。</li>
+</ul>
+<hr>
+<h2 id="1-4-结论（Conclusion）"><a href="#1-4-结论（Conclusion）" class="headerlink" title="1.4 结论（Conclusion）"></a>1.4 结论（Conclusion）</h2><h3 id="原文结论的核心内容"><a href="#原文结论的核心内容" class="headerlink" title="原文结论的核心内容"></a>原文结论的核心内容</h3><p>作者总结了以下几点：</p>
+<ol>
+<li>pixelSplat 能够仅根据两张图像重建一个基于 primitives 的三维辐射场表示。</li>
+<li>推理速度显著快于此前的 generalizable novel view synthesis 方法。</li>
+<li>输出的是显式三维场景表示，而不是只针对目标射线生成颜色的黑盒光场表示。</li>
+<li>为缓解 primitive regression 中的局部最优，作者提出通过稠密概率分布参数化 primitive 位置，并通过重参数化技巧将梯度传回概率分布参数。</li>
+<li>作者希望这一框架能够启发其他应用中的 primitive-based representation prior inference。</li>
+</ol>
+<h3 id="未来工作"><a href="#未来工作" class="headerlink" title="未来工作"></a>未来工作</h3><p>作者明确提出两个方向：</p>
+<ul>
+<li>将该模型与 diffusion models 结合，用于 generative modeling。</li>
+<li>去除对 camera poses 的依赖，以支持更大规模的训练。</li>
+</ul>
+<h3 id="对结论的初步理解"><a href="#对结论的初步理解" class="headerlink" title="对结论的初步理解"></a>对结论的初步理解</h3><p>【原文事实】作者认为 pixelSplat 展示了从稀疏图像输入前馈预测显式 Gaussian 场景表示的可行性。</p>
+<p>【独立评价】论文最有价值的技术点并不是简单地把 3DGS 与 Transformer 拼接，而是分别处理了两个相互独立的障碍：</p>
+<ul>
+<li>相机位姿尺度不确定，导致几何预测缺乏一致的尺度参照；</li>
+<li>Gaussian 位置的直接回归容易陷入局部最优，且传统 3DGS 的非可微密度控制不适用于端到端泛化网络。</li>
+</ul>
+<p>这两个问题分别由 Section 4.1 和 Section 4.2 处理。</p>
+<hr>
+<h1 id="2-阶段-2：论文图表阅读"><a href="#2-阶段-2：论文图表阅读" class="headerlink" title="2. 阶段 2：论文图表阅读"></a>2. 阶段 2：论文图表阅读</h1><h2 id="2-1-图表功能总览"><a href="#2-1-图表功能总览" class="headerlink" title="2.1 图表功能总览"></a>2.1 图表功能总览</h2><h3 id="Figure-总览"><a href="#Figure-总览" class="headerlink" title="Figure 总览"></a>Figure 总览</h3><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>所在位置</th>
+<th>简称</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Figure 1</td>
+<td>Introduction</td>
+<td>Overall Overview</td>
+<td>方法总体示意：输入图像对、3D Gaussian 场景、Novel Views</td>
+</tr>
+<tr>
+<td>Figure 2</td>
+<td>Section 4.1</td>
+<td>Scale Ambiguity</td>
+<td>说明真实米制尺度与 SfM 任意尺度之间的关系，以及极线编码的作用</td>
+</tr>
+<tr>
+<td>Figure 3</td>
+<td>Section 4.2</td>
+<td>Probabilistic Gaussian Prediction</td>
+<td>展示由像素特征预测深度概率、采样 Gaussian 位置和设置 opacity 的过程</td>
+</tr>
+<tr>
+<td>Figure 4</td>
+<td>Section 5.2</td>
+<td>3D Gaussians and Depth Maps</td>
+<td>展示显式 Gaussian 场景表示及对应深度图</td>
+</tr>
+<tr>
+<td>Figure 5</td>
+<td>Section 5.2</td>
+<td>Qualitative NVS Comparison</td>
+<td>对比 RealEstate10k 和 ACID 上的新视角合成结果</td>
+</tr>
+<tr>
+<td>Figure 6</td>
+<td>Section 5.3</td>
+<td>Attention Visualization</td>
+<td>可视化极线交叉注意力，辅助说明跨视图对应关系</td>
+</tr>
+<tr>
+<td>Figure 7</td>
+<td>Section 5.3</td>
+<td>Ablations</td>
+<td>定性展示去除极线编码或概率采样后的失败现象</td>
+</tr>
+<tr>
+<td>Figure 8</td>
+<td>Appendix A</td>
+<td>Architecture Diagram</td>
+<td>展示整体网络、单图编码、极线采样和注意力模块</td>
+</tr>
+<tr>
+<td>Figure 9</td>
+<td>Appendix B</td>
+<td>Two-view vs Three-view</td>
+<td>展示增加第三张参考图像后的定性结果</td>
+</tr>
+<tr>
+<td>Figure 10</td>
+<td>Appendix D</td>
+<td>More RealEstate10k Results</td>
+<td>补充 RealEstate10k 结果</td>
+</tr>
+<tr>
+<td>Figure 11</td>
+<td>Appendix D</td>
+<td>More ACID Results</td>
+<td>补充 ACID 结果</td>
+</tr>
+</tbody></table>
+<h3 id="Table-总览"><a href="#Table-总览" class="headerlink" title="Table 总览"></a>Table 总览</h3><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>所在位置</th>
+<th>主要内容</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Table 1</td>
+<td>Section 5.2</td>
+<td>RealEstate10k、ACID 的质量指标及效率&#x2F;内存</td>
+<td>主结果与效率比较</td>
+</tr>
+<tr>
+<td>Table 2</td>
+<td>Section 5.3</td>
+<td>Epipolar Encoder、Depth Encoding、Probabilistic Sampling 等消融</td>
+<td>验证关键模块</td>
+</tr>
+<tr>
+<td>Table 3</td>
+<td>Appendix B</td>
+<td>两视图与三视图结果</td>
+<td>验证多参考视图扩展</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="2-2-Figure-1：总体方法示意"><a href="#2-2-Figure-1：总体方法示意" class="headerlink" title="2.2 Figure 1：总体方法示意"></a>2.2 Figure 1：总体方法示意</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser_bigger_text.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — Overall Overview"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 1: Overview. Given a pair of input images, pixelSplat reconstructs a 3D radiance field parameterized via 3D Gaussian primitives. This yields an explicit 3D representation that is renderable in real time, remains editable, and is cheap to train.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 1：总体示意。给定一对输入图像，pixelSplat 重建一个由三维高斯基元参数化的三维辐射场。由此得到的显式三维表示能够实时渲染、保持可编辑性，并且训练成本较低。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>左侧是两张输入视图。</li>
+<li>中间是由 Gaussian primitives 构成的三维场景表示。</li>
+<li>右侧是从新视角渲染出的图像。</li>
+<li>图中用箭头表示从输入图像到三维表示，再到新视角渲染的流程。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>建立论文的整体研究目标：从图像对预测显式三维场景，而不是直接从输入图像生成某个目标视角的 RGB 图像。</p>
+<p><strong>正文关联</strong></p>
+<p>Introduction 说明 generalizable novel view synthesis 的研究背景；Section 4 解释图像编码和 Gaussian 参数预测；Section 5 通过新视角合成实验验证输出质量。</p>
+<p><strong>结论边界</strong></p>
+<p>该图是方法概念示意，不是几何精度证明，也没有展示实际网络结构的全部细节。</p>
+<hr>
+<h2 id="2-3-Figure-2：尺度歧义"><a href="#2-3-Figure-2：尺度歧义" class="headerlink" title="2.3 Figure 2：尺度歧义"></a>2.3 Figure 2：尺度歧义</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/scale_ambiguity_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — Scale Ambiguity"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 2: Scale ambiguity. SfM does not reconstruct camera poses in real-world, metric scale—poses are scaled by an arbitrary scale factor that is different for each scene. To render correct views, our model’s 3D reconstruction needs to be consistent with this arbitrary scale. We illustrate how our epipolar encoder solves this problem. Features belonging to the ray’s corresponding pixel on the left are compared with features sampled along the epipolar line on the right. Epipolar samples are augmented with their positionally-encoded depths along the ray, which allows our encoder to record correct depths. Recorded depths are later used for depth prediction.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 2：尺度歧义。SfM 无法以真实世界的米制尺度恢复相机位姿，不同场景的位姿会受到各自任意尺度因子的缩放。为了正确渲染视图，模型重建的三维场景需要与该任意尺度保持一致。图中说明了极线编码器如何处理这一问题：左侧射线对应像素的特征，与右侧极线上的采样特征进行比较；极线采样特征还会附加沿射线计算并进行位置编码的深度信息，使编码器能够记录正确的深度，并在后续用于深度预测。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>图中区分了 Real-world Metric Scale 与 Arbitrary SfM Scale。</li>
+<li>两组相机和场景示意强调：同一场景的尺度可能发生整体变化。</li>
+<li>蓝色线表示极线关系。</li>
+<li>两个视图之间的几何关系为跨视图匹配提供约束。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>解释为什么单张图像不足以预测与 SfM 相机位姿一致的三维深度，以及为什么需要双视图几何信息。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.1，尤其是对每个场景未知尺度因子 (s_i) 的定义，以及 Equations (1)–(4)。</p>
+<p><strong>重要理解</strong></p>
+<p>模型需要预测的是<strong>与输入 SfM 相机位姿坐标尺度一致的深度</strong>。这不等于恢复真实世界中的绝对米制尺度。</p>
+<hr>
+<h2 id="2-4-Figure-3：概率式-Pixel-aligned-Gaussian-预测"><a href="#2-4-Figure-3：概率式-Pixel-aligned-Gaussian-预测" class="headerlink" title="2.4 Figure 3：概率式 Pixel-aligned Gaussian 预测"></a>2.4 Figure 3：概率式 Pixel-aligned Gaussian 预测</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/sampling_v2.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — Probabilistic Gaussian Prediction"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 3: Proposed probabilistic prediction of pixel-aligned Gaussians. For every pixel feature ([]) in the input feature map, a neural network (f) predicts Gaussian primitive parameters () and (). Gaussian locations () and opacities () are not predicted directly, which would lead to local minima. Instead, (f) predicts per-pixel discrete probability distributions over depths (p_{}(z)), parameterized by (). Sampling then yields the locations of Gaussian primitives. The opacity of each Gaussian is set to the probability of the sampled depth bucket. The final set of Gaussian primitives can then be rendered from novel views using the splatting algorithm proposed by Kerbl et al. [19]. Note that for brevity, we use (h) to represent the function that computes depths from bucket indices (see equations 6 and 7).</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 3：提出的 pixel-aligned Gaussian 概率预测方法。对于输入特征图中的每个像素特征 (F[u])，神经网络 (f) 预测 Gaussian 基元的协方差 () 和球谐系数 (S)。Gaussian 的位置 () 和不透明度 () 不直接预测，因为直接预测可能导致局部最优。相反，网络预测每个像素对应的离散深度概率分布 (p_{}(z))。从该分布中采样后得到 Gaussian 基元的位置；每个 Gaussian 的 opacity 被设置为所采样深度桶的概率。最终的 Gaussian 集合使用 Kerbl 等人提出的 splatting 算法渲染新视角。为简洁起见，图中用 (h) 表示由深度桶索引计算深度的函数。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>左侧输入为多个像素特征。</li>
+<li>网络 (f) 为不同像素预测深度概率分布。</li>
+<li>中间的概率柱状图表示不同深度桶具有不同概率。</li>
+<li>根据概率分布采样深度索引 (z)。</li>
+<li>采样结果用于确定 Gaussian 位置 ()，而采样桶概率用于设置 opacity ()。</li>
+<li>网络同时预测协方差 () 和球谐系数 (S)。</li>
+<li>右侧展示生成的三维 Gaussian primitives。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>这是全文最关键的方法示意图，说明作者如何避免直接回归 Gaussian 位置，并将离散深度采样与可微的 opacity 参数联系起来。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.2，Equations (5)–(8)，Algorithm 1。</p>
+<p><strong>结论边界</strong></p>
+<p>该图是算法结构示意，不能单独证明概率分布会收敛到正确深度；相关实验依据是 Table 2 和 Figure 7。</p>
+<hr>
+<h2 id="2-5-Figure-4：预测的三维-Gaussian-与深度图"><a href="#2-5-Figure-4：预测的三维-Gaussian-与深度图" class="headerlink" title="2.5 Figure 4：预测的三维 Gaussian 与深度图"></a>2.5 Figure 4：预测的三维 Gaussian 与深度图</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/point_clouds_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — 3D Gaussians and Depth Maps"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 4: 3D Gaussians (top) and corresponding depth maps (bottom) predicted by our method. In contrast to light field rendering methods like GPNR [47] and that of Du et al. [10], our method produces an explicit 3D representation. Here, we show zoomed-out views of the Gaussians our method produces along with rendered depth maps, as viewed from the two reference viewpoints.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 4：方法预测的三维 Gaussian（上方）及对应深度图（下方）。与 GPNR 和 Du 等人的光场渲染方法不同，本文方法生成显式三维表示。图中展示了从两个参考视角观察到的 Gaussian 场景，以及相应渲染出的深度图。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>上半部分展示多个场景的三维 Gaussian&#x2F;点云结构。</li>
+<li>下半部分展示对应的深度图。</li>
+<li>三维表示可以从不同参考视角观察。</li>
+<li>深度图以颜色编码呈现，但图中没有提供足以进行精确数值读取的统一深度色标。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>证明模型输出的不只是目标图像颜色，而是可显式观察和渲染的三维 Gaussian 场景表示。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 5.2 的 Point cloud rendering。作者明确说明，这里展示的点云使用经过 50,000 步深度正则化微调的模型。</p>
+<p><strong>重要限制</strong></p>
+<p>作者同时指出，这些 Gaussian 在分布内视角下有利于高质量 NVS，但在反射表面和分布外视角下仍会出现透明表面、billboard-like 等问题。</p>
+<hr>
+<h2 id="2-6-Figure-5：新视角合成定性比较"><a href="#2-6-Figure-5：新视角合成定性比较" class="headerlink" title="2.6 Figure 5：新视角合成定性比较"></a>2.6 Figure 5：新视角合成定性比较</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x1.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Qualitative NVS Comparison"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 5: Qualitative comparison of novel views on the RealEstate10k (top) and ACID (bottom) test sets. Compared to the baselines, our approach not only produces more accurate and perceptually appealing images, but also generalizes better to out-of-distribution examples like the creek in the bottom row.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 5：RealEstate10k（上半部分）和 ACID（下半部分）测试集上的新视角合成定性比较。与基线方法相比，本文方法生成的图像更加准确、感知效果更好，并且在分布外样例上具有更好的泛化表现，例如底部一行的溪流场景。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>上半部分为 RealEstate10k 室内场景。</li>
+<li>下半部分为 ACID 航拍&#x2F;自然景观场景。</li>
+<li>每组场景包含参考图像及多列新视角结果。</li>
+<li>不同列之间可以观察到清晰度、结构稳定性和模糊程度的差异。</li>
+<li>图像资源本身没有提供可可靠读取的完整列标题，因此本报告不根据猜测为每一列指定具体 baseline 名称。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>提供两个真实数据集上的定性 NVS 比较，并展示作者所强调的细节恢复与跨视图泛化能力。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 5.2 Results，Table 1。</p>
+<p><strong>结论边界</strong></p>
+<p>定性图像可支持视觉差异观察，但不能替代 PSNR、SSIM、LPIPS 等定量指标；也不能仅凭图像判断几何深度是否准确。</p>
+<hr>
+<h2 id="2-7-Figure-6：极线注意力可视化"><a href="#2-7-Figure-6：极线注意力可视化" class="headerlink" title="2.7 Figure 6：极线注意力可视化"></a>2.7 Figure 6：极线注意力可视化</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/attention_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — Attention Visualization"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 6: Attention visualization. We visualize the epipolar cross-attention weights between the rays on the left and the corresponding epipolar lines on the right to confirm that our model learns to find the correct correspondence along each ray.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 6：注意力可视化。作者展示左侧射线与右侧对应极线之间的极线交叉注意力权重，以说明模型能够学习沿每条射线寻找正确对应关系。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>左侧图像中标记了若干不同颜色的位置。</li>
+<li>右侧图像展示了对应的极线采样&#x2F;注意力位置。</li>
+<li>不同颜色用于区分不同射线或对应关系。</li>
+<li>该图主要呈现跨视图注意力关系，而不是直接展示深度误差。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>为 Section 4.1 中“模型通过极线注意力寻找跨视图对应关系”的设计提供定性可视化。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 5.3 的 Ablating epipolar encoding（Q1a）。</p>
+<p><strong>结论边界</strong></p>
+<p>该图能够展示注意力权重的空间分布，但不能单独证明所有场景、所有像素都获得了正确匹配，也没有给出独立的匹配准确率。</p>
+<hr>
+<h2 id="2-8-Figure-7：消融实验定性结果"><a href="#2-8-Figure-7：消融实验定性结果" class="headerlink" title="2.8 Figure 7：消融实验定性结果"></a>2.8 Figure 7：消融实验定性结果</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x2.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 7 — Ablations"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 7: Ablations. Without the epipolar transformer, our model is unable to resolve scale ambiguity, leading to ghosting artifacts. Without our sampling approach, our model falls into local minima that manifest themselves as speckling artifacts. Regularizing our model’s predicted depths minimally affects rendering quality.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 7：消融实验。去除极线 Transformer 后，模型无法处理尺度歧义，从而产生重影伪影。去除本文的采样方法后，模型会陷入局部最优，并表现为斑点状伪影。对模型预测的深度进行正则化，对渲染质量的影响较小。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>图像由多个场景行和多个结果列构成。</li>
+<li>可以观察到不同变体在细节、重影和斑点伪影方面的差异。</li>
+<li>图像资源中没有足够清晰的列标题可供独立确认每一列的具体配置；具体消融名称应以 Table 2 和正文为准。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>将两个核心模块的消融结果可视化：Epipolar Transformer 与尺度一致性；概率采样与局部最优问题。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 5.3、Table 2。</p>
+<hr>
+<h2 id="2-9-Figure-8：网络架构图（Appendix-A）"><a href="#2-9-Figure-8：网络架构图（Appendix-A）" class="headerlink" title="2.9 Figure 8：网络架构图（Appendix A）"></a>2.9 Figure 8：网络架构图（Appendix A）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/architecture_pdf.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 8 — Architecture Diagram"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 8: Architecture diagram.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 8：网络架构图。</p>
+<p><strong>视觉观察</strong></p>
+<p>图中分为四个主要区域：</p>
+<ol>
+<li><strong>Overall Architecture</strong><ul>
+<li>两张输入图像；</li>
+<li>Per-image Encoder；</li>
+<li>Epipolar Sampling；</li>
+<li>Epipolar Attention；</li>
+<li>Gaussian Prediction。</li>
+</ul>
+</li>
+<li><strong>Per-image Encoder</strong><ul>
+<li>ResNet-50（DINO 预训练）；</li>
+<li>DINO ViT-B&#x2F;8；</li>
+<li>ResNet 的不同层级输出；</li>
+<li>ViT 的 local&#x2F;global tokens；</li>
+<li>Project&#x2F;Upsample 后融合为 Features。</li>
+</ul>
+</li>
+<li><strong>Epipolar Sampling</strong><ul>
+<li>两个视图的特征图；</li>
+<li>每个视图中的射线；</li>
+<li>在另一个视图中采样极线特征；</li>
+<li>将深度信息与采样特征组合。</li>
+</ul>
+</li>
+<li><strong>Epipolar Attention</strong><ul>
+<li>Queries；</li>
+<li>Keys&#x2F;Values；</li>
+<li>Multi-head Attention；</li>
+<li>Image Self-attention；</li>
+<li>残差连接。</li>
+<li>图中标明 Epipolar Attention 重复两次。</li>
+</ul>
+</li>
+</ol>
+<p><strong>主要功能</strong></p>
+<p>这是理解实现结构最重要的架构图。Figure 1 只展示任务流程，而 Figure 8 才展示编码器、极线采样和注意力模块之间的连接关系。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.1、Section 4.2、Appendix A.1。</p>
+<hr>
+<h2 id="2-10-Figure-9：两视图与三视图比较（Appendix-B）"><a href="#2-10-Figure-9：两视图与三视图比较（Appendix-B）" class="headerlink" title="2.10 Figure 9：两视图与三视图比较（Appendix B）"></a>2.10 Figure 9：两视图与三视图比较（Appendix B）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x3.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 9 — Two-view vs Three-view"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 9: Qualitative comparison of novel views given 2 and 3 reference views. Our method can be extended to use an arbitrary, fixed number of reference views as input. Here, we compare the results from a 3-view model with those from the original 2-view model. The 2-view model uses the top and bottom reference views as input, while the 3-view model uses all three.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 9：给定两张和三张参考图像时的新视角合成定性比较。本文方法可以扩展到使用任意固定数量的参考视图作为输入。图中比较了三视图模型与原始双视图模型的结果。双视图模型使用顶部和底部的参考视图，而三视图模型使用全部三张参考视图。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>图中包含多个室内场景。</li>
+<li>每个场景展示两视图和三视图设置下的参考图像及结果。</li>
+<li>三视图设置比双视图设置多使用一张位于两张原始参考图像之间的图像。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>验证方法可以从两视图扩展到更多参考视图，并展示增加参考信息后的 NVS 结果。</p>
+<p><strong>正文关联</strong></p>
+<p>Appendix B、Table 3。</p>
+<p><strong>结论边界</strong></p>
+<p>论文展示了三视图实验，并说明结构上可扩展到任意固定数量的视图；这不等于已经充分验证了任意大视图数量下的效果和资源开销。</p>
+<hr>
+<h2 id="2-11-Figure-10：RealEstate10k-补充结果（Appendix-D）"><a href="#2-11-Figure-10：RealEstate10k-补充结果（Appendix-D）" class="headerlink" title="2.11 Figure 10：RealEstate10k 补充结果（Appendix D）"></a>2.11 Figure 10：RealEstate10k 补充结果（Appendix D）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x4.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 10 — Additional RealEstate10k Results"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 10: More results on the Real Estate 10k dataset.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 10：RealEstate10k 数据集上的更多结果。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>多行室内场景。</li>
+<li>每行包含参考视图和多列结果。</li>
+<li>可以观察到不同场景中的室内结构、家具和视角变化。</li>
+<li>部分视角中出现模糊或结构退化。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>提供主文定性结果之外的补充案例。</p>
+<p><strong>正文关联</strong></p>
+<p>Appendix D。</p>
+<p><strong>结论边界</strong></p>
+<p>该图没有给出独立定量指标，也没有在图注中逐列标注所有方法，因此主要作为补充定性证据。</p>
+<hr>
+<h2 id="2-12-Figure-11：ACID-补充结果（Appendix-D）"><a href="#2-12-Figure-11：ACID-补充结果（Appendix-D）" class="headerlink" title="2.12 Figure 11：ACID 补充结果（Appendix D）"></a>2.12 Figure 11：ACID 补充结果（Appendix D）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x5.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 11 — Additional ACID Results"></p>
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 11: More results on the ACID dataset.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 11：ACID 数据集上的更多结果。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>多行航拍或自然景观场景。</li>
+<li>包括山地、海岸、城镇和植被等场景。</li>
+<li>每行展示参考视图与多列结果。</li>
+<li>不同场景和视角下的结果质量存在差异。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>补充 ACID 数据集上的新视角合成案例，扩展主文 Figure 5 的定性展示范围。</p>
+<p><strong>正文关联</strong></p>
+<p>Appendix D。</p>
+<hr>
+<h2 id="2-13-Algorithm-1：Pixel-aligned-Gaussian-的概率预测"><a href="#2-13-Algorithm-1：Pixel-aligned-Gaussian-的概率预测" class="headerlink" title="2.13 Algorithm 1：Pixel-aligned Gaussian 的概率预测"></a>2.13 Algorithm 1：Pixel-aligned Gaussian 的概率预测</h2><p><strong>原文标题</strong></p>
+<blockquote>
+<p>Algorithm 1: Probabilistic Prediction of a Pixel-Aligned Gaussian.</p>
+</blockquote>
+<p><strong>算法中文名称</strong></p>
+<p>算法 1：Pixel-aligned Gaussian 的概率预测。</p>
+<h3 id="算法输入"><a href="#算法输入" class="headerlink" title="算法输入"></a>算法输入</h3><ul>
+<li>深度桶向量 (bR^Z)；</li>
+<li>像素位置 (u) 对应的特征 (F[u])；</li>
+<li>参考视图相机原点 (o)；</li>
+<li>射线方向 (d_{u})。</li>
+</ul>
+<h3 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h3><ol>
+<li><p>输入像素特征 (F[u])，通过网络 (f) 预测： [ (,,,S) &#x3D;f(F[u]). ]</p>
+</li>
+<li><p>从离散概率分布中采样深度桶： [ zp_{}(z). ]</p>
+</li>
+<li><p>根据深度桶及偏移量计算 Gaussian 均值： [ &#x3D;o+(b_z+<em>z)d</em>{u}. ]</p>
+</li>
+<li><p>将所采样深度桶的概率作为 opacity： [ &#x3D;_z. ]</p>
+</li>
+<li><p>返回： [ (,,,S). ]</p>
+</li>
+</ol>
+<h3 id="算法理解"><a href="#算法理解" class="headerlink" title="算法理解"></a>算法理解</h3><p>网络不是直接预测一个唯一深度，而是先预测一组候选深度的概率。采样决定当前 forward pass 中生成哪个 Gaussian；opacity 则将该采样结果与概率分布参数联系起来，使渲染损失可以影响对应概率。</p>
+<hr>
+<h2 id="2-14-Table-1：主结果与效率比较"><a href="#2-14-Table-1：主结果与效率比较" class="headerlink" title="2.14 Table 1：主结果与效率比较"></a>2.14 Table 1：主结果与效率比较</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table 1: Quantitative comparisons. We outperform all baseline methods in terms PSNR, LPIPS, and SSIM for novel view synthesis on the real-world RealEstate10k and ACID datasets. In addition, our method requires less memory during both inference and training and renders images about 650 times faster than the next-fastest baseline. In the memory column, we report memory usage for a single scene and 256 × 256 rays, extrapolating from the smaller number of rays per batch used to train the baselines where necessary. Note that we report GPNR’s encoding time as N&#x2F;A because it has no encoder. We bold first-place results and underline second-place results in each column.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 1：定量比较。本文方法在真实世界 RealEstate10k 和 ACID 数据集的新视角合成任务中，在 PSNR、LPIPS 和 SSIM 三项指标上均优于所有基线方法。此外，本文方法在训练和推理阶段需要的内存更少，渲染速度约为次快基线方法的 650 倍。内存列报告单个场景和 (256) 条射线下的内存使用量；必要时根据基线方法每个 batch 中使用的较少射线数进行外推。由于 GPNR 没有编码器，其编码时间记为 N&#x2F;A。</p>
+<h3 id="原始数据"><a href="#原始数据" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="right">ACID PSNR ↑</th>
+<th align="right">ACID SSIM ↑</th>
+<th align="right">ACID LPIPS ↓</th>
+<th align="right">RealEstate10k PSNR ↑</th>
+<th align="right">RealEstate10k SSIM ↑</th>
+<th align="right">RealEstate10k LPIPS ↓</th>
+<th align="right">Encode (s) ↓</th>
+<th align="right">Render (s) ↓</th>
+<th align="right">Training Memory (GB) ↓</th>
+<th align="right">Inference Memory (GB) ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Ours</strong></td>
+<td align="right"><strong>28.27</strong></td>
+<td align="right"><strong>0.843</strong></td>
+<td align="right"><strong>0.146</strong></td>
+<td align="right"><strong>26.09</strong></td>
+<td align="right"><strong>0.863</strong></td>
+<td align="right"><strong>0.136</strong></td>
+<td align="right">0.102</td>
+<td align="right"><strong>0.002</strong></td>
+<td align="right"><strong>14.4</strong></td>
+<td align="right"><strong>3.002</strong></td>
+</tr>
+<tr>
+<td>Du et al.</td>
+<td align="right">26.88</td>
+<td align="right">0.799</td>
+<td align="right">0.218</td>
+<td align="right">24.78</td>
+<td align="right">0.820</td>
+<td align="right">0.213</td>
+<td align="right">0.016</td>
+<td align="right">1.309</td>
+<td align="right">314.3</td>
+<td align="right">19.604</td>
+</tr>
+<tr>
+<td>GPNR</td>
+<td align="right">25.28</td>
+<td align="right">0.764</td>
+<td align="right">0.332</td>
+<td align="right">24.11</td>
+<td align="right">0.793</td>
+<td align="right">0.255</td>
+<td align="right">N&#x2F;A</td>
+<td align="right">13.340</td>
+<td align="right">3789.9</td>
+<td align="right">19.441</td>
+</tr>
+<tr>
+<td>pixelNeRF</td>
+<td align="right">20.97</td>
+<td align="right">0.547</td>
+<td align="right">0.533</td>
+<td align="right">20.43</td>
+<td align="right">0.589</td>
+<td align="right">0.550</td>
+<td align="right">0.005</td>
+<td align="right">5.294</td>
+<td align="right">436.7</td>
+<td align="right">3.962</td>
+</tr>
+</tbody></table>
+<h3 id="数据解读"><a href="#数据解读" class="headerlink" title="数据解读"></a>数据解读</h3><p><strong>图像质量</strong></p>
+<ul>
+<li>ACID：pixelSplat 的 PSNR 为 28.27，SSIM 为 0.843，LPIPS 为 0.146，均优于表中其他方法。</li>
+<li>RealEstate10k：pixelSplat 的 PSNR 为 26.09，SSIM 为 0.863，LPIPS 为 0.136，同样优于其他方法。</li>
+<li>两个数据集上，pixelSplat 在 PSNR 和 SSIM 上更高，在 LPIPS 上更低。</li>
+</ul>
+<p><strong>渲染速度</strong></p>
+<ul>
+<li>pixelSplat：0.002 s&#x2F;frame。</li>
+<li>次快的渲染基线 Du et al.：1.309 s&#x2F;frame。</li>
+<li>仅比较单帧 Render 时间： [ &#x3D;654.5. ] 因此表中单帧渲染时间对应约 654.5 倍速度差异。</li>
+</ul>
+<p><strong>内存</strong></p>
+<ul>
+<li>Training Memory：pixelSplat 为 14.4 GB，显著低于表中其他方法。</li>
+<li>Inference Memory：pixelSplat 为 3.002 GB，低于其他方法，但与 pixelNeRF 的 3.962 GB 差距相对较小。</li>
+</ul>
+<h3 id="一个需要核对的数值边界"><a href="#一个需要核对的数值边界" class="headerlink" title="一个需要核对的数值边界"></a>一个需要核对的数值边界</h3><p>作者在 Caption 中称，编码一个场景并渲染约 100 张图像时，总成本约为次快基线的 650 倍。</p>
+<p>但如果严格按表中的 Encode 和 Render 数值计算：</p>
+<ul>
+<li>pixelSplat： [ 0.102+100&#x3D;0.302. ]</li>
+<li>Du et al.： [ 0.016+100&#x3D;130.916. ]</li>
+<li>两者比值： [ . ]</li>
+</ul>
+<p>因此：</p>
+<ul>
+<li><strong>约 654.5 倍</strong>对应的是单帧 Render 时间比；</li>
+<li><strong>约 433.5 倍</strong>对应的是一次编码加 100 次渲染的总时间比。</li>
+</ul>
+<p>【独立评价】论文的“约 650 倍”与单帧渲染时间比吻合，但与“编码一次并渲染 100 张图像”的表格数值合计不完全一致。这是一个可复核的表述边界，不影响其渲染速度显著更快的总体结论。</p>
+<hr>
+<h2 id="2-15-Table-2：消融实验"><a href="#2-15-Table-2：消融实验" class="headerlink" title="2.15 Table 2：消融实验"></a>2.15 Table 2：消融实验</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table 2: Ablations. Both our epipolar encoder and our probabilistic sampling scheme are essential for high-quality novel view synthesis. Depth regularization slightly impacts rendering quality.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 2：消融实验。极线编码器和概率采样方案对于高质量新视角合成都很重要。深度正则化对渲染质量的影响较小。</p>
+<h3 id="原始数据-1"><a href="#原始数据-1" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Ours</strong></td>
+<td align="right"><strong>26.09</strong></td>
+<td align="right"><strong>0.863</strong></td>
+<td align="right"><strong>0.136</strong></td>
+</tr>
+<tr>
+<td>No Epipolar Encoder</td>
+<td align="right">19.89</td>
+<td align="right">0.639</td>
+<td align="right">0.295</td>
+</tr>
+<tr>
+<td>No Depth Encoding</td>
+<td align="right">24.97</td>
+<td align="right">0.830</td>
+<td align="right">0.158</td>
+</tr>
+<tr>
+<td>No Probabilistic Sampling</td>
+<td align="right">24.62</td>
+<td align="right">0.828</td>
+<td align="right">0.171</td>
+</tr>
+<tr>
+<td>Plus Depth Regularization</td>
+<td align="right">25.94</td>
+<td align="right">0.862</td>
+<td align="right">0.137</td>
+</tr>
+</tbody></table>
+<h3 id="数据解读-1"><a href="#数据解读-1" class="headerlink" title="数据解读"></a>数据解读</h3><p>以 Ours 为参照：</p>
+<table>
+<thead>
+<tr>
+<th>消融项</th>
+<th align="right">PSNR 变化</th>
+<th align="right">SSIM 变化</th>
+<th align="right">LPIPS 变化</th>
+<th>主要含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No Epipolar Encoder</td>
+<td align="right">-6.20 dB</td>
+<td align="right">-0.224</td>
+<td align="right">+0.159</td>
+<td>去掉跨视图极线编码后性能大幅下降</td>
+</tr>
+<tr>
+<td>No Depth Encoding</td>
+<td align="right">-1.12 dB</td>
+<td align="right">-0.033</td>
+<td align="right">+0.022</td>
+<td>保留图像特征交互但去掉深度位置编码，性能下降</td>
+</tr>
+<tr>
+<td>No Probabilistic Sampling</td>
+<td align="right">-1.47 dB</td>
+<td align="right">-0.035</td>
+<td align="right">+0.035</td>
+<td>直接回归 Gaussian 深度，性能下降</td>
+</tr>
+<tr>
+<td>Plus Depth Regularization</td>
+<td align="right">-0.15 dB</td>
+<td align="right">-0.001</td>
+<td align="right">+0.001</td>
+<td>深度正则化对 NVS 质量影响很小</td>
+</tr>
+</tbody></table>
+<h3 id="关键解释"><a href="#关键解释" class="headerlink" title="关键解释"></a>关键解释</h3><ol>
+<li><code>No Epipolar Encoder</code> 说明跨视图几何信息对该模型非常重要。</li>
+<li><code>No Depth Encoding</code> 进一步说明，性能提升不只是来自跨视图特征匹配，还与极线采样中携带的尺度相关深度信息有关。</li>
+<li><code>No Probabilistic Sampling</code> 说明概率式 Gaussian 深度预测对结果有明显帮助。</li>
+<li><code>Plus Depth Regularization</code> 说明用于点云可视化的深度正则化微调没有明显改善 NVS 指标，反而有轻微下降。</li>
+</ol>
+<p><strong>注意：</strong> Table 2 是 RealEstate10k 上的消融结果，不应直接推广为两个数据集上的相同消融幅度。</p>
+<hr>
+<h2 id="2-16-Table-3：两视图与三视图比较"><a href="#2-16-Table-3：两视图与三视图比较" class="headerlink" title="2.16 Table 3：两视图与三视图比较"></a>2.16 Table 3：两视图与三视图比较</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table 3: Quantitative comparison of 2 and 3 view Real Estate 10k results. Given a third reference view located halfway between the two existing reference views, a 3-view variant of pixelSplat produces slightly better results.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 3：RealEstate10k 上两视图与三视图结果的定量比较。在原有两张参考图像之间增加第三张参考图像后，三视图版本的 pixelSplat 获得了更好的结果。</p>
+<h3 id="原始数据-2"><a href="#原始数据-2" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ours (2 Views)</td>
+<td align="right">26.09</td>
+<td align="right">0.863</td>
+<td align="right">0.136</td>
+</tr>
+<tr>
+<td>Ours (3 Views)</td>
+<td align="right">28.31</td>
+<td align="right">0.908</td>
+<td align="right">0.100</td>
+</tr>
+</tbody></table>
+<h3 id="数据解读-2"><a href="#数据解读-2" class="headerlink" title="数据解读"></a>数据解读</h3><p>三视图相较于双视图：</p>
+<ul>
+<li>PSNR：+2.22 dB；</li>
+<li>SSIM：+0.045；</li>
+<li>LPIPS：-0.036。</li>
+</ul>
+<p>【原文事实】增加一张位于两张原始参考视图之间的图像后，结果有所改善。</p>
+<p>【独立评价】该实验支持增加参考信息有助于 NVS，但不能据此推断视图数量增加时性能会持续单调提升，也不能证明任意数量输入都能保持相同的效率。</p>
+<hr>
+<h2 id="2-17-图表之间的逻辑关系"><a href="#2-17-图表之间的逻辑关系" class="headerlink" title="2.17 图表之间的逻辑关系"></a>2.17 图表之间的逻辑关系</h2><p>论文的图表可以组成以下证据链：</p>
+<ol>
+<li><strong>Figure 1：提出任务和总体思路。</strong></li>
+<li><strong>Figure 2：解释尺度歧义为什么存在，以及为什么需要双视图几何。</strong></li>
+<li><strong>Figure 8：展示网络如何完成特征提取、极线采样和注意力交互。</strong></li>
+<li><strong>Figure 3 + Algorithm 1：展示 Gaussian 位置的概率式预测机制。</strong></li>
+<li><strong>Figure 4：展示模型确实输出了显式三维 Gaussian 表示及深度图。</strong></li>
+<li><strong>Table 1 + Figure 5：验证 NVS 图像质量和效率。</strong></li>
+<li><strong>Figure 6 + Table 2 + Figure 7：验证极线编码、深度位置编码和概率采样的作用。</strong></li>
+<li><strong>Figure 9 + Table 3：展示多参考视图扩展。</strong></li>
+<li><strong>Figure 10 + Figure 11：提供额外测试场景结果。</strong></li>
+</ol>
+<p>其中，Figure 4 是“输出显式三维表示”的定性证据；Table 1 是 NVS 图像质量和资源效率的定量证据；Table 2 是核心模块有效性的消融证据。三者不能互相替代。</p>
+<hr>
+<h1 id="3-阶段-3：正文逐层精读"><a href="#3-阶段-3：正文逐层精读" class="headerlink" title="3. 阶段 3：正文逐层精读"></a>3. 阶段 3：正文逐层精读</h1><h2 id="3-1-研究问题（Research-Problem）"><a href="#3-1-研究问题（Research-Problem）" class="headerlink" title="3.1 研究问题（Research Problem）"></a>3.1 研究问题（Research Problem）</h2><h3 id="论文究竟研究什么？"><a href="#论文究竟研究什么？" class="headerlink" title="论文究竟研究什么？"></a>论文究竟研究什么？</h3><p>【原文事实】</p>
+<p>给定两张参考图像及其相机参数，模型需要推断一个可用于新视角渲染的三维 Gaussian 场景表示。</p>
+<p>可以抽象为：</p>
+<p>[ (I_1,I_2,T_1,T_2,K_1,K_2) G _{}, ]</p>
+<p>其中：</p>
+<ul>
+<li>(I_1,I_2)：两张参考图像；</li>
+<li>(T_1,T_2)：相机外参；</li>
+<li>(K_1,K_2)：相机内参；</li>
+<li>(G)：预测的三维 Gaussian 集合；</li>
+<li>(_{})：从目标视角渲染得到的图像。</li>
+</ul>
+<p>Gaussian 集合可表示为：</p>
+<p>[ G&#x3D;{g_k}_{k&#x3D;1}^{K}, ]</p>
+<p>[ g_k&#x3D; (_k,_k, _k,S_k). ]</p>
+<h3 id="研究目标"><a href="#研究目标" class="headerlink" title="研究目标"></a>研究目标</h3><ol>
+<li>仅使用稀疏参考图像，而不是对每个场景进行大量逐场景优化。</li>
+<li>预测显式三维表示，而不只是为目标视角生成颜色。</li>
+<li>让表示能够使用 Gaussian Splatting 高效渲染。</li>
+<li>处理真实数据中 SfM 相机位姿的尺度歧义。</li>
+<li>处理 Gaussian 位置直接回归时的局部最优问题。</li>
+</ol>
+<h3 id="Generalizable-与-Single-scene-Optimization-的区别"><a href="#Generalizable-与-Single-scene-Optimization-的区别" class="headerlink" title="Generalizable 与 Single-scene Optimization 的区别"></a>Generalizable 与 Single-scene Optimization 的区别</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统单场景 3DGS</th>
+<th>pixelSplat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练&#x2F;优化对象</td>
+<td>每个场景分别优化 Gaussian 参数</td>
+<td>在多个场景上训练网络</td>
+</tr>
+<tr>
+<td>新场景推理</td>
+<td>通常需要逐场景优化</td>
+<td>输入两张参考图像，前馈预测 Gaussian</td>
+</tr>
+<tr>
+<td>表示</td>
+<td>3D Gaussians</td>
+<td>3D Gaussians</td>
+</tr>
+<tr>
+<td>渲染</td>
+<td>Gaussian rasterization</td>
+<td>Gaussian rasterization</td>
+</tr>
+<tr>
+<td>主要难点</td>
+<td>每个场景的优化效率与质量</td>
+<td>如何从稀疏图像泛化预测 Gaussian 参数</td>
+</tr>
+</tbody></table>
+<p><strong>关键理解：</strong> pixelSplat 并不是“训练时只看两张图像”。训练阶段需要大量训练场景和监督视图；“两张图像”指的是测试&#x2F;推理时用于重建一个新场景的参考输入数量。</p>
+<hr>
+<h2 id="3-2-研究背景与动机（Motivation）"><a href="#3-2-研究背景与动机（Motivation）" class="headerlink" title="3.2 研究背景与动机（Motivation）"></a>3.2 研究背景与动机（Motivation）</h2><p>论文的动机可以分成三个层次。</p>
+<h3 id="动机一：传统-NeRF-类方法计算成本较高"><a href="#动机一：传统-NeRF-类方法计算成本较高" class="headerlink" title="动机一：传统 NeRF 类方法计算成本较高"></a>动机一：传统 NeRF 类方法计算成本较高</h3><p>【原文事实：Introduction、Related Work】</p>
+<p>NeRF 等 neural field 方法通常需要沿每条相机射线采样多个点，并对这些点进行网络查询和体渲染积分。</p>
+<p>这会造成：</p>
+<ul>
+<li>训练时间和显存开销较大；</li>
+<li>推理渲染需要多次网络查询；</li>
+<li>难以实现高帧率实时渲染。</li>
+</ul>
+<p>3D Gaussian Splatting 的优势在于：将场景表示为显式 Gaussian primitives，通过投影和 rasterization 渲染，而不是对每条射线执行大量三维采样。</p>
+<h3 id="动机二：Light-field-Transformer-虽然更快，但缺少显式三维表示"><a href="#动机二：Light-field-Transformer-虽然更快，但缺少显式三维表示" class="headerlink" title="动机二：Light-field Transformer 虽然更快，但缺少显式三维表示"></a>动机二：Light-field Transformer 虽然更快，但缺少显式三维表示</h3><p>【原文事实：Introduction、Related Work】</p>
+<p>光场 Transformer 的典型方式是：</p>
+<ol>
+<li>将目标射线编码为 query token；</li>
+<li>与图像 token 进行 cross-attention；</li>
+<li>得到目标射线对应的颜色。</li>
+</ol>
+<p>这种方式避免了传统 NeRF 的大量三维采样，但作者指出其仍然远未达到实时渲染，并且没有输出便于编辑和导出的显式三维场景表示。</p>
+<p>因此，作者希望兼顾：</p>
+<ul>
+<li>Gaussian Splatting 的高效渲染；</li>
+<li>Generalizable NVS 的少视图输入和跨场景泛化。</li>
+</ul>
+<h3 id="动机三：直接预测-Gaussian-位置存在两个困难"><a href="#动机三：直接预测-Gaussian-位置存在两个困难" class="headerlink" title="动机三：直接预测 Gaussian 位置存在两个困难"></a>动机三：直接预测 Gaussian 位置存在两个困难</h3><h4 id="困难-A：尺度歧义"><a href="#困难-A：尺度歧义" class="headerlink" title="困难 A：尺度歧义"></a>困难 A：尺度歧义</h4><p>真实数据中的相机位姿通常由 SfM 得到。SfM 恢复的场景只在一个任意尺度下成立。</p>
+<p>对每个场景 (i)，存在未知尺度因子 (s_i)：</p>
+<p>[ C_i&#x3D; {(I_j,s_iT_j^{m})}_j. ]</p>
+<p>论文特别说明：这里的尺度因子作用于相机位姿的平移分量。</p>
+<p>因此，网络预测的三维几何必须与该场景的 SfM 坐标尺度一致。</p>
+<h4 id="困难-B：Gaussian-位置的局部最优"><a href="#困难-B：Gaussian-位置的局部最优" class="headerlink" title="困难 B：Gaussian 位置的局部最优"></a>困难 B：Gaussian 位置的局部最优</h4><p>直接预测 Gaussian 均值位置可能导致：</p>
+<ul>
+<li>Gaussian 离正确位置过远，局部支持范围内没有有效梯度；</li>
+<li>Gaussian 虽然接近正确位置，但移动到正确位置的过程中需要经过损失不下降的区域；</li>
+<li>Gaussian 可能遮挡背景特征，使优化路径更加困难。</li>
+</ul>
+<p>传统 3DGS 使用 Adaptive Density Control 中的 pruning 和 splitting 等操作处理基元分布问题，但这些操作不可微，不适合直接放入需要端到端反向传播的泛化网络。</p>
+<hr>
+<h2 id="3-3-相关工作（Related-Work）"><a href="#3-3-相关工作（Related-Work）" class="headerlink" title="3.3 相关工作（Related Work）"></a>3.3 相关工作（Related Work）</h2><h3 id="3-3-1-Single-scene-Novel-View-Synthesis"><a href="#3-3-1-Single-scene-Novel-View-Synthesis" class="headerlink" title="3.3.1 Single-scene Novel View Synthesis"></a>3.3.1 Single-scene Novel View Synthesis</h3><p>论文回顾了 neural rendering、neural fields、volume rendering、voxel grids 和 3D Gaussian Splatting。</p>
+<p>核心逻辑：</p>
+<ul>
+<li>Neural fields 能够表示复杂三维场景，但渲染成本较高。</li>
+<li>离散结构可以加速，但在高分辨率下仍难达到实时。</li>
+<li>3DGS 使用显式 Gaussian primitives 和 rasterization，显著降低渲染成本。</li>
+<li>但传统单场景 3DGS 通常需要大量图像并进行逐场景优化。</li>
+</ul>
+<p><strong>本文区别：</strong> 学习一个网络，让它从两张图像直接预测新场景的 Gaussian 参数。</p>
+<h3 id="3-3-2-Prior-based-3D-Reconstruction-and-View-Synthesis"><a href="#3-3-2-Prior-based-3D-Reconstruction-and-View-Synthesis" class="headerlink" title="3.3.2 Prior-based 3D Reconstruction and View Synthesis"></a>3.3.2 Prior-based 3D Reconstruction and View Synthesis</h3><p>论文讨论了：</p>
+<ul>
+<li>基于深度图等 proxy geometry 的 image-based rendering；</li>
+<li>Multi-plane image；</li>
+<li>Neural field；</li>
+<li>Pixel-aligned feature；</li>
+<li>Transformer；</li>
+<li>Cost volume；</li>
+<li>Light-field scene representation。</li>
+</ul>
+<p>其中，作者尤其强调：</p>
+<ul>
+<li>Neural field、SDF、radiance field 等可以提供具有一定可解释性的三维表示；</li>
+<li>Light-field 方法能够更快生成新视角，但牺牲显式三维场景结构。</li>
+</ul>
+<p><strong>本文定位：</strong> 通过 Gaussian primitives，尝试同时获得可解释的显式表示和较快渲染速度。</p>
+<h3 id="3-3-3-Scale-Ambiguity-in-Multi-view-Geometry"><a href="#3-3-3-Scale-Ambiguity-in-Multi-view-Geometry" class="headerlink" title="3.3.3 Scale Ambiguity in Multi-view Geometry"></a>3.3.3 Scale Ambiguity in Multi-view Geometry</h3><p>论文提到此前工作通过 scale-invariant depth loss 或深度统计启发式处理尺度歧义。</p>
+<p>本文的不同点在于：</p>
+<ul>
+<li>不只依赖单张图像；</li>
+<li>利用两个视图之间的极线几何；</li>
+<li>将三角化深度作为位置编码输入跨视图注意力；</li>
+<li>让网络从跨视图对应关系中获得与相机位姿尺度一致的深度信息。</li>
+</ul>
+<h3 id="与本文最直接相关的前人方法"><a href="#与本文最直接相关的前人方法" class="headerlink" title="与本文最直接相关的前人方法"></a>与本文最直接相关的前人方法</h3><table>
+<thead>
+<tr>
+<th>文献编号</th>
+<th>方法&#x2F;方向</th>
+<th>本文如何使用或比较</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[19] Kerbl et al., 3D Gaussian Splatting</td>
+<td>显式 Gaussian 表示与高效 rasterization</td>
+<td>pixelSplat 采用其 Gaussian 表示和 splatting 渲染范式</td>
+</tr>
+<tr>
+<td>[16] Epipolar Transformers</td>
+<td>沿极线进行跨视图特征交互</td>
+<td>本文在极线采样特征中额外加入三角化深度位置编码</td>
+</tr>
+<tr>
+<td>[58] pixelNeRF</td>
+<td>以图像特征条件化 NeRF</td>
+<td>作为泛化 NVS baseline</td>
+</tr>
+<tr>
+<td>[46] GPNR</td>
+<td>基于极线采样和 Transformer token 的 light-field rendering</td>
+<td>作为 light-field baseline</td>
+</tr>
+<tr>
+<td>[10] Du et al.</td>
+<td>宽基线图像对的新视角渲染，结合 Epipolar Transformer</td>
+<td>作为最直接的比较方法之一</td>
+</tr>
+<tr>
+<td>[3] DINO</td>
+<td>自监督视觉特征预训练</td>
+<td>用于 ResNet-50 和 ViT-B&#x2F;8 特征编码器的预训练目标</td>
+</tr>
+<tr>
+<td>[21] VAE</td>
+<td>连续潜变量重参数化思想</td>
+<td>作者在概率采样的梯度处理动机中引用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-4-背景知识：3D-Gaussian-Splatting"><a href="#3-4-背景知识：3D-Gaussian-Splatting" class="headerlink" title="3.4 背景知识：3D Gaussian Splatting"></a>3.4 背景知识：3D Gaussian Splatting</h2><h3 id="3-4-1-Gaussian-primitive-的参数"><a href="#3-4-1-Gaussian-primitive-的参数" class="headerlink" title="3.4.1 Gaussian primitive 的参数"></a>3.4.1 Gaussian primitive 的参数</h3><p>Section 3 将每个三维 Gaussian 写成：</p>
+<p>[ g_k&#x3D; (_k,_k, _k,S_k). ]</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(_k)</td>
+<td>三维均值&#x2F;中心</td>
+<td>决定 Gaussian 在三维空间中的位置</td>
+</tr>
+<tr>
+<td>(_k)</td>
+<td>协方差矩阵</td>
+<td>决定 Gaussian 的空间形状、方向和尺度</td>
+</tr>
+<tr>
+<td>(_k)</td>
+<td>opacity</td>
+<td>控制 Gaussian 对最终像素颜色的贡献</td>
+</tr>
+<tr>
+<td>(S_k)</td>
+<td>球谐系数</td>
+<td>表示与观察方向相关的外观&#x2F;颜色变化</td>
+</tr>
+</tbody></table>
+<h3 id="3-4-2-为什么-Gaussian-Splatting-渲染快？"><a href="#3-4-2-为什么-Gaussian-Splatting-渲染快？" class="headerlink" title="3.4.2 为什么 Gaussian Splatting 渲染快？"></a>3.4.2 为什么 Gaussian Splatting 渲染快？</h3><p>【背景知识】</p>
+<p>典型 Gaussian Splatting 渲染流程可以概括为：</p>
+<ol>
+<li>将三维 Gaussian 投影到相机图像平面；</li>
+<li>根据投影结果得到二维椭圆 footprint；</li>
+<li>对 Gaussian 按深度等规则组织；</li>
+<li>使用 opacity 和颜色进行 alpha compositing；</li>
+<li>得到最终图像。</li>
+</ol>
+<p>与沿每条射线进行大量三维采样的 neural volume rendering 相比，Gaussian rasterization 能利用图形硬件的高效二维光栅化流程。</p>
+<p><strong>原文边界：</strong> 本文 Section 3 主要介绍 Gaussian 参数和 rasterization 的计算优势，没有重新推导完整的 3DGS 投影、排序和 alpha compositing 公式。以上渲染流程属于背景知识，不是本文新增推导。</p>
+<h3 id="3-4-3-为什么-Gaussian-primitives-会出现局部最优？"><a href="#3-4-3-为什么-Gaussian-primitives-会出现局部最优？" class="headerlink" title="3.4.3 为什么 Gaussian primitives 会出现局部最优？"></a>3.4.3 为什么 Gaussian primitives 会出现局部最优？</h3><p>论文将其与 Gaussian Mixture Model 的参数拟合联系起来。</p>
+<p>主要原因：</p>
+<ol>
+<li>Gaussian 的支持区域是局部的；</li>
+<li>当 Gaussian 离正确位置太远时，正确区域的像素可能无法对它产生有效梯度；</li>
+<li>即使 Gaussian 接近正确位置，移动过程中也可能需要穿过空区域；</li>
+<li>在可微渲染中，这些移动可能暂时增加遮挡或图像误差。</li>
+</ol>
+<p>传统 3DGS 使用 Adaptive Density Control 中的 pruning&#x2F;splitting 等非可微操作改善基元分布。</p>
+<p>但 pixelSplat 需要把 Gaussian 参数预测放进神经网络，并通过渲染损失训练整个网络，因此需要一种能够保持梯度传播的替代机制。</p>
+<p><strong>直观例子（背景解释）：</strong> 假设某个像素的真实表面位于较远的深度桶，而网络当前预测的 Gaussian 位于很近的位置。直接回归时，这个 Gaussian 的局部支持可能无法覆盖真实表面对应的像素，导致有效梯度难以传回正确位置。概率式方法则可以在某次前向过程中直接从较远深度桶采样；如果该采样位置有利于降低渲染损失，其 opacity 梯度就可能提高对应桶的概率。它不是保证一次就找到正确位置，而是提供了通过概率质量调整来探索候选深度的机制。</p>
+<hr>
+<h2 id="3-5-核心方法（Method）"><a href="#3-5-核心方法（Method）" class="headerlink" title="3.5 核心方法（Method）"></a>3.5 核心方法（Method）</h2><h3 id="3-5-1-整体结构"><a href="#3-5-1-整体结构" class="headerlink" title="3.5.1 整体结构"></a>3.5.1 整体结构</h3><p>根据 Section 4 和 Appendix Figure 8，pixelSplat 可以分为五个步骤：</p>
+<ol>
+<li>输入两张参考图像及相机参数；</li>
+<li>分别提取两张图像的特征；</li>
+<li>使用 Epipolar Sampling 和 Epipolar Cross-attention 融合跨视图几何信息；</li>
+<li>对每个像素预测 Gaussian 参数，其中位置通过概率式深度采样产生；</li>
+<li>将 camera-space Gaussian 参数变换到 world space，再通过 3DGS renderer 渲染目标视角。</li>
+</ol>
+<h3 id="3-5-2-Per-image-Feature-Encoder"><a href="#3-5-2-Per-image-Feature-Encoder" class="headerlink" title="3.5.2 Per-image Feature Encoder"></a>3.5.2 Per-image Feature Encoder</h3><p>【原文事实：Section 5.1、Appendix Figure 8】</p>
+<p>每张参考图像经过两个预训练特征提取分支：</p>
+<ul>
+<li>ResNet-50，使用 DINO 目标预训练；</li>
+<li>ViT-B&#x2F;8，使用 DINO 目标预训练。</li>
+</ul>
+<p>论文称将二者的 pixel-wise outputs 相加。</p>
+<p>Appendix Figure 8 进一步展示：</p>
+<ul>
+<li>ResNet-50 的不同层级输出；</li>
+<li>ViT 的 local tokens 和 global token；</li>
+<li>Project&#x2F;Upsample 模块；</li>
+<li>最终融合为像素对齐的 feature map。</li>
+</ul>
+<p><strong>作用：</strong> 提供兼具局部空间信息和 Transformer 全局上下文的像素特征，供后续跨视图编码和 Gaussian 参数预测使用。</p>
+<p><strong>边界：</strong> 主文没有完整给出所有特征通道数、每层分辨率、投影维度等实现细节。</p>
+<hr>
+<h3 id="3-5-3-Scale-Ambiguity-与-Epipolar-Transformer"><a href="#3-5-3-Scale-Ambiguity-与-Epipolar-Transformer" class="headerlink" title="3.5.3 Scale Ambiguity 与 Epipolar Transformer"></a>3.5.3 Scale Ambiguity 与 Epipolar Transformer</h3><p>这是 Section 4.1 的核心。</p>
+<h4 id="第一步：为什么需要两张图像？"><a href="#第一步：为什么需要两张图像？" class="headerlink" title="第一步：为什么需要两张图像？"></a>第一步：为什么需要两张图像？</h4><p>设两张参考图像为：</p>
+<p>[ I,. ]</p>
+<p>如果只观察一张图像，无法从图像本身确定场景的绝对尺度。例如，一个近处的小物体和一个远处的大物体可能产生相同的投影。</p>
+<p>但在两个相机视图下，两个视图的相对位姿和对应像素可以通过三角化提供深度约束。</p>
+<p>这里需要注意：</p>
+<ul>
+<li>SfM 相机位姿的整体平移尺度仍然未知；</li>
+<li>三角化得到的深度也处于同一个 SfM 尺度；</li>
+<li>网络需要与该坐标系保持一致，而不是凭空恢复米制尺度。</li>
+</ul>
+<h4 id="第二步：构造极线采样"><a href="#第二步：构造极线采样" class="headerlink" title="第二步：构造极线采样"></a>第二步：构造极线采样</h4><p>对于第一张图像中的像素 (u)，它对应一条三维相机射线。</p>
+<p>将这条射线投影到第二张图像中，会得到一条 epipolar line：</p>
+<p>[ . ]</p>
+<p>在这条极线上采样若干位置：</p>
+<p>[ {_l}. ]</p>
+<p>每个极线采样位置与原图像像素 (u) 形成一对候选对应关系。</p>
+<p>通过三角化，可以计算候选三维点到第一张图像相机原点的距离：</p>
+<p>[ d_{_l}. ]</p>
+<p>该距离与输入 SfM 相机位姿使用相同的尺度。</p>
+<h4 id="第三步：将深度编码到极线特征中"><a href="#第三步：将深度编码到极线特征中" class="headerlink" title="第三步：将深度编码到极线特征中"></a>第三步：将深度编码到极线特征中</h4><p>Equation (1)：</p>
+<p>[ s&#x3D; [_l] (d_{_l}). ]</p>
+<p>其中：</p>
+<ul>
+<li>([_l])：第二张图像在极线采样位置的特征；</li>
+<li>(d_{_l})：三角化得到的深度；</li>
+<li>(())：位置编码；</li>
+<li>()：特征拼接。</li>
+</ul>
+<p><strong>关键点：</strong> 参与注意力计算的不只是图像外观特征，还包括与相机位姿尺度相关的深度位置编码。</p>
+<h4 id="第四步：构造-Query、Key、Value"><a href="#第四步：构造-Query、Key、Value" class="headerlink" title="第四步：构造 Query、Key、Value"></a>第四步：构造 Query、Key、Value</h4><p>Equation (2)：</p>
+<p>[ q&#x3D;QF[u], ]</p>
+<p>[ k_l&#x3D;Ks, v_l&#x3D;Vs. ]</p>
+<p>其中：</p>
+<ul>
+<li>当前像素特征生成 Query；</li>
+<li>对侧极线采样特征及其深度编码生成 Key、Value；</li>
+<li>(Q,K,V) 是可学习的 embedding matrices。</li>
+</ul>
+<h4 id="第五步：Epipolar-Cross-attention"><a href="#第五步：Epipolar-Cross-attention" class="headerlink" title="第五步：Epipolar Cross-attention"></a>第五步：Epipolar Cross-attention</h4><p>Equation (3)：</p>
+<p>[ F[u] &#x3D; ( q, {k_l}, {v_l} ). ]</p>
+<p>注意力根据当前像素特征，在对侧极线采样特征中进行加权聚合，并通过 skip connection 更新原始特征。</p>
+<p>作者希望正确对应位置获得更高注意力权重，从而让更新后的像素特征包含对应的尺度相关深度信息。</p>
+<h4 id="第六步：Per-image-Self-attention"><a href="#第六步：Per-image-Self-attention" class="headerlink" title="第六步：Per-image Self-attention"></a>第六步：Per-image Self-attention</h4><p>Equation (4)：</p>
+<p>[ F &#x3D; (F). ]</p>
+<p>作用：</p>
+<ul>
+<li>将已经获得的深度信息传播到其他像素；</li>
+<li>尤其是那些在另一张图像中没有有效对应关系的区域。</li>
+</ul>
+<p>Appendix Figure 8 显示，Epipolar Attention 模块重复两次。</p>
+<h3 id="这一模块的完整逻辑"><a href="#这一模块的完整逻辑" class="headerlink" title="这一模块的完整逻辑"></a>这一模块的完整逻辑</h3><p>[ . ]</p>
+<p><strong>重要澄清：</strong> 该模块并不直接恢复真实世界的绝对尺度。它利用双视图几何，使预测的深度与输入 SfM 相机位姿的任意尺度保持一致。</p>
+<hr>
+<h3 id="3-5-4-Gaussian-Parameter-Prediction"><a href="#3-5-4-Gaussian-Parameter-Prediction" class="headerlink" title="3.5.4 Gaussian Parameter Prediction"></a>3.5.4 Gaussian Parameter Prediction</h3><p>Section 4.2 说明，每个参考图像中的每个像素都与一个或多个 Gaussian primitives 对齐。</p>
+<p>设像素坐标为 (u)，对应特征为：</p>
+<p>[ F[u]. ]</p>
+<p>网络根据该特征预测 Gaussian 参数。</p>
+<p>主文为了简化推导，先讨论每个像素一个 Gaussian 的情况：</p>
+<p>[ M&#x3D;1. ]</p>
+<p>Gaussian 从两张参考图像分别预测，最终场景表示是两组 Gaussian 的并集。</p>
+<h4 id="Baseline：直接回归-Gaussian-深度"><a href="#Baseline：直接回归-Gaussian-深度" class="headerlink" title="Baseline：直接回归 Gaussian 深度"></a>Baseline：直接回归 Gaussian 深度</h4><p>Equation (5)：</p>
+<p>[ &#x3D; o+d,d_{u}, ]</p>
+<p>[ d&#x3D;g(F[u]), ]</p>
+<p>[ d_{u} &#x3D; TK^{-1} [u,1]^T. ]</p>
+<p>其中：</p>
+<ul>
+<li>(o)：相机原点；</li>
+<li>(d)：网络预测的标量深度；</li>
+<li>(d_{u})：像素 (u) 对应的相机射线方向；</li>
+<li>(T)：相机外参；</li>
+<li>(K)：相机内参。</li>
+</ul>
+<p>为避免标量深度与射线方向混淆，上式按正文对 (d) 和粗体 (d) 的定义统一书写；核心含义是“相机原点 + 标量深度 × 射线方向”。</p>
+<p>网络直接输出一个深度值，再将像素反投影到三维空间，得到 Gaussian 均值。</p>
+<p><strong>问题：</strong> 直接回归位置容易陷入 Section 3 所述的局部最优。</p>
+<hr>
+<h3 id="3-5-5-Probabilistic-Depth-Prediction"><a href="#3-5-5-Probabilistic-Depth-Prediction" class="headerlink" title="3.5.5 Probabilistic Depth Prediction"></a>3.5.5 Probabilistic Depth Prediction</h3><p>这是本文最核心的技术设计之一。</p>
+<h4 id="第一步：构建离散深度桶"><a href="#第一步：构建离散深度桶" class="headerlink" title="第一步：构建离散深度桶"></a>第一步：构建离散深度桶</h4><p>设近裁剪面和远裁剪面分别为：</p>
+<p>[ d_{},d_{}. ]</p>
+<p>将深度划分为 (Z) 个离散桶，构成：</p>
+<p>[ bR^Z. ]</p>
+<p>Equation (6)：</p>
+<p>[ b_z&#x3D; ^{-1}. ]</p>
+<p>该公式在 disparity（逆深度）空间均匀划分，再转换回深度。</p>
+<p>直观理解：</p>
+<ul>
+<li>深度空间均匀划分，会让近处和远处的采样分辨率分配不同；</li>
+<li>disparity 空间均匀划分，会在近距离区域提供更密集的深度采样；</li>
+<li>对宽深度范围的场景，这种分配通常更适合多视图几何中的深度搜索。</li>
+</ul>
+<p>从公式看，(z&#x3D;0) 对应近裁剪面，(z&#x3D;Z) 对应远裁剪面。</p>
+<h4 id="第二步：预测深度概率分布"><a href="#第二步：预测深度概率分布" class="headerlink" title="第二步：预测深度概率分布"></a>第二步：预测深度概率分布</h4><p>网络预测：</p>
+<p>[ &#x3D; (_1,_2,,_Z). ]</p>
+<p>通过 softmax 归一化，使：</p>
+<p>[ _{z&#x3D;1}^{Z}_z&#x3D;1. ]</p>
+<p>其中 (_z) 表示该像素对应的表面位于第 (z) 个深度桶的概率。</p>
+<p>网络还预测每个深度桶对应的偏移量：</p>
+<p>[ ^Z. ]</p>
+<h4 id="第三步：从概率分布中采样深度桶"><a href="#第三步：从概率分布中采样深度桶" class="headerlink" title="第三步：从概率分布中采样深度桶"></a>第三步：从概率分布中采样深度桶</h4><p>[ zp_{}(z). ]</p>
+<p>然后根据采样结果计算 Gaussian 均值：</p>
+<p>[ &#x3D; o+ (b_z+<em>z) d</em>{u}. ]</p>
+<p>这里不是直接输出唯一的深度，而是：</p>
+<ol>
+<li>网络预测所有深度候选的概率；</li>
+<li>根据概率随机选择一个深度桶；</li>
+<li>根据桶位置和偏移量计算三维位置。</li>
+</ol>
+<h4 id="第四步：预测其他-Gaussian-参数"><a href="#第四步：预测其他-Gaussian-参数" class="headerlink" title="第四步：预测其他 Gaussian 参数"></a>第四步：预测其他 Gaussian 参数</h4><p>Equation (8)：</p>
+<p>[ (,, ,S) &#x3D; f(F[u]). ]</p>
+<p>因此：</p>
+<ul>
+<li>()：深度桶概率；</li>
+<li>()：深度桶偏移；</li>
+<li>()：Gaussian 协方差；</li>
+<li>(S)：球谐外观系数。</li>
+</ul>
+<p>Gaussian 位置 () 和 opacity () 则通过采样及概率耦合得到。</p>
+<p><strong>原文细节：</strong> 论文给出 (^Z)，并在 Equation (7) 中将 (_z) 与 (b_z) 相加。主文没有进一步展开该偏移量的物理单位或是否还存在隐含的桶宽缩放，因此不应自行改写公式。</p>
+<hr>
+<h3 id="3-5-6-为什么设置-z-？"><a href="#3-5-6-为什么设置-z-？" class="headerlink" title="3.5.6 为什么设置 (&#x3D;_z)？"></a>3.5.6 为什么设置 (&#x3D;_z)？</h3><p>离散采样：</p>
+<p>[ zp_{}(z) ]</p>
+<p>本身不可直接对采样索引 (z) 求普通梯度。</p>
+<p>作者的处理是：</p>
+<p>[ &#x3D;_z. ]</p>
+<p>即：当前采样到哪个深度桶，就将该桶对应的概率设为 Gaussian opacity。</p>
+<p>论文写出：</p>
+<p>[ *{}L &#x3D; *{}L. ]</p>
+<h3 id="直观解释"><a href="#直观解释" class="headerlink" title="直观解释"></a>直观解释</h3><p><strong>情况 A：采样位置接近正确表面</strong></p>
+<p>如果渲染损失的梯度希望增加该 Gaussian 的 opacity，那么对应深度桶的概率也会增加。</p>
+<p>于是后续 forward pass 更容易再次采样到该深度。</p>
+<p><strong>情况 B：采样位置错误</strong></p>
+<p>如果渲染损失的梯度希望降低该 Gaussian 的 opacity，那么对应深度桶的概率也会降低。</p>
+<p>于是后续 forward pass 采样到该错误深度的概率下降。</p>
+<p>因此，网络可以通过不断调整深度桶概率，让概率质量逐渐集中到更有利于渲染的深度位置。</p>
+<h3 id="更严格的梯度理解"><a href="#更严格的梯度理解" class="headerlink" title="更严格的梯度理解"></a>更严格的梯度理解</h3><p>【独立数学解释】</p>
+<p>将采样到的索引 (z) 暂时视为当前 forward pass 中固定的索引，则：</p>
+<p>[ &#x3D;_z. ]</p>
+<p>因此对概率向量中第 (j) 个分量：</p>
+<p>[ &#x3D; [j&#x3D;z] . ]</p>
+<p>也就是说，当前采样路径直接对被选中桶的概率提供梯度；随后梯度还会通过 softmax 传播到网络输出的 logits。</p>
+<p><strong>关键区别：</strong> 梯度并不是直接穿过离散索引 (z) 的采样操作，而是通过 (&#x3D;_z) 这条可微支路返回概率参数。论文将这一机制称为 reparameterization trick；从计算路径上理解，更准确的说法是利用 opacity 与被采样桶概率的耦合，为离散深度概率提供梯度信号。</p>
+<p>这也解释了为什么它可以缓解直接回归位置时的局部最优：网络不必只依靠一个固定 Gaussian 沿空间连续移动，而可以在多个深度候选之间调整概率质量。</p>
+<h3 id="与经典-VAE-重参数化的区别"><a href="#与经典-VAE-重参数化的区别" class="headerlink" title="与经典 VAE 重参数化的区别"></a>与经典 VAE 重参数化的区别</h3><p>【背景知识 + 独立评价】</p>
+<p>经典连续 VAE 重参数化通常写成：</p>
+<p>[ z&#x3D;+, N(0,I), ]</p>
+<p>使采样结果能够通过连续变换对分布参数求导。</p>
+<p>pixelSplat 的这里是离散深度桶采样，论文并没有将离散索引本身变成连续可微变量，而是将被采样桶的概率作为 opacity。</p>
+<p>因此，阅读时不要把两者理解为完全相同的梯度机制。</p>
+<hr>
+<h3 id="3-5-7-Camera-space-Gaussian-到-World-space-Gaussian"><a href="#3-5-7-Camera-space-Gaussian-到-World-space-Gaussian" class="headerlink" title="3.5.7 Camera-space Gaussian 到 World-space Gaussian"></a>3.5.7 Camera-space Gaussian 到 World-space Gaussian</h3><p>Appendix A.1 给出 Gaussian 坐标变换。</p>
+<p>设 camera-to-world 外参矩阵为：</p>
+<p>[ T&#x3D;<br>. ]</p>
+<p>Equation (10)：</p>
+<p>[ <em>{} &#x3D; T</em>{}, ]</p>
+<p>[ *{} &#x3D; R *{} R^T, ]</p>
+<p>[ *{} &#x3D; *{}, ]</p>
+<p>[ s_{} &#x3D; D_{R} s_{}. ]</p>
+<p>其中：</p>
+<ul>
+<li>均值通过 camera-to-world 变换；</li>
+<li>协方差通过旋转矩阵变换；</li>
+<li>opacity 不随坐标变换改变；</li>
+<li>球谐系数通过由旋转诱导的 Wigner D 矩阵变换。</li>
+</ul>
+<p>论文说明，(D_{R}) 是由 Wigner D matrices 组成的 block-diagonal matrix，并使用 e3nn 库计算这些矩阵。</p>
+<p><strong>为什么球谐系数也需要变换？</strong></p>
+<p>【背景知识】</p>
+<p>球谐系数描述方向相关外观。如果 Gaussian 的坐标系发生旋转，而球谐系数不进行相应旋转，那么外观函数所依赖的方向基底就会与新的世界坐标系不一致。</p>
+<p>因此，需要对球谐系数进行相应的旋转变换。</p>
+<hr>
+<h3 id="3-5-8-两个参考视图的-Gaussian-如何组合？"><a href="#3-5-8-两个参考视图的-Gaussian-如何组合？" class="headerlink" title="3.5.8 两个参考视图的 Gaussian 如何组合？"></a>3.5.8 两个参考视图的 Gaussian 如何组合？</h3><p>【原文事实：Section 4.2】</p>
+<p>论文明确说明：</p>
+<ul>
+<li>对第一张参考图像的每个像素预测 Gaussian；</li>
+<li>对第二张参考图像的每个像素也预测 Gaussian；</li>
+<li>最终 Gaussian 集合直接取两组预测结果的并集。</li>
+</ul>
+<p>即：</p>
+<p>[ G &#x3D; G_1G_2. ]</p>
+<p>作者没有在两组 Gaussian 之间进行显式融合或去重。</p>
+<p>这一点也是 Appendix C 明确承认的限制。</p>
+<hr>
+<h2 id="3-6-训练过程与实现细节"><a href="#3-6-训练过程与实现细节" class="headerlink" title="3.6 训练过程与实现细节"></a>3.6 训练过程与实现细节</h2><h3 id="3-6-1-主干网络"><a href="#3-6-1-主干网络" class="headerlink" title="3.6.1 主干网络"></a>3.6.1 主干网络</h3><ul>
+<li>ResNet-50，DINO 预训练；</li>
+<li>ViT-B&#x2F;8，DINO 预训练；</li>
+<li>两者的像素级输出融合；</li>
+<li>两轮 Epipolar Cross-attention。</li>
+</ul>
+<h3 id="3-6-2-训练目标"><a href="#3-6-2-训练目标" class="headerlink" title="3.6.2 训练目标"></a>3.6.2 训练目标</h3><p>【原文事实】</p>
+<p>使用 MSE 和 LPIPS loss，并通过 Adam 优化。</p>
+<p>Appendix A.1 给出训练阶段：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th align="right">训练步数</th>
+<th>Loss</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第一阶段</td>
+<td align="right">前 150,000 steps</td>
+<td>MSE</td>
+</tr>
+<tr>
+<td>第二阶段</td>
+<td align="right">150,000–300,000 steps</td>
+<td>MSE + LPIPS，LPIPS 权重 0.05</td>
+</tr>
+</tbody></table>
+<h3 id="3-6-3-每条射线实际采样的-Gaussian-数量"><a href="#3-6-3-每条射线实际采样的-Gaussian-数量" class="headerlink" title="3.6.3 每条射线实际采样的 Gaussian 数量"></a>3.6.3 每条射线实际采样的 Gaussian 数量</h3><p>主文 Section 4.2 为简化说明，先使用：</p>
+<p>[ M&#x3D;1. ]</p>
+<p>但 Appendix A.1 给出实际训练细节：</p>
+<ul>
+<li>每条射线放置 3 个 Gaussian；</li>
+<li>每个 Gaussian 的深度位置从该射线的概率分布中独立采样；</li>
+<li>每个 Gaussian 的 opacity 除以 3：</li>
+</ul>
+<p>[ &#x3D;. ]</p>
+<p>作者称这样可以使同一条射线上这些 Gaussian 的总 opacity 大致为 1。</p>
+<p><strong>重要区别：</strong> 主文公式推导中的单 Gaussian 情况，不等于实际训练中每条射线只生成一个 Gaussian。</p>
+<h3 id="3-6-4-训练设置"><a href="#3-6-4-训练设置" class="headerlink" title="3.6.4 训练设置"></a>3.6.4 训练设置</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>pixelSplat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练步数</td>
+<td>300,000</td>
+</tr>
+<tr>
+<td>Batch size</td>
+<td>7</td>
+</tr>
+<tr>
+<td>GPU 内存</td>
+<td>单 GPU 约 80 GB VRAM</td>
+</tr>
+<tr>
+<td>每个 batch scene 的 target views</td>
+<td>4</td>
+</tr>
+<tr>
+<td>参考视图间距</td>
+<td>前 150,000 步从 25 线性增加至 45</td>
+</tr>
+<tr>
+<td>优化器</td>
+<td>Adam</td>
+</tr>
+<tr>
+<td>Loss</td>
+<td>MSE；后 150,000 步加入权重 0.05 的 LPIPS</td>
+</tr>
+<tr>
+<td>Epipolar Cross-attention</td>
+<td>两轮</td>
+</tr>
+</tbody></table>
+<p><strong>内存数值的口径区别：</strong> Table 1 的 Training Memory 是按单个场景和 (256) 条射线报告的比较值，并在必要时由较小 batch 外推；Appendix A.1 的约 80 GB 则是 pixelSplat 以 batch size 7 实际训练时所需的单 GPU VRAM。二者统计范围不同，不能直接视为同一个内存数字。</p>
+<h3 id="3-6-5-深度正则化"><a href="#3-6-5-深度正则化" class="headerlink" title="3.6.5 深度正则化"></a>3.6.5 深度正则化</h3><p>作者为生成 Figure 4 中的点云，将模型额外 fine-tune 50,000 steps，并加入深度正则化。</p>
+<p>Appendix A.1 定义：</p>
+<p>[ D_x^&#x3D; D[u_{x-1},u_y] -2D[u_x,u_y] +D[u_{x+1},u_y], ]</p>
+<p>[ D_y^&#x3D; D[u_x,u_{y-1}] -2D[u_x,u_y] +D[u_x,u_y+1]. ]</p>
+<p>图像边缘项：</p>
+<p>[ I_x^&#x3D; ( |I[u_{x-1},u_y]-I[u_x,u_y]|, |I[u_{x+1},u_y]-I[u_x,u_y]| ), ]</p>
+<p>[ I_y^&#x3D; ( |I[u_x,u_{y-1}]-I[u_x,u_y]|, |I[u_x,u_{y+1}]-I[u_x,u_y]| ). ]</p>
+<p>论文 HTML 中给出的正则项为：</p>
+<p>[ L_{}[u] &#x3D; D_x<sup>(8I_x</sup>) + D_y<sup>(8I_y</sup>). ]</p>
+<p><strong>需要特别保留的原文边界：</strong></p>
+<ul>
+<li>正文称其为 edge-aware total variation regularization；</li>
+<li>但 HTML 中 Equation (9) 显示的是深度二阶有限差分；</li>
+<li>公式中没有清晰显示对深度二阶差分取绝对值或平方；</li>
+<li>指数项按 HTML 显示为正号 (+;8I^)。</li>
+</ul>
+<p>因此，不能在复述时擅自将它改写成常见的 (|D|(-|I|)) 形式。该公式的具体实现细节需要原始代码或作者进一步说明才能完全确认。</p>
+<hr>
+<h2 id="3-7-实验设置（Experiments）"><a href="#3-7-实验设置（Experiments）" class="headerlink" title="3.7 实验设置（Experiments）"></a>3.7 实验设置（Experiments）</h2><h3 id="3-7-1-数据集"><a href="#3-7-1-数据集" class="headerlink" title="3.7.1 数据集"></a>3.7.1 数据集</h3><table>
+<thead>
+<tr>
+<th>数据集</th>
+<th>论文描述</th>
+<th>相机位姿</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RealEstate10k</td>
+<td>从 YouTube 下载的室内房屋漫游视频数据集</td>
+<td>SfM 计算</td>
+</tr>
+<tr>
+<td>ACID</td>
+<td>航拍自然景观视频数据集</td>
+<td>SfM 计算</td>
+</tr>
+</tbody></table>
+<p>两者都使用论文提供的训练和测试划分。</p>
+<p>由于 Du et al. 方法只支持 (256) 分辨率，作者将 pixelSplat 也训练和评估在该分辨率下，以便进行比较。</p>
+<h3 id="3-7-2-评价任务"><a href="#3-7-2-评价任务" class="headerlink" title="3.7.2 评价任务"></a>3.7.2 评价任务</h3><p>从两张参考帧之间的宽基线视频帧进行 novel-view reconstruction。</p>
+<p>即：</p>
+<ul>
+<li>输入：两张相距较远的参考视图；</li>
+<li>目标：重建它们之间未输入的视角；</li>
+<li>输出：目标视角图像。</li>
+</ul>
+<h3 id="3-7-3-Baselines"><a href="#3-7-3-Baselines" class="headerlink" title="3.7.3 Baselines"></a>3.7.3 Baselines</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>论文中的定位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pixelNeRF</td>
+<td>使用二维图像特征条件化 Neural Radiance Fields</td>
+</tr>
+<tr>
+<td>GPNR</td>
+<td>沿极线采样 Transformer tokens，通过 light-field rendering 合成新视角</td>
+</tr>
+<tr>
+<td>Du et al.</td>
+<td>结合 Epipolar Transformer、多视图自注意力和更高效的极线采样</td>
+</tr>
+</tbody></table>
+<p>作者重新训练这些基线，并使用相同的数据加载器和逐步增加参考视图间距的训练 curriculum。</p>
+<h3 id="3-7-4-评价指标"><a href="#3-7-4-评价指标" class="headerlink" title="3.7.4 评价指标"></a>3.7.4 评价指标</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>全称</th>
+<th>趋势</th>
+<th>主要评价内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PSNR</td>
+<td>Peak Signal-to-Noise Ratio</td>
+<td>越高越好</td>
+<td>像素级重建误差</td>
+</tr>
+<tr>
+<td>SSIM</td>
+<td>Structural Similarity Index</td>
+<td>越高越好</td>
+<td>结构相似性</td>
+</tr>
+<tr>
+<td>LPIPS</td>
+<td>Learned Perceptual Image Patch Similarity</td>
+<td>越低越好</td>
+<td>感知特征距离</td>
+</tr>
+</tbody></table>
+<p>此外，作者报告：</p>
+<ul>
+<li>Encoding time：每个场景编码一次；</li>
+<li>Rendering time：每张目标图像的渲染时间；</li>
+<li>Training memory；</li>
+<li>Inference memory。</li>
+</ul>
+<hr>
+<h2 id="3-8-实验结果与作者论证"><a href="#3-8-实验结果与作者论证" class="headerlink" title="3.8 实验结果与作者论证"></a>3.8 实验结果与作者论证</h2><h3 id="3-8-1-主结果"><a href="#3-8-1-主结果" class="headerlink" title="3.8.1 主结果"></a>3.8.1 主结果</h3><p>Table 1 显示 pixelSplat 在 RealEstate10k 和 ACID 两个数据集上的 PSNR、SSIM、LPIPS 均优于所比较的基线。</p>
+<p>这支持：</p>
+<ul>
+<li>两视图前馈 Gaussian 预测能够完成宽基线 NVS；</li>
+<li>显式 Gaussian 表示并未导致图像质量明显劣化；</li>
+<li>Gaussian rasterization 在推理渲染速度方面具有明显优势。</li>
+</ul>
+<h3 id="3-8-2-训练与推理成本"><a href="#3-8-2-训练与推理成本" class="headerlink" title="3.8.2 训练与推理成本"></a>3.8.2 训练与推理成本</h3><p>作者将编码时间与渲染时间区分：</p>
+<ul>
+<li>编码时间：每个场景一次；</li>
+<li>渲染时间：每个目标视角一次。</li>
+</ul>
+<p>这一区分很重要，因为前馈场景表示可以被重复用于多个目标视角。</p>
+<p>但要注意：</p>
+<ul>
+<li>pixelSplat 的 Encode 时间为 0.102 s，实际上高于 Du et al. 的 0.016 s；</li>
+<li>优势主要来自后续 Render 时间显著更短；</li>
+<li>650 倍主要对应单帧渲染时间比，而非严格的“一次编码 + 100 次渲染”总时间比。</li>
+</ul>
+<h3 id="3-8-3-Point-Cloud-Rendering"><a href="#3-8-3-Point-Cloud-Rendering" class="headerlink" title="3.8.3 Point Cloud Rendering"></a>3.8.3 Point Cloud Rendering</h3><p>作者通过 Figure 4 展示 Gaussian 场景和深度图。</p>
+<p>值得注意的是：</p>
+<ul>
+<li>这些点云可视化使用了额外深度正则化微调版本；</li>
+<li>作者明确指出反射表面常常呈现透明效果；</li>
+<li>在分布外视角下，Gaussian 可能呈现 billboard-like 形态。</li>
+</ul>
+<p>因此，Figure 4 证明模型能生成可观察的显式三维表示，但并不证明其在任意视角下都能恢复准确、稳定的真实几何。</p>
+<hr>
+<h2 id="3-9-消融实验（Ablations）"><a href="#3-9-消融实验（Ablations）" class="headerlink" title="3.9 消融实验（Ablations）"></a>3.9 消融实验（Ablations）</h2><p>论文在 RealEstate10k 上回答三个问题。</p>
+<h3 id="Q1a：Epipolar-Encoder-是否负责处理尺度歧义？"><a href="#Q1a：Epipolar-Encoder-是否负责处理尺度歧义？" class="headerlink" title="Q1a：Epipolar Encoder 是否负责处理尺度歧义？"></a>Q1a：Epipolar Encoder 是否负责处理尺度歧义？</h3><p>实验：</p>
+<ul>
+<li>Ours；</li>
+<li>No Epipolar Encoder。</li>
+</ul>
+<p>结果：</p>
+<p>[ 26.09. ]</p>
+<p>PSNR 下降 6.20 dB。</p>
+<p>正文报告去掉极线编码后出现 ghosting 和 motion blur。</p>
+<p><strong>作者结论：</strong> Epipolar Encoder 对模型性能非常重要。</p>
+<p><strong>独立评价：</strong> 这是较强的模块必要性证据，但性能下降本身不能单独证明模型恢复了准确的尺度值。它证明该跨视图编码对 NVS 很重要。</p>
+<h3 id="Q1b：深度位置编码是否重要？"><a href="#Q1b：深度位置编码是否重要？" class="headerlink" title="Q1b：深度位置编码是否重要？"></a>Q1b：深度位置编码是否重要？</h3><p>实验：</p>
+<ul>
+<li>Ours；</li>
+<li>No Depth Encoding。</li>
+</ul>
+<p>结果：</p>
+<p>[ 26.09. ]</p>
+<p>PSNR 下降 1.12 dB。</p>
+<p>该变体保留跨视图特征交互，但不将深度位置编码输入极线注意力。</p>
+<p><strong>作者结论：</strong> 仅发现跨视图对应关系不够，深度位置编码也有助于处理尺度歧义。</p>
+<p><strong>独立评价：</strong> 该消融比单纯移除 Epipolar Encoder 更有针对性，因为它区分了“跨视图匹配”与“通过三角化深度传递尺度信息”两种作用。</p>
+<h3 id="Q2：概率式-Gaussian-深度预测是否重要？"><a href="#Q2：概率式-Gaussian-深度预测是否重要？" class="headerlink" title="Q2：概率式 Gaussian 深度预测是否重要？"></a>Q2：概率式 Gaussian 深度预测是否重要？</h3><p>实验：</p>
+<ul>
+<li>Ours；</li>
+<li>No Probabilistic Sampling。</li>
+</ul>
+<p>结果：</p>
+<p>[ 26.09. ]</p>
+<p>PSNR 下降 1.47 dB。</p>
+<p>正文称直接回归 Gaussian 深度会导致局部最优，Figure 7 中表现为 speckling artifacts。</p>
+<p><strong>作者结论：</strong> 概率式深度采样有助于避免 Gaussian primitive regression 的局部最优。</p>
+<p><strong>独立评价：</strong> 消融支持该参数化方式对 NVS 质量有帮助，但没有直接展示优化轨迹、局部最优数量或采样概率随训练变化的曲线。因此，“缓解局部最优”的机制解释仍主要依赖方法设计与定性现象，而非直接的优化动力学测量。</p>
+<hr>
+<h2 id="3-10-多参考视图扩展（Appendix-B）"><a href="#3-10-多参考视图扩展（Appendix-B）" class="headerlink" title="3.10 多参考视图扩展（Appendix B）"></a>3.10 多参考视图扩展（Appendix B）</h2><p>作者说明，Epipolar Encoder 可以扩展到任意固定数量的输入视图。</p>
+<p>实现思路：</p>
+<ol>
+<li>对给定像素坐标，从其他参考图像中提取对应极线采样；</li>
+<li>将来自不同图像的采样集合合并；</li>
+<li>为每张图像加入可学习的 per-image embedding；</li>
+<li>让 Transformer 区分采样来自哪一张参考图像。</li>
+</ol>
+<p>Figure 9 和 Table 3 展示了三视图结果。</p>
+<h3 id="证据范围"><a href="#证据范围" class="headerlink" title="证据范围"></a>证据范围</h3><p>【原文事实】</p>
+<ul>
+<li>论文提供了三视图定性结果；</li>
+<li>Table 3 提供了两视图和三视图的定量比较；</li>
+<li>三视图结果优于两视图结果。</li>
+</ul>
+<p>【原文局限】</p>
+<p>Appendix C 同时指出，当参考视图数量增加时，Epipolar Attention 的内存成本会变得 prohibitively expensive。</p>
+<p>因此，“可以扩展到任意固定数量”是结构层面的描述，不应直接理解为实际系统可以低成本地处理任意多视图。</p>
+<hr>
+<h2 id="3-11-附录中的其他训练细节"><a href="#3-11-附录中的其他训练细节" class="headerlink" title="3.11 附录中的其他训练细节"></a>3.11 附录中的其他训练细节</h2><h3 id="Du-et-al"><a href="#Du-et-al" class="headerlink" title="Du et al."></a>Du et al.</h3><ul>
+<li>300,000 iterations；</li>
+<li>总 batch size 32；</li>
+<li>分布在 4 张 GPU；</li>
+<li>每张 GPU 约 44 GB VRAM；</li>
+<li>使用作者默认超参数；</li>
+<li>150,000 iterations 后启用 LPIPS loss。</li>
+</ul>
+<h3 id="pixelNeRF"><a href="#pixelNeRF" class="headerlink" title="pixelNeRF"></a>pixelNeRF</h3><ul>
+<li>500,000 iterations；</li>
+<li>batch size 12；</li>
+<li>单 GPU 约 20 GB VRAM；</li>
+<li>使用 NMR 数据集默认超参数；</li>
+<li>关闭 ResNet 的第一个 pooling layer，以提高特征分辨率；</li>
+<li>near&#x2F;far planes 设置为 0.1 和 10.0。</li>
+</ul>
+<h3 id="GPNR"><a href="#GPNR" class="headerlink" title="GPNR"></a>GPNR</h3><ul>
+<li>250,000 iterations；</li>
+<li>batch size 4098；</li>
+<li>分布在 6 张 GPU；</li>
+<li>每张 GPU 约 67 GB VRAM；</li>
+<li>学习率调整为 (1^{-4})，因为使用默认 (3^{-4}) 时多次发生训练崩溃。</li>
+</ul>
+<p><strong>评价边界：</strong> 这些信息说明各方法训练设置并不相同。论文尽量统一数据加载器和参考帧间距 curriculum，但训练步数、batch size、GPU 数量和模型结构仍有差异。因此，Table 1 的内存与速度结果应结合各方法的实现和测量条件理解。</p>
+<hr>
+<h1 id="4-阶段-4：综合理解与评价"><a href="#4-阶段-4：综合理解与评价" class="headerlink" title="4. 阶段 4：综合理解与评价"></a>4. 阶段 4：综合理解与评价</h1><h2 id="4-1-重新审查论文的核心贡献"><a href="#4-1-重新审查论文的核心贡献" class="headerlink" title="4.1 重新审查论文的核心贡献"></a>4.1 重新审查论文的核心贡献</h2><h3 id="贡献-A：从图像对泛化预测-3D-Gaussian-场景"><a href="#贡献-A：从图像对泛化预测-3D-Gaussian-场景" class="headerlink" title="贡献 A：从图像对泛化预测 3D Gaussian 场景"></a>贡献 A：从图像对泛化预测 3D Gaussian 场景</h3><p><strong>判断：成立，且是论文整体框架的核心。</strong></p>
+<p>依据：</p>
+<ul>
+<li>Section 4 给出从双视图到 Gaussian 参数的预测流程；</li>
+<li>Figure 1 展示整体任务；</li>
+<li>Figure 8 展示网络结构；</li>
+<li>Table 1 和 Figure 5 验证 NVS 结果。</li>
+</ul>
+<p>但需要明确：3DGS、ResNet、ViT、DINO、Epipolar Attention 等并不是本文从零提出的全部基础技术。论文的贡献在于将它们组织成一个从稀疏图像对前馈推断显式 Gaussian 表示的系统，并提出针对尺度歧义和局部最优的设计。</p>
+<h3 id="贡献-B：基于深度位置编码的-Epipolar-Transformer"><a href="#贡献-B：基于深度位置编码的-Epipolar-Transformer" class="headerlink" title="贡献 B：基于深度位置编码的 Epipolar Transformer"></a>贡献 B：基于深度位置编码的 Epipolar Transformer</h3><p><strong>判断：有较充分的下游任务消融证据，但直接尺度恢复证据有限。</strong></p>
+<p>支持证据：</p>
+<ul>
+<li>Figure 2：解释设计动机；</li>
+<li>Figure 6：可视化注意力；</li>
+<li>Table 2：移除 Epipolar Encoder 或 Depth Encoding 后性能下降。</li>
+</ul>
+<p>尚未直接验证的内容：</p>
+<ul>
+<li>没有独立的尺度误差指标；</li>
+<li>没有直接报告预测深度与真实米制深度的误差；</li>
+<li>没有给出跨场景尺度因子恢复的定量统计。</li>
+</ul>
+<p>因此，更严谨的表述是：</p>
+<blockquote>
+<p>Epipolar Encoder 和深度位置编码对与输入 SfM 相机位姿尺度一致的 NVS 重建具有重要作用。</p>
+</blockquote>
+<p>不宜进一步写成：</p>
+<blockquote>
+<p>模型准确恢复了真实世界的绝对尺度。</p>
+</blockquote>
+<h3 id="贡献-C：概率式-Gaussian-深度预测"><a href="#贡献-C：概率式-Gaussian-深度预测" class="headerlink" title="贡献 C：概率式 Gaussian 深度预测"></a>贡献 C：概率式 Gaussian 深度预测</h3><p><strong>判断：方法设计清楚，消融支持其性能价值，但机制验证仍有空间。</strong></p>
+<p>支持证据：</p>
+<ul>
+<li>Section 4.2 给出完整概率式预测过程；</li>
+<li>Figure 3 和 Algorithm 1 给出计算流程；</li>
+<li>Table 2 显示去除概率采样后 PSNR 下降 1.47 dB；</li>
+<li>Figure 7 展示斑点伪影。</li>
+</ul>
+<p>证据不足之处：</p>
+<ul>
+<li>没有直接展示深度概率分布随训练演化的过程；</li>
+<li>没有直接比较不同深度桶概率的收敛速度；</li>
+<li>没有从优化轨迹层面量化局部最优被减少的程度。</li>
+</ul>
+<p>因此，实验支持该设计有效，但对“为什么它能够避免局部最优”的证明仍主要依赖机制解释与消融现象。</p>
+<h3 id="贡献-D：效率和可解释三维表示"><a href="#贡献-D：效率和可解释三维表示" class="headerlink" title="贡献 D：效率和可解释三维表示"></a>贡献 D：效率和可解释三维表示</h3><p><strong>判断：效率证据较强；几何准确性证据相对有限。</strong></p>
+<p>效率证据：</p>
+<ul>
+<li>Table 1 的 Render 时间明显低于基线；</li>
+<li>Training Memory 和 Inference Memory 均较低；</li>
+<li>输出 Gaussian 可被显式观察和编辑。</li>
+</ul>
+<p>几何证据：</p>
+<ul>
+<li>Figure 4 展示点云和深度图；</li>
+<li>作者明确承认反射表面和分布外视角下的失败模式；</li>
+<li>没有给出独立的几何真值定量评估。</li>
+</ul>
+<p>所以：</p>
+<ul>
+<li>“输出显式三维表示”得到支持；</li>
+<li>“输出几何在任意视角下准确”没有得到充分证明；</li>
+<li>“可编辑”在表示层面具有合理性，但论文没有设置专门的编辑任务或编辑质量实验；</li>
+<li>“可解释”主要体现为显式 Gaussian 参数可被检查，不等同于语义层面的可解释性已经被量化验证。</li>
+</ul>
+<hr>
+<h2 id="4-2-理论、方法与实验之间的证据关系"><a href="#4-2-理论、方法与实验之间的证据关系" class="headerlink" title="4.2 理论、方法与实验之间的证据关系"></a>4.2 理论、方法与实验之间的证据关系</h2><table>
+<thead>
+<tr>
+<th>作者主张</th>
+<th>对应方法</th>
+<th>主要证据</th>
+<th>证据强度与边界</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>双视图能够帮助处理 SfM 尺度歧义</td>
+<td>Epipolar Cross-attention + depth positional encoding</td>
+<td>Fig. 2、Fig. 6、Table 2</td>
+<td>下游 NVS 消融支持；没有直接尺度误差评估</td>
+</tr>
+<tr>
+<td>概率式深度采样有助于避免局部最优</td>
+<td>(zp_(z))，(&#x3D;_z)</td>
+<td>Fig. 3、Algorithm 1、Fig. 7、Table 2</td>
+<td>性能消融支持；没有直接优化动力学验证</td>
+</tr>
+<tr>
+<td>能从图像对生成显式 Gaussian 场景</td>
+<td>Pixel-aligned Gaussian prediction</td>
+<td>Fig. 1、Fig. 3、Fig. 4、Fig. 8</td>
+<td>表示形式得到直接展示；几何真值精度未定量验证</td>
+</tr>
+<tr>
+<td>NVS 质量优于基线</td>
+<td>整体 pixelSplat pipeline</td>
+<td>Table 1、Fig. 5</td>
+<td>两个真实数据集上的图像指标支持</td>
+</tr>
+<tr>
+<td>渲染效率显著提高</td>
+<td>3DGS rasterization</td>
+<td>Table 1</td>
+<td>单帧渲染时间支持；650 倍的总成本表述存在算术边界</td>
+</tr>
+<tr>
+<td>可以扩展到更多参考视图</td>
+<td>多视图极线采样及 per-image embedding</td>
+<td>Fig. 9、Table 3</td>
+<td>三视图实验支持；大规模多视图的内存成本仍是限制</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="4-3-方法的技术边界与局限"><a href="#4-3-方法的技术边界与局限" class="headerlink" title="4.3 方法的技术边界与局限"></a>4.3 方法的技术边界与局限</h2><h3 id="1-依赖相机参数"><a href="#1-依赖相机参数" class="headerlink" title="1. 依赖相机参数"></a>1. 依赖相机参数</h3><p>pixelSplat 的输入不仅是两张 RGB 图像，还包括相机参数。</p>
+<p>因此，它不是一个完全无位姿条件的图像到三维模型。</p>
+<p>作者也将“去除相机位姿依赖”列为未来工作方向。</p>
+<h3 id="2-不恢复真实世界绝对尺度"><a href="#2-不恢复真实世界绝对尺度" class="headerlink" title="2. 不恢复真实世界绝对尺度"></a>2. 不恢复真实世界绝对尺度</h3><p>模型处理的是 SfM 坐标系中的任意尺度，并学习与其保持一致的深度。</p>
+<p>没有证据表明它能够直接输出真实世界米制尺度。</p>
+<h3 id="3-两组-Gaussian-不进行融合或去重"><a href="#3-两组-Gaussian-不进行融合或去重" class="headerlink" title="3. 两组 Gaussian 不进行融合或去重"></a>3. 两组 Gaussian 不进行融合或去重</h3><p>Appendix C 明确指出：</p>
+<ul>
+<li>模型不融合两张参考图像中观测到的 Gaussian；</li>
+<li>不对重复 Gaussian 去重；</li>
+<li>最终只是输出两组 Gaussian 的并集。</li>
+</ul>
+<p>这可能造成冗余表示。</p>
+<h3 id="4-不处理不可见区域的生成式补全"><a href="#4-不处理不可见区域的生成式补全" class="headerlink" title="4. 不处理不可见区域的生成式补全"></a>4. 不处理不可见区域的生成式补全</h3><p>模型没有解决场景中从未被参考图像观察到的部分如何生成的问题。</p>
+<p>这也是作者明确列出的限制。</p>
+<h3 id="5-多视图扩展的内存成本"><a href="#5-多视图扩展的内存成本" class="headerlink" title="5. 多视图扩展的内存成本"></a>5. 多视图扩展的内存成本</h3><p>增加参考视图时，需要处理更多极线采样和跨视图注意力。</p>
+<p>作者指出，视图数量较多时，Epipolar Attention 会产生难以接受的内存开销。</p>
+<h3 id="6-分布外视角和反射表面仍存在问题"><a href="#6-分布外视角和反射表面仍存在问题" class="headerlink" title="6. 分布外视角和反射表面仍存在问题"></a>6. 分布外视角和反射表面仍存在问题</h3><p>Section 5.2 明确指出：</p>
+<ul>
+<li>反射表面经常呈现透明效果；</li>
+<li>分布外视角下 Gaussian 可能呈现 billboard-like 形态。</li>
+</ul>
+<p>因此，显式 Gaussian 表示不意味着模型已经获得完全稳定的真实几何。</p>
+<h3 id="7-训练资源并不低"><a href="#7-训练资源并不低" class="headerlink" title="7. 训练资源并不低"></a>7. 训练资源并不低</h3><p>pixelSplat 虽然在 Table 1 中相对基线具有更低的内存需求，但 Appendix A.1 仍报告：</p>
+<ul>
+<li>单 GPU；</li>
+<li>约 80 GB VRAM；</li>
+<li>300,000 training steps。</li>
+</ul>
+<p>因此，“scalable”应理解为相较于所比较的表示和渲染方式具有更好的效率，而不是普通消费级 GPU 即可轻松训练。</p>
+<h3 id="8-数据集与分辨率范围有限"><a href="#8-数据集与分辨率范围有限" class="headerlink" title="8. 数据集与分辨率范围有限"></a>8. 数据集与分辨率范围有限</h3><p>论文实验集中在：</p>
+<ul>
+<li>RealEstate10k；</li>
+<li>ACID；</li>
+<li>(256) 分辨率。</li>
+</ul>
+<p>这不足以单独证明模型能够直接泛化到所有场景类型、所有图像分辨率或所有相机运动模式。</p>
+<hr>
+<h2 id="4-4-尚未充分说明或值得进一步核查的问题"><a href="#4-4-尚未充分说明或值得进一步核查的问题" class="headerlink" title="4.4 尚未充分说明或值得进一步核查的问题"></a>4.4 尚未充分说明或值得进一步核查的问题</h2><p>以下问题在当前提供的 HTML 中没有得到充分说明。</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>问题</th>
+<th>为什么值得核查</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>U1</td>
+<td>深度桶数量 (Z)、near&#x2F;far 的具体取值</td>
+<td>影响概率分布的离散分辨率和深度搜索范围</td>
+</tr>
+<tr>
+<td>U2</td>
+<td>Epipolar line 的采样点数及采样策略</td>
+<td>影响匹配质量和注意力计算成本</td>
+</tr>
+<tr>
+<td>U3</td>
+<td>位置编码 () 的具体实现参数</td>
+<td>影响深度信息进入 Transformer 的方式</td>
+</tr>
+<tr>
+<td>U4</td>
+<td>Gaussian 协方差 () 的具体参数化和正定性约束</td>
+<td>影响 Gaussian 形状预测的稳定性</td>
+</tr>
+<tr>
+<td>U5</td>
+<td>训练与测试时间测量所用 GPU 型号</td>
+<td>影响效率结果的可复现性</td>
+</tr>
+<tr>
+<td>U6</td>
+<td>Table 1 中 650 倍与“编码一次、渲染 100 张”的数值关系</td>
+<td>表中数值直接计算得到约 433.5 倍，而单帧渲染比约 654.5 倍</td>
+</tr>
+<tr>
+<td>U7</td>
+<td>概率采样梯度估计的统计性质</td>
+<td>论文没有在本文中分析该梯度估计的偏差或方差</td>
+</tr>
+<tr>
+<td>U8</td>
+<td>深度正则化 Equation (9) 的实现细节</td>
+<td>HTML 公式呈现为二阶差分，且没有明确显示绝对值或平方；与常见 edge-aware TV 写法不同</td>
+</tr>
+<tr>
+<td>U9</td>
+<td>两组 Gaussian 的冗余程度及其对渲染的影响</td>
+<td>作者承认没有融合或去重，但没有量化冗余比例</td>
+</tr>
+<tr>
+<td>U10</td>
+<td>大于三视图时的性能和内存曲线</td>
+<td>Appendix B 只展示三视图结果，Appendix C 同时指出多视图内存问题</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="4-5-最终知识内化：用一条完整逻辑解释-PixelSplat"><a href="#4-5-最终知识内化：用一条完整逻辑解释-PixelSplat" class="headerlink" title="4.5 最终知识内化：用一条完整逻辑解释 PixelSplat"></a>4.5 最终知识内化：用一条完整逻辑解释 PixelSplat</h2><p>如果需要向其他研究者解释这篇论文，可以按下面的逻辑组织：</p>
+<h3 id="第一步：研究问题"><a href="#第一步：研究问题" class="headerlink" title="第一步：研究问题"></a>第一步：研究问题</h3><p>传统 3DGS 能够高效渲染显式 Gaussian 场景，但通常依赖每个场景的大量图像和逐场景优化。本文希望训练一个能够从两张参考图像直接预测 Gaussian 场景的泛化模型。</p>
+<h3 id="第二步：第一个技术障碍——尺度歧义"><a href="#第二步：第一个技术障碍——尺度歧义" class="headerlink" title="第二步：第一个技术障碍——尺度歧义"></a>第二步：第一个技术障碍——尺度歧义</h3><p>真实数据的相机位姿通常由 SfM 恢复，而 SfM 只能恢复每个场景内部一致的任意尺度。模型需要让预测的三维几何与相机位姿尺度一致。</p>
+<p>为此，作者设计 Epipolar Transformer：沿另一张图像的极线采样，将图像特征与通过三角化得到的深度位置编码拼接，再通过 cross-attention 建立跨视图对应关系，并将尺度相关信息写入像素特征。</p>
+<h3 id="第三步：第二个技术障碍——Gaussian-位置局部最优"><a href="#第三步：第二个技术障碍——Gaussian-位置局部最优" class="headerlink" title="第三步：第二个技术障碍——Gaussian 位置局部最优"></a>第三步：第二个技术障碍——Gaussian 位置局部最优</h3><p>如果直接从像素特征回归 Gaussian 的唯一深度，错误位置的 Gaussian 可能无法获得有效梯度，或者需要经过损失上升的区域才能移动到正确位置。</p>
+<p>为此，作者不直接预测唯一深度，而是预测离散深度概率分布，从中采样 Gaussian 位置，并将被采样深度桶的概率设为 opacity。这样，渲染损失可以通过 opacity 影响深度桶概率。</p>
+<h3 id="第四步：显式三维表示与渲染"><a href="#第四步：显式三维表示与渲染" class="headerlink" title="第四步：显式三维表示与渲染"></a>第四步：显式三维表示与渲染</h3><p>每个像素预测 Gaussian 的位置、协方差、opacity 和球谐系数。两张参考图像分别预测的 Gaussian 取并集，再通过 3D Gaussian Splatting renderer 生成目标视角。</p>
+<h3 id="第五步：实验验证"><a href="#第五步：实验验证" class="headerlink" title="第五步：实验验证"></a>第五步：实验验证</h3><p>在 RealEstate10k 和 ACID 上，pixelSplat 的 PSNR、SSIM、LPIPS 优于论文比较的基线，并显著缩短渲染时间。</p>
+<p>消融实验显示：</p>
+<ul>
+<li>去除 Epipolar Encoder 会导致明显性能下降；</li>
+<li>去除深度位置编码会导致约 1.12 dB 的 PSNR 下降；</li>
+<li>去除概率采样会导致约 1.47 dB 的 PSNR 下降。</li>
+</ul>
+<h3 id="第六步：结论边界"><a href="#第六步：结论边界" class="headerlink" title="第六步：结论边界"></a>第六步：结论边界</h3><p>论文充分展示了从两张图像前馈预测显式 Gaussian 表示的可行性，以及 NVS 质量和渲染效率优势。</p>
+<p>但论文没有充分证明：</p>
+<ul>
+<li>输出几何达到真实世界米制精度；</li>
+<li>所有 Gaussian 都对应真实表面；</li>
+<li>分布外视角下几何仍稳定；</li>
+<li>任意多视图输入都能高效运行。</li>
+</ul>
+<hr>
+<h2 id="4-6-核心术语表"><a href="#4-6-核心术语表" class="headerlink" title="4.6 核心术语表"></a>4.6 核心术语表</h2><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>中文解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Generalizable NVS</td>
+<td>泛化新视角合成</td>
+</tr>
+<tr>
+<td>Feed-forward Reconstruction</td>
+<td>前馈式重建</td>
+</tr>
+<tr>
+<td>3D Gaussian Splatting</td>
+<td>三维高斯泼溅</td>
+</tr>
+<tr>
+<td>Gaussian Primitive</td>
+<td>高斯基元</td>
+</tr>
+<tr>
+<td>Radiance Field</td>
+<td>辐射场</td>
+</tr>
+<tr>
+<td>Pixel-aligned Gaussian</td>
+<td>与像素对齐的 Gaussian</td>
+</tr>
+<tr>
+<td>Epipolar Line</td>
+<td>极线</td>
+</tr>
+<tr>
+<td>Epipolar Sampling</td>
+<td>极线采样</td>
+</tr>
+<tr>
+<td>Epipolar Cross-attention</td>
+<td>极线交叉注意力</td>
+</tr>
+<tr>
+<td>Scale Ambiguity</td>
+<td>尺度歧义</td>
+</tr>
+<tr>
+<td>Structure-from-Motion (SfM)</td>
+<td>运动恢复结构</td>
+</tr>
+<tr>
+<td>Disparity</td>
+<td>视差&#x2F;逆深度参数化</td>
+</tr>
+<tr>
+<td>Depth Bucket</td>
+<td>离散深度桶</td>
+</tr>
+<tr>
+<td>Probability Distribution</td>
+<td>概率分布</td>
+</tr>
+<tr>
+<td>Reparameterization Trick</td>
+<td>重参数化技巧</td>
+</tr>
+<tr>
+<td>Opacity</td>
+<td>不透明度</td>
+</tr>
+<tr>
+<td>Covariance</td>
+<td>协方差</td>
+</tr>
+<tr>
+<td>Spherical Harmonics (SH)</td>
+<td>球谐函数</td>
+</tr>
+<tr>
+<td>Rasterization</td>
+<td>光栅化</td>
+</tr>
+<tr>
+<td>Local Minima</td>
+<td>局部最优</td>
+</tr>
+<tr>
+<td>Adaptive Density Control</td>
+<td>自适应密度控制</td>
+</tr>
+<tr>
+<td>Billboard-like Artifact</td>
+<td>类广告牌式伪影</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="5-最终总结"><a href="#5-最终总结" class="headerlink" title="5. 最终总结"></a>5. 最终总结</h1><p><strong>PixelSplat 的核心贡献，是让 3D Gaussian Splatting 从传统的逐场景优化表示，转变为能够从稀疏图像对中前馈预测的泛化式三维表示。</strong></p>
+<p>它针对两个关键问题提出了两套设计：</p>
+<ol>
+<li>使用带三角化深度位置编码的双视图 Epipolar Transformer，使预测几何与 SfM 相机位姿的任意尺度保持一致；</li>
+<li>使用离散深度概率分布和 opacity-probability 耦合机制，缓解直接回归 Gaussian 位置时的局部最优问题。</li>
+</ol>
+<p>实验支持其在 RealEstate10k 和 ACID 上获得较好的新视角合成结果，并显著降低渲染时间。</p>
+<p>但需要严格区分：</p>
+<ul>
+<li><strong>显式三维表示</strong>不等于<strong>真实几何已经准确恢复</strong>；</li>
+<li><strong>与 SfM 尺度一致</strong>不等于<strong>恢复绝对米制尺度</strong>；</li>
+<li><strong>消融性能下降</strong>支持模块的重要性，但不等于完整证明作者提出的优化机制；</li>
+<li><strong>三视图实验有效</strong>不等于任意多视图都能高效运行。</li>
+</ul>
+<p>从研究逻辑上看，本文的关键在于将多视图几何提供的尺度信息，与 Gaussian primitive 的概率式位置参数化结合起来，使显式三维表示能够在跨场景训练的前馈模型中发挥作用。</p>
+<hr>
+<h2 id="6-来源与资源完整性记录"><a href="#6-来源与资源完整性记录" class="headerlink" title="6. 来源与资源完整性记录"></a>6. 来源与资源完整性记录</h2><h3 id="论文来源"><a href="#论文来源" class="headerlink" title="论文来源"></a>论文来源</h3><p>用户提供的压缩包：</p>
+<p><code>pixelSplat_ 3D Gaussian Splats from Image Pairsfor Scalable Generalizable 3D Reconstruction_files.zip</code></p>
+<p>压缩包内 HTML：</p>
+<p><code>pixelSplat_ 3D Gaussian Splats from Image Pairsfor Scalable Generalizable 3D Reconstruction.html</code></p>
+<p>HTML 标注版本：</p>
+<p><code>arXiv:2312.12337v4 [cs.CV] 04 Apr 2024</code></p>
+<h3 id="Figure-原图资源"><a href="#Figure-原图资源" class="headerlink" title="Figure 原图资源"></a>Figure 原图资源</h3><p>报告中的 11 幅 Figure 均来自上述压缩包内配套目录，文件名保持原样：</p>
+<ul>
+<li><code>teaser_bigger_text.png</code></li>
+<li><code>scale_ambiguity_fig.png</code></li>
+<li><code>sampling_v2.png</code></li>
+<li><code>point_clouds_fig.png</code></li>
+<li><code>x1.png</code></li>
+<li><code>attention_fig.png</code></li>
+<li><code>x2.png</code></li>
+<li><code>architecture_pdf.png</code></li>
+<li><code>x3.png</code></li>
+<li><code>x4.png</code></li>
+<li><code>x5.png</code></li>
+</ul>
+<p><strong>原图处理状态：</strong></p>
+<ul>
+<li>已定位；</li>
+<li>已读取；</li>
+<li>已检查文件格式和尺寸；</li>
+<li>已实际观察；</li>
+<li>未转换格式；</li>
+<li>未修改原图；</li>
+<li>未使用图片搜索；</li>
+<li>未使用生成图片替代。</li>
+</ul>
+<p><strong>报告图片展示方式：</strong> Markdown 使用相对路径引用配套 assets 目录中的原始 PNG。请将报告与 <code>PixelSplat_精读报告_assets</code> 文件夹放在同一目录，或直接解压完整资源包，以保证图片正常显示。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Research/" class="category-chain-item">Research</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/Hexo/tags/3D-Gaussian-Splatting/" class="print-no-link">#3D Gaussian Splatting</a>
+      
+        <a href="/Hexo/tags/3D-Reconstruction/" class="print-no-link">#3D Reconstruction</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>PixelSplat 论文交互式精读报告</div>
+      <div>https://zhangq.github.io/2026/11/23/PixelSplat/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Hexo/2026/11/23/DepthSplat/" title="DepthSplat 论文交互式精读报告">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">DepthSplat 论文交互式精读报告</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hexo/2026/11/23/MVSplat/" title="MVSplat 论文交互式精读报告">
+                        <span class="hidden-mobile">MVSplat 论文交互式精读报告</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

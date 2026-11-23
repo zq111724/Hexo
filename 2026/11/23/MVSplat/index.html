@@ -1,0 +1,3199 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MVSplat 论文交互式精读报告 论文： MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images作者： Yuedong Chen, Haofei Xu, Chuanxia Zheng, Bohan Zhuang, Marc Pollefeys, Andreas Geiger, Tat-Jen Cham, Jia">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MVSplat 论文交互式精读报告">
+<meta property="og:url" content="https://zhangq.github.io/2026/11/23/MVSplat/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="MVSplat 论文交互式精读报告 论文： MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images作者： Yuedong Chen, Haofei Xu, Chuanxia Zheng, Bohan Zhuang, Marc Pollefeys, Andreas Geiger, Tat-Jen Cham, Jia">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhangq.github.io/Hexo/MVSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser.png">
+<meta property="article:published_time" content="2026-11-23T09:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-23T14:17:41.637Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="3D Gaussian Splatting">
+<meta property="article:tag" content="3D Reconstruction">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zhangq.github.io/Hexo/MVSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser.png">
+  
+  
+  
+  <title>MVSplat 论文交互式精读报告 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zhangq.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MVSplat 论文交互式精读报告"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-23 17:00" pubdate>
+          2026年11月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          43k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          361 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MVSplat 论文交互式精读报告</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MVSplat-论文交互式精读报告"><a href="#MVSplat-论文交互式精读报告" class="headerlink" title="MVSplat 论文交互式精读报告"></a>MVSplat 论文交互式精读报告</h1><blockquote>
+<p><strong>论文：</strong> <em>MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images</em><br><strong>作者：</strong> Yuedong Chen, Haofei Xu, Chuanxia Zheng, Bohan Zhuang, Marc Pollefeys, Andreas Geiger, Tat-Jen Cham, Jianfei Cai<br><strong>版本：</strong> arXiv:2403.14627v2 [cs.CV]，2024-07-18<br><strong>阅读依据：</strong> 用户上传的 HTML + 配套资源 ZIP；不使用在线副本，不访问引用论文全文、作者主页或 GitHub。<br><strong>阅读方式：</strong> 按 AI 科研论文交互式精读导师 V1.5 的阶段顺序完整执行；根据用户要求，不逐题暂停。<br><strong>跨论文要求：</strong> 将 MVSplat 与此前精读的 PixelSplat 对照，并分析其与水下 3D 重建 &#x2F; Omni-Sea 研究问题的潜在关系。跨论文推断与 MVSplat 原文事实分开标注。</p>
+</blockquote>
+<hr>
+<h1 id="0-阶段-0：论文自动初始化"><a href="#0-阶段-0：论文自动初始化" class="headerlink" title="0. 阶段 0：论文自动初始化"></a>0. 阶段 0：论文自动初始化</h1><h2 id="0-1-论文基本信息"><a href="#0-1-论文基本信息" class="headerlink" title="0.1 论文基本信息"></a>0.1 论文基本信息</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>英文标题</td>
+<td>MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images</td>
+</tr>
+<tr>
+<td>中文译名</td>
+<td>MVSplat：从稀疏多视图图像高效构建 3D Gaussian Splatting 表示</td>
+</tr>
+<tr>
+<td>作者</td>
+<td>Yuedong Chen、Haofei Xu、Chuanxia Zheng、Bohan Zhuang、Marc Pollefeys、Andreas Geiger、Tat-Jen Cham、Jianfei Cai</td>
+</tr>
+<tr>
+<td>论文版本</td>
+<td>arXiv:2403.14627v2</td>
+</tr>
+<tr>
+<td>版本日期</td>
+<td>2024-07-18</td>
+</tr>
+<tr>
+<td>arXiv 分类</td>
+<td>cs.CV</td>
+</tr>
+<tr>
+<td>研究任务</td>
+<td>从稀疏、带相机参数的多视图图像中，前馈预测显式 3D Gaussian 场景表示，并合成未观测视角</td>
+</tr>
+<tr>
+<td>方法名称</td>
+<td>MVSplat</td>
+</tr>
+<tr>
+<td>核心技术</td>
+<td>Plane Sweeping、Multi-View Cost Volume、Feature Matching、2D U-Net、3D Gaussian Splatting</td>
+</tr>
+<tr>
+<td>主要数据集</td>
+<td>RealEstate10K、ACID；跨数据集评估还使用 DTU</td>
+</tr>
+</tbody></table>
+<h2 id="0-2-实际读取范围与来源边界"><a href="#0-2-实际读取范围与来源边界" class="headerlink" title="0.2 实际读取范围与来源边界"></a>0.2 实际读取范围与来源边界</h2><p>本次读取了 ZIP 中的指定 HTML 及其配套资源目录。HTML 包含 Abstract、Section 1–5（Introduction、Related Work、Method、Experiments、Conclusion）、References 列表，以及 Appendix 0.A（More Experimental Analysis）、0.B（More Visual Comparisons）、0.C（More Implementation Details）。</p>
+<p>本次没有下载或访问 HTML 页面中链接的 PDF，没有访问作者主页、项目网站、GitHub，也没有打开参考文献全文。引用文献仅按 MVSplat 正文中的描述理解。</p>
+<p><strong>来源范围说明：</strong> MVSplat 的事实陈述以用户上传的 HTML 为准；PixelSplat 的横向比较使用此前已完成的《PixelSplat_精读报告.md》及 MVSplat 本文对 PixelSplat 的引用和实验。涉及 Omni-Sea 的部分属于结合此前研究背景提出的独立关联分析，不是 MVSplat 作者的主张。</p>
+<h2 id="0-3-Figure、Table、Equation-与-Algorithm-统计"><a href="#0-3-Figure、Table、Equation-与-Algorithm-统计" class="headerlink" title="0.3 Figure、Table、Equation 与 Algorithm 统计"></a>0.3 Figure、Table、Equation 与 Algorithm 统计</h2><table>
+<thead>
+<tr>
+<th>对象</th>
+<th align="right">正文</th>
+<th align="right">附录</th>
+<th align="right">全文合计</th>
+<th>编号情况</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Figure</td>
+<td align="right">6</td>
+<td align="right">5</td>
+<td align="right"><strong>11</strong></td>
+<td>Figure 1–6、Figure A–E</td>
+</tr>
+<tr>
+<td>Table</td>
+<td align="right">3</td>
+<td align="right">4</td>
+<td align="right"><strong>7</strong></td>
+<td>Table 1–3、Table A–D</td>
+</tr>
+<tr>
+<td>Numbered Equation</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right"><strong>6</strong></td>
+<td>Equation (1)–(6)</td>
+</tr>
+<tr>
+<td>Algorithm</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right"><strong>0</strong></td>
+<td>未发现独立编号算法</td>
+</tr>
+</tbody></table>
+<p>统计说明：</p>
+<ul>
+<li>Figure 1–6 位于正文；Figure A–E 位于附录。</li>
+<li>Table 1–3 位于正文；Table A–D 位于附录。</li>
+<li>公式 (1)–(6) 均位于 Method。</li>
+<li>协方差参数化、损失函数等还以未编号行间公式或正文数学表达出现，不额外计为编号公式。</li>
+<li>一幅 Figure 内的多个子图仍按一幅 Figure 统计。</li>
+<li>未发现 Figure、Table 或 Equation 的重复编号、缺号或不连续编号。</li>
+<li>未发现独立编号的 Algorithm。</li>
+</ul>
+<h2 id="0-4-原图资源可访问性"><a href="#0-4-原图资源可访问性" class="headerlink" title="0.4 原图资源可访问性"></a>0.4 原图资源可访问性</h2><p>HTML 中 11 个论文 Figure 均能对应到 ZIP 内同名 PNG 文件。页面中的其他 SVG&#x2F;图标属于 arXiv 页面资源，不属于论文 Figure。</p>
+<table>
+<thead>
+<tr>
+<th>图号</th>
+<th>HTML 引用的原始资源</th>
+<th>格式</th>
+<th align="right">原始尺寸</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Figure 1</td>
+<td><code>teaser.png</code></td>
+<td>PNG</td>
+<td align="right">1950 × 634</td>
+</tr>
+<tr>
+<td>Figure 2</td>
+<td><code>pipeline.png</code></td>
+<td>PNG</td>
+<td align="right">2043 × 523</td>
+</tr>
+<tr>
+<td>Figure 3</td>
+<td><code>sota_comparisons.png</code></td>
+<td>PNG</td>
+<td align="right">1542 × 1069</td>
+</tr>
+<tr>
+<td>Figure 4</td>
+<td><code>point_cloud_fig.png</code></td>
+<td>PNG</td>
+<td align="right">1494 × 588</td>
+</tr>
+<tr>
+<td>Figure 5</td>
+<td><code>re10k_generalization_fig.png</code></td>
+<td>PNG</td>
+<td align="right">1607 × 542</td>
+</tr>
+<tr>
+<td>Figure 6</td>
+<td><code>re10k_ablation_fig.png</code></td>
+<td>PNG</td>
+<td align="right">1678 × 608</td>
+</tr>
+<tr>
+<td>Figure A</td>
+<td><code>supp_val_logs.png</code></td>
+<td>PNG</td>
+<td align="right">1623 × 476</td>
+</tr>
+<tr>
+<td>Figure B</td>
+<td><code>supp_limitation.png</code></td>
+<td>PNG</td>
+<td align="right">1588 × 270</td>
+</tr>
+<tr>
+<td>Figure C</td>
+<td><code>supp_sota.png</code></td>
+<td>PNG</td>
+<td align="right">1545 × 1579</td>
+</tr>
+<tr>
+<td>Figure D</td>
+<td><code>supp_point_cloud.png</code></td>
+<td>PNG</td>
+<td align="right">1507 × 616</td>
+</tr>
+<tr>
+<td>Figure E</td>
+<td><code>supp_generalization.png</code></td>
+<td>PNG</td>
+<td align="right">1586 × 989</td>
+</tr>
+</tbody></table>
+<p>资源追溯关系：</p>
+<p><code>Figure 编号 → HTML 中的 figure 节点及 img src → ZIP 内同名 PNG → 本报告 assets 目录中的同名 PNG</code></p>
+<p>本报告中的图片是从用户提供的 ZIP 复制而来，未转换格式、未缩放、未压缩、未重绘。复制前后逐张核对 SHA-256，内容一致。</p>
+<h2 id="0-5-当前阅读状态"><a href="#0-5-当前阅读状态" class="headerlink" title="0.5 当前阅读状态"></a>0.5 当前阅读状态</h2><ul>
+<li>阶段 0：完成。</li>
+<li>阶段 1：完成。</li>
+<li>阶段 2：完成。</li>
+<li>阶段 3：完成。</li>
+<li>阶段 4：完成。</li>
+<li>跨论文关联分析：已将 PixelSplat 作为直接参照，并补充与 Omni-Sea 的研究问题关联。</li>
+</ul>
+<hr>
+<h1 id="1-阶段-1：论文全局认识"><a href="#1-阶段-1：论文全局认识" class="headerlink" title="1. 阶段 1：论文全局认识"></a>1. 阶段 1：论文全局认识</h1><h2 id="1-1-标题（Title）"><a href="#1-1-标题（Title）" class="headerlink" title="1.1 标题（Title）"></a>1.1 标题（Title）</h2><h3 id="原文"><a href="#原文" class="headerlink" title="原文"></a>原文</h3><p><em>MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images</em></p>
+<h3 id="中文翻译"><a href="#中文翻译" class="headerlink" title="中文翻译"></a>中文翻译</h3><p><strong>MVSplat：从稀疏多视图图像高效构建 3D Gaussian Splatting 表示。</strong></p>
+<h3 id="核心术语"><a href="#核心术语" class="headerlink" title="核心术语"></a>核心术语</h3><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+<th>在本文中的具体指向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MVSplat</td>
+<td>方法名称</td>
+<td>通过多视图特征匹配与 Cost Volume，前馈预测 3D Gaussians</td>
+</tr>
+<tr>
+<td>Efficient</td>
+<td>高效</td>
+<td>重点体现在较小的模型参数量、较短的前馈推理时间和较少的 Gaussian 数量</td>
+</tr>
+<tr>
+<td>3D Gaussian Splatting</td>
+<td>三维高斯泼溅表示</td>
+<td>用位置、协方差、不透明度和球谐颜色参数构成可光栅化的三维场景</td>
+</tr>
+<tr>
+<td>Sparse Multi-View Images</td>
+<td>稀疏多视图图像</td>
+<td>输入视图数量较少；论文主实验通常使用两张输入图像，同时设计上支持更多视图</td>
+</tr>
+<tr>
+<td>Multi-View Stereo (MVS)</td>
+<td>多视图立体视觉</td>
+<td>通过不同相机视图之间的几何关系和特征匹配推断场景深度</td>
+</tr>
+</tbody></table>
+<h3 id="标题能够确定什么？"><a href="#标题能够确定什么？" class="headerlink" title="标题能够确定什么？"></a>标题能够确定什么？</h3><p>【原文事实】</p>
+<ol>
+<li>输入是稀疏多视图图像，而不是单张图像。</li>
+<li>输出表示是 3D Gaussian Splatting。</li>
+<li>作者强调方法效率。</li>
+<li>研究重点是如何从少量图像中构建可渲染的三维场景表示。</li>
+</ol>
+<p>【需要正文确认】</p>
+<ol>
+<li>输入图像是否带相机参数：正文 Figure 2 和 Equation (1) 明确使用带相机投影矩阵的多视图图像。</li>
+<li>主实验究竟使用多少张图像：Section 4.1 说明每个场景使用两张输入视图，并渲染三个 novel views；模型结构则支持多视图输入。</li>
+<li>是否恢复真实米制尺度：标题不能确定；正文使用相机参数和数据集设置的 near&#x2F;far depth range，但没有单独建立绝对米制尺度恢复的论证。</li>
+<li>是否需要真实深度监督：正文 Section 3.3 明确说明训练只使用目标 RGB 图像的光度损失，不需要 ground-truth depth。</li>
+<li>是否能处理任意多视图：作者称结构不依赖固定视图数，但实验只提供两视图主结果和三视图测试等证据，不能将其理解为任意大视图数量下都具有已验证的效率。</li>
+</ol>
+<h3 id="标题指向的研究任务"><a href="#标题指向的研究任务" class="headerlink" title="标题指向的研究任务"></a>标题指向的研究任务</h3><p>【原文事实 + 归纳】</p>
+<p>给定若干张带相机参数的稀疏参考图像，MVSplat 通过多视图特征匹配构建深度 Cost Volume，估计各输入视图的深度图，将深度反投影到三维空间，再预测 Gaussian 的其他属性，最终得到一个能够通过 Gaussian rasterization 渲染新视角的显式三维表示。</p>
+<p><strong>标题中的核心技术指向不是“直接回归 Gaussian”，而是利用多视图几何匹配帮助定位 Gaussian 中心。</strong></p>
+<h2 id="1-2-摘要（Abstract）"><a href="#1-2-摘要（Abstract）" class="headerlink" title="1.2 摘要（Abstract）"></a>1.2 摘要（Abstract）</h2><h3 id="原文逻辑的中文解释"><a href="#原文逻辑的中文解释" class="headerlink" title="原文逻辑的中文解释"></a>原文逻辑的中文解释</h3><p>作者提出 MVSplat，一种高效模型：给定稀疏多视图图像，直接以前馈方式预测干净的 3D Gaussians。</p>
+<p>为了准确定位 Gaussian 中心，作者通过 Plane Sweeping 构建 Cost Volume。Cost Volume 保存不同深度候选下的跨视图特征相似度，这些相似度能够为深度估计提供几何线索。</p>
+<p>作者同时预测 Gaussian 的其他属性，并且只使用光度监督进行训练。</p>
+<p>实验在大规模 RealEstate10K 和 ACID 数据集上进行。作者报告 MVSplat 达到当时的先进性能，并具有最快的前馈推理速度（22 fps）。与 PixelSplat 相比，作者报告：</p>
+<ul>
+<li>参数量约减少 10 倍；</li>
+<li>推理速度超过 2 倍；</li>
+<li>外观质量和几何表现更好；</li>
+<li>跨数据集泛化能力更好。</li>
+</ul>
+<h3 id="按摘要逻辑拆解"><a href="#按摘要逻辑拆解" class="headerlink" title="按摘要逻辑拆解"></a>按摘要逻辑拆解</h3><p><strong>第一层：任务</strong></p>
+<ul>
+<li>输入：稀疏多视图图像。</li>
+<li>输出：显式 3D Gaussian primitives。</li>
+<li>推理方式：训练完成后，对新场景进行一次前馈预测。</li>
+<li>目标：新视角合成与三维场景重建。</li>
+</ul>
+<p><strong>第二层：核心困难</strong></p>
+<p>从图像特征直接预测三维位置，网络需要自行学习“哪个特征对应哪个深度”。这种 feature-to-depth 映射存在歧义，几何定位可能不可靠。</p>
+<p><strong>第三层：关键设计</strong></p>
+<ol>
+<li>设定一组深度候选；</li>
+<li>根据相机参数，将其他视图的特征 Warp 到当前视图；</li>
+<li>计算不同深度假设下的特征相似度；</li>
+<li>把相似度按深度排列成 Cost Volume；</li>
+<li>由网络进一步细化 Cost Volume 并估计深度；</li>
+<li>将深度图反投影为 Gaussian 中心。</li>
+</ol>
+<p><strong>第四层：训练方式</strong></p>
+<p>预测的 Gaussian 渲染到目标视角，与真实目标 RGB 图像比较。损失由 (_2) 与 LPIPS 组成。作者不需要 ground-truth depth 监督。</p>
+<p><strong>第五层：实验主张</strong></p>
+<p>作者强调三方面：</p>
+<ul>
+<li>NVS 图像质量；</li>
+<li>前馈推理效率；</li>
+<li>Gaussian 几何结构和跨数据集泛化。</li>
+</ul>
+<h3 id="摘要的核心逻辑"><a href="#摘要的核心逻辑" class="headerlink" title="摘要的核心逻辑"></a>摘要的核心逻辑</h3><p>MVSplat 的方法主线可以压缩为：</p>
+<p><strong>Plane Sweeping 提供显式深度假设 → Cost Volume 编码跨视图匹配证据 → 深度估计定位 Gaussian 中心 → Gaussian Splatting 渲染目标视图。</strong></p>
+<h3 id="结论边界"><a href="#结论边界" class="headerlink" title="结论边界"></a>结论边界</h3><p>【原文事实】摘要报告了图像质量、推理速度、参数量和几何表现方面的优势。</p>
+<p>【独立评价】摘要中“几何质量更好”主要由后文 Gaussian 点云与深度图的定性比较支撑；正文没有给出独立的 ground-truth geometry metric。因此，不能把摘要中的 geometry quality 主张直接理解为已经通过定量几何真值评估。</p>
+<h2 id="1-3-核心贡献（Contributions）"><a href="#1-3-核心贡献（Contributions）" class="headerlink" title="1.3 核心贡献（Contributions）"></a>1.3 核心贡献（Contributions）</h2><p>论文没有设置独立编号的 Contributions 列表。以下是根据 Introduction、Method、Experiments 和 Conclusion 提取的作者贡献主张，并非作者原有编号。</p>
+<h3 id="贡献一：将-Cost-Volume-引入前馈式-3D-Gaussian-预测"><a href="#贡献一：将-Cost-Volume-引入前馈式-3D-Gaussian-预测" class="headerlink" title="贡献一：将 Cost Volume 引入前馈式 3D Gaussian 预测"></a>贡献一：将 Cost Volume 引入前馈式 3D Gaussian 预测</h3><p>【原文事实】</p>
+<p>作者使用 Plane Sweeping 构建多视图 Cost Volume，显式编码不同深度候选下的跨视图特征匹配相似度，并利用它预测 Gaussian 中心。</p>
+<ul>
+<li>针对的问题：仅从图像特征回归深度时，深度分布可能含糊，导致几何定位不可靠。</li>
+<li>技术性质：几何信息表示与 Gaussian 中心预测机制。</li>
+<li>主要依据：Section 3.1、Equations (2)–(6)、Figure 2。</li>
+<li>实验依据：Table 3、Figure 6、Appendix Table A。</li>
+</ul>
+<h3 id="贡献二：设计轻量级、全二维卷积与注意力的深度估计结构"><a href="#贡献二：设计轻量级、全二维卷积与注意力的深度估计结构" class="headerlink" title="贡献二：设计轻量级、全二维卷积与注意力的深度估计结构"></a>贡献二：设计轻量级、全二维卷积与注意力的深度估计结构</h3><p>【原文事实】</p>
+<p>作者的深度模型只使用 2D convolutions 和 attention，不使用传统 MVS 网络中常见的 3D convolutions。Cost Volume 通过 2D U-Net 细化，并使用低分辨率跨视图注意力交换信息。</p>
+<ul>
+<li>针对的问题：传统 3D Cost Volume 处理可能带来较高计算与内存成本。</li>
+<li>技术性质：网络架构与计算效率设计。</li>
+<li>主要依据：Section 3.1、Appendix 0.C。</li>
+<li>实验依据：Table 1、Table 3、Figure A。</li>
+</ul>
+<h3 id="贡献三：从多视图深度图直接构建-Gaussian-中心，并联合预测其他-Gaussian-属性"><a href="#贡献三：从多视图深度图直接构建-Gaussian-中心，并联合预测其他-Gaussian-属性" class="headerlink" title="贡献三：从多视图深度图直接构建 Gaussian 中心，并联合预测其他 Gaussian 属性"></a>贡献三：从多视图深度图直接构建 Gaussian 中心，并联合预测其他 Gaussian 属性</h3><p>【原文事实】</p>
+<p>每个输入视图的深度图通过相机参数反投影到三维世界坐标系，随后将各视图的点云直接合并为 Gaussian 中心。Opacity、Covariance 和颜色参数与深度共同预测。</p>
+<ul>
+<li>针对的问题：将多视图几何估计转化为可渲染 Gaussian 表示。</li>
+<li>技术性质：多视图深度到 Gaussian 表示的集成。</li>
+<li>主要依据：Section 3.2、Figure 2、Equation (1)。</li>
+<li>实验依据：Figure 4、Figure D。</li>
+</ul>
+<h3 id="贡献四：仅用光度监督训练，不需要-ground-truth-depth"><a href="#贡献四：仅用光度监督训练，不需要-ground-truth-depth" class="headerlink" title="贡献四：仅用光度监督训练，不需要 ground-truth depth"></a>贡献四：仅用光度监督训练，不需要 ground-truth depth</h3><p>【原文事实】</p>
+<p>模型通过渲染目标视图，与真实目标 RGB 图像之间的 (_2) 和 LPIPS 损失进行端到端训练。</p>
+<ul>
+<li>针对的问题：真实场景数据难以获得大规模、准确的深度真值。</li>
+<li>技术性质：训练范式与监督设计。</li>
+<li>主要依据：Section 3.3。</li>
+<li>实验依据：RealEstate10K、ACID 的主结果及消融实验。</li>
+</ul>
+<h3 id="贡献五：验证几何质量、效率和跨数据集泛化"><a href="#贡献五：验证几何质量、效率和跨数据集泛化" class="headerlink" title="贡献五：验证几何质量、效率和跨数据集泛化"></a>贡献五：验证几何质量、效率和跨数据集泛化</h3><p>【原文事实】</p>
+<p>作者报告 MVSplat 在 RealEstate10K 和 ACID 上获得较好的 NVS 指标，并在从 RealEstate10K 训练后直接测试 ACID 和 DTU 的设置中优于 PixelSplat。</p>
+<ul>
+<li>技术性质：实验贡献。</li>
+<li>主要依据：Section 4、Tables 1–3、Figures 3–6、Figures C–E。</li>
+<li>证据边界：跨数据集实验直接验证的是新视角图像质量，不是独立的几何真值精度。</li>
+</ul>
+<h2 id="1-4-结论（Conclusion）"><a href="#1-4-结论（Conclusion）" class="headerlink" title="1.4 结论（Conclusion）"></a>1.4 结论（Conclusion）</h2><p>【原文事实】</p>
+<ol>
+<li>MVSplat 是一个由稀疏多视图图像训练得到的前馈式 3D Gaussian Splatting 模型。</li>
+<li>Cost Volume 利用多视图对应信息，为 Gaussian 中心定位提供几何线索。</li>
+<li>相较于 PixelSplat，MVSplat 参数量约少 10 倍，推理速度超过 2 倍，同时获得更好的外观、几何和跨数据集表现。</li>
+<li>作者认为 Cost Volume 是实现高效前馈 Gaussian Splatting 的关键组成部分。</li>
+</ol>
+<h3 id="作者明确承认的局限"><a href="#作者明确承认的局限" class="headerlink" title="作者明确承认的局限"></a>作者明确承认的局限</h3><ol>
+<li>对非朗伯表面和反射表面（如玻璃、窗户）可能不够有效。</li>
+<li>训练数据的多样性仍不足以保证对真实世界任意场景的稳健泛化。</li>
+<li>作者提出未来可通过更大规模、更多样的数据集训练，并探索引入 BRDF 属性来改善反射表面。</li>
+</ol>
+<h3 id="初步评价"><a href="#初步评价" class="headerlink" title="初步评价"></a>初步评价</h3><p>【独立评价】</p>
+<p>MVSplat 的主要推进是把“由特征回归深度”改为“在几何约束下进行多视图特征匹配”。它没有重新发明 Plane Sweeping 或 Cost Volume，而是将经典 MVS 思想组织成适合前馈 Gaussian 预测的轻量级结构。</p>
+<hr>
+<h1 id="2-阶段-2：论文图表阅读"><a href="#2-阶段-2：论文图表阅读" class="headerlink" title="2. 阶段 2：论文图表阅读"></a>2. 阶段 2：论文图表阅读</h1><h2 id="2-1-图表功能总览"><a href="#2-1-图表功能总览" class="headerlink" title="2.1 图表功能总览"></a>2.1 图表功能总览</h2><h3 id="Figure-总览"><a href="#Figure-总览" class="headerlink" title="Figure 总览"></a>Figure 总览</h3><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>所在位置</th>
+<th>简称</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Figure 1</td>
+<td>Introduction</td>
+<td>PixelSplat vs MVSplat</td>
+<td>直接展示两种方法的 Gaussian 结构、外观和效率差异</td>
+</tr>
+<tr>
+<td>Figure 2</td>
+<td>Method</td>
+<td>MVSplat Overview</td>
+<td>展示多视图 Transformer、Cost Volume、U-Net、深度反投影和 Gaussian 渲染流程</td>
+</tr>
+<tr>
+<td>Figure 3</td>
+<td>Experiments</td>
+<td>SOTA Comparison</td>
+<td>比较 MuRF、PixelSplat、MVSplat 与 Ground Truth 的新视角图像</td>
+</tr>
+<tr>
+<td>Figure 4</td>
+<td>Experiments</td>
+<td>Gaussian Geometry</td>
+<td>比较两种方法的 3D Gaussians 和深度图</td>
+</tr>
+<tr>
+<td>Figure 5</td>
+<td>Experiments</td>
+<td>Cross-dataset Generalization</td>
+<td>展示 RealEstate10K 训练后对 ACID、DTU 的零样本泛化</td>
+</tr>
+<tr>
+<td>Figure 6</td>
+<td>Experiments</td>
+<td>Ablation</td>
+<td>对比 Cost Volume、Cross-view Attention、U-Net 和 Depth Refinement 的作用</td>
+</tr>
+<tr>
+<td>Figure A</td>
+<td>Appendix 0.A</td>
+<td>Validation Curves</td>
+<td>展示不同消融模型训练过程中的 PSNR、SSIM、LPIPS 曲线</td>
+</tr>
+<tr>
+<td>Figure B</td>
+<td>Appendix 0.A</td>
+<td>Failure Cases</td>
+<td>展示非朗伯和反射表面上的失败案例</td>
+</tr>
+<tr>
+<td>Figure C</td>
+<td>Appendix 0.B</td>
+<td>More SOTA Comparisons</td>
+<td>补充与现有方法的定性比较</td>
+</tr>
+<tr>
+<td>Figure D</td>
+<td>Appendix 0.B</td>
+<td>More Geometry Comparisons</td>
+<td>补充 Gaussian 点云与深度图比较</td>
+</tr>
+<tr>
+<td>Figure E</td>
+<td>Appendix 0.B</td>
+<td>More Generalization Comparisons</td>
+<td>补充跨数据集泛化结果</td>
+</tr>
+</tbody></table>
+<h3 id="Table-总览"><a href="#Table-总览" class="headerlink" title="Table 总览"></a>Table 总览</h3><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>所在位置</th>
+<th>内容</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Table 1</td>
+<td>Section 4.2</td>
+<td>RealEstate10K、ACID 主结果、推理时间、参数量</td>
+<td>验证图像质量与效率</td>
+</tr>
+<tr>
+<td>Table 2</td>
+<td>Section 4.2</td>
+<td>RE10K 训练后测试 ACID、DTU</td>
+<td>验证跨数据集泛化</td>
+</tr>
+<tr>
+<td>Table 3</td>
+<td>Section 4.3</td>
+<td>Cost Volume、Cross-view Attention、U-Net、Depth Refinement 消融</td>
+<td>验证核心模块</td>
+</tr>
+<tr>
+<td>Table A</td>
+<td>Appendix 0.A</td>
+<td>将 MVSplat Cost Volume 替换进 PixelSplat</td>
+<td>检验 Cost Volume 的可迁移性</td>
+</tr>
+<tr>
+<td>Table B</td>
+<td>Appendix 0.A</td>
+<td>Epipolar Transformer 与 Swin Transformer 对比</td>
+<td>检验骨干结构与效率</td>
+</tr>
+<tr>
+<td>Table C</td>
+<td>Appendix 0.A</td>
+<td>每像素 1 个或 3 个 Gaussian</td>
+<td>分析表示数量与速度权衡</td>
+</tr>
+<tr>
+<td>Table D</td>
+<td>Appendix 0.A</td>
+<td>UniMatch 预训练与随机初始化</td>
+<td>分析预训练初始化的作用</td>
+</tr>
+</tbody></table>
+<h2 id="2-2-Figure-1：MVSplat-与-PixelSplat-的总体比较"><a href="#2-2-Figure-1：MVSplat-与-PixelSplat-的总体比较" class="headerlink" title="2.2 Figure 1：MVSplat 与 PixelSplat 的总体比较"></a>2.2 Figure 1：MVSplat 与 PixelSplat 的总体比较</h2><figure>
+<img src="MVSplat_精读报告_assets/teaser.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — MVSplat vs PixelSplat" />
+<figcaption aria-hidden="true">Figure 1 — MVSplat vs PixelSplat</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 1: Our MVSplat outperforms pixelSplat [1] in terms of both appearance and geometry quality with 10× fewer parameters and more than 2× faster inference speed.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 1：与 PixelSplat 相比，MVSplat 在外观和几何质量方面均取得更好表现，同时参数量减少约 10 倍，推理速度超过 2 倍。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>左侧展示 PixelSplat 的新视角和 3D Gaussian 结构。</li>
+<li>中间展示两张输入视图。</li>
+<li>右侧展示 MVSplat 的 3D Gaussian 结构和新视角。</li>
+<li>PixelSplat 的 Gaussian 可视化中存在较多分散、漂浮的结构；MVSplat 的 Gaussian 更集中地贴合场景轮廓。</li>
+<li>中间的柱状图对比参数量、推理时间、Gaussian 数量和 PSNR。</li>
+<li>图中参数量约为 PixelSplat 125.1M、MVSplat 12.0M；推理时间约为 104 ms 与 44 ms；Gaussian 数量约为 393K 与 131K；PSNR 约为 25.9 dB 与 26.4 dB。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>这是论文最直接的比较性 Figure。它把 MVSplat 的三项核心卖点放在一起：更好的 Gaussian 结构、更少的模型参数和更快的推理。</p>
+<p><strong>正文关联</strong></p>
+<p>Introduction、Section 4.2、Table 1、Figure 4。</p>
+<p><strong>结论边界</strong></p>
+<p>该图是定性和汇总指标示意。Gaussian 可视化能说明输出结构的差异，但不是独立几何真值评估；柱状图中的数值应以正文 Table 1 为准。</p>
+<h2 id="2-3-Figure-2：MVSplat-总体架构"><a href="#2-3-Figure-2：MVSplat-总体架构" class="headerlink" title="2.3 Figure 2：MVSplat 总体架构"></a>2.3 Figure 2：MVSplat 总体架构</h2><figure>
+<img src="MVSplat_精读报告_assets/pipeline.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — MVSplat Architecture" />
+<figcaption aria-hidden="true">Figure 2 — MVSplat Architecture</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 2: Overview of MVSplat. Given multiple posed images as input, MVSplat first extracts multi-view image features with a Transformer. Then, the per-view cost volumes using plane sweeping are constructed. The Transformer features and cost volumes are concatenated together as input to a 2D U-Net (with cross-view attention) for cost volume refinement and predicting per-view depth maps. The per-view depth maps are unprojected to 3D and combined using a simple deterministic union operation as the 3D Gaussian centers. The opacity, covariance and color Gaussian parameters are predicted jointly with the depth maps. Finally, novel views are rendered from the predicted 3D Gaussians with the rasterization operation.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 2：MVSplat 总体架构。给定多张带相机位姿的图像，MVSplat 首先通过 Transformer 提取多视图图像特征。随后使用 Plane Sweeping 构建每个视图对应的 Cost Volume。Transformer 特征与 Cost Volume 拼接后输入带跨视图注意力的 2D U-Net，用于细化 Cost Volume 并预测各视图的深度图。各视图深度图被反投影到三维空间，并通过简单、确定性的并集操作组合为 3D Gaussian 中心。Opacity、Covariance 和颜色参数与深度图共同预测。最后，通过光栅化操作从预测的 3D Gaussians 渲染新视角。</p>
+<p><strong>视觉观察</strong></p>
+<p>图中从左到右可以分为六个部分：</p>
+<ol>
+<li><strong>输入图像</strong>：多张参考图像 (I_i,I_j,)。</li>
+<li><strong>Multi-View Transformer</strong>：提取并交换跨视图特征。</li>
+<li><strong>Feature Matching &#x2F; Cost Volume</strong>：对不同视图特征进行几何 Warp 和匹配，形成 Cost Volume。</li>
+<li><strong>2D U-Net</strong>：联合 Transformer 特征和 Cost Volume，进行细化。</li>
+<li><strong>Gaussian 参数构建</strong>：由深度图反投影得到中心 ()，并预测 (,,c)。</li>
+<li><strong>Rasterization</strong>：将三维 Gaussian 渲染为 Novel View。</li>
+</ol>
+<p><strong>主要功能</strong></p>
+<p>Figure 2 是理解本文方法的核心图。它清楚表明：MVSplat 并不是直接把 Transformer 特征映射成三维坐标，而是先构造有深度维度的匹配代价，再由网络估计深度。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 3.1–3.3，Equations (1)–(6)。</p>
+<p><strong>关键理解</strong></p>
+<p>Cost Volume 是 Gaussian 中心预测的中间几何表示；它不是最终的 3D 场景，也不是直接渲染的体素网格。最终仍然是 Gaussian primitives。</p>
+<h2 id="2-4-Figure-3：与现有方法的新视角合成比较"><a href="#2-4-Figure-3：与现有方法的新视角合成比较" class="headerlink" title="2.4 Figure 3：与现有方法的新视角合成比较"></a>2.4 Figure 3：与现有方法的新视角合成比较</h2><figure>
+<img src="MVSplat_精读报告_assets/sota_comparisons.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — SOTA Comparison" />
+<figcaption aria-hidden="true">Figure 3 — SOTA Comparison</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 3: Comparisons with the state of the art. The first three rows are from RealEstate10K (indoor scenes), while the last one is from ACID (outdoor scenes). Models are trained with a collection of training scenes from each indicated dataset, and tested on novel scenes from the same dataset. MVSplat surpasses all other competitive models in rendering challenging regions due to the effectiveness of our cost volume-based geometry representation.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 3：与先进方法的比较。前三行来自 RealEstate10K 室内场景，最后一行来自 ACID 户外场景。各模型分别使用对应数据集的训练场景训练，并在同一数据集的未见场景上测试。作者认为，基于 Cost Volume 的几何表示使 MVSplat 在渲染具有挑战性的区域时优于其他竞争方法。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>最左侧两列为输入视图。</li>
+<li>后续列依次展示 MuRF、PixelSplat、MVSplat 和 Ground Truth。</li>
+<li>前三行是室内场景，最后一行是户外桥梁&#x2F;山地场景。</li>
+<li>在窗框、楼梯扶手、灯罩、远处桥梁等区域，各方法的细节恢复和结构稳定性不同。</li>
+<li>MVSplat 的结果在这些区域中与 Ground Truth 更接近，但图像中仍能观察到一定模糊和局部差异。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>对比不同方法在复杂结构和跨视角内容上的 NVS 表现。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.2、Table 1。</p>
+<p><strong>结论边界</strong></p>
+<p>这是定性图像证据。它支持作者关于 NVS 质量的主张，但不能单独证明 Gaussian 中心对应真实物体表面。</p>
+<h2 id="2-5-Figure-4：Gaussian-几何与深度图比较"><a href="#2-5-Figure-4：Gaussian-几何与深度图比较" class="headerlink" title="2.5 Figure 4：Gaussian 几何与深度图比较"></a>2.5 Figure 4：Gaussian 几何与深度图比较</h2><figure>
+<img src="MVSplat_精读报告_assets/point_cloud_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — Gaussian Geometry" />
+<figcaption aria-hidden="true">Figure 4 — Gaussian Geometry</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 4: Comparisons of 3D Gaussians (top) and depth maps (bottom). We compare the reconstructed geometry quality by visualizing zoom-out views of 3D Gaussians predicted by pixelSplat and our MVSplat, along with the predicted depth maps of two reference views. Extra fine-tuning is not performed on either model. Unlike pixelSplat that contains obvious floating artifacts, our MVSplat produces much higher quality 3D Gaussians and smoother depth, demonstrating the effectiveness of our cost volume-based 3D representation.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 4：3D Gaussians（上方）和深度图（下方）的比较。作者通过缩小视角观察 PixelSplat 和 MVSplat 预测的 3D Gaussians，并同时展示两个参考视图对应的预测深度图，以比较重建几何质量。两种模型均未进行额外微调。与存在明显漂浮伪影的 PixelSplat 相比，MVSplat 生成的 3D Gaussians 质量更高，深度图也更加平滑。作者据此认为 Cost Volume 几何表示有效。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>上方展示 PixelSplat 与 MVSplat 的三维 Gaussian 场景。</li>
+<li>下方展示两组参考视图对应的深度图。</li>
+<li>PixelSplat 的点云中存在大量离散、漂浮的 Gaussian。</li>
+<li>MVSplat 的场景结构更集中，墙面、门框、家具等区域的整体形状更连贯。</li>
+<li>红色标记和虚线指向深度图中的局部区域，用于联系二维深度预测与三维 Gaussian 结构。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>这是本文几何主张最重要的定性证据。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.2 的 Assessing geometry reconstruction。</p>
+<p><strong>重要边界</strong></p>
+<ol>
+<li>Figure 4 展示的是预测的 Gaussian 与深度图，没有给出与真实深度或真实点云的定量误差。</li>
+<li>“更平滑”不必然等价于“更准确”；过度平滑也可能损失细节。</li>
+<li>Caption 明确表示两种模型均未进行额外微调，因此这幅图比较的是未额外深度微调的输出。</li>
+<li>PixelSplat 自身论文中的几何可视化曾使用额外深度正则化微调；两篇论文的几何展示设置需要区分，不能把不同处理条件下的点云图直接视为同一实验协议。</li>
+</ol>
+<h2 id="2-6-Figure-5：跨数据集泛化"><a href="#2-6-Figure-5：跨数据集泛化" class="headerlink" title="2.6 Figure 5：跨数据集泛化"></a>2.6 Figure 5：跨数据集泛化</h2><figure>
+<img src="MVSplat_精读报告_assets/re10k_generalization_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Cross-dataset Generalization" />
+<figcaption aria-hidden="true">Figure 5 — Cross-dataset Generalization</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 5: Cross-dataset generalization. Models trained on the source dataset RealEstate10K (indoor scenes) are used to conduct zero-shot test on scenes from target datasets ACID (outdoor scenes) and DTU (object-centric scenes), without any fine-tuning. pixelSplat tends to render blurry images with obvious artifacts since feature distributions in the target datasets differ from the one in the source, while our MVSplat renders competitive outputs thanks to the feature-invariant cost volume based design.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 5：跨数据集泛化。作者使用在源数据集 RealEstate10K（室内场景）上训练的模型，直接在目标数据集 ACID（户外场景）和 DTU（物体中心场景）上进行零样本测试，不进行任何微调。作者认为，由于目标数据集与源数据集的特征分布不同，PixelSplat 容易产生模糊图像和明显伪影；MVSplat 则凭借基于特征不变性的 Cost Volume 设计生成具有竞争力的结果。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>左半部分是 RE10K → ACID。</li>
+<li>右半部分是 RE10K → DTU。</li>
+<li>每组包含输入视图、PixelSplat、MVSplat 和 Ground Truth。</li>
+<li>ACID 部分包含海岸、桥梁和航拍场景。</li>
+<li>DTU 部分包含陶器、商品包装和雕塑等物体中心场景。</li>
+<li>MVSplat 在多数行中更接近 Ground Truth；PixelSplat 的结果在部分区域有明显模糊和结构伪影。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>验证模型是否能从一种场景分布迁移到另一种场景分布，而不重新训练。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.2 的 Assessing cross-dataset generalization，Table 2。</p>
+<p><strong>结论边界</strong></p>
+<p>实验支持 MVSplat 在这两个指定目标数据集上的 NVS 泛化优势，但不能证明它对所有分布外场景都具有不变性。作者关于“相对特征相似度比绝对特征幅值更稳定”的解释仍需要更直接的特征分布分析来验证。</p>
+<h2 id="2-7-Figure-6：消融实验"><a href="#2-7-Figure-6：消融实验" class="headerlink" title="2.7 Figure 6：消融实验"></a>2.7 Figure 6：消融实验</h2><figure>
+<img src="MVSplat_精读报告_assets/re10k_ablation_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — Ablation" />
+<figcaption aria-hidden="true">Figure 6 — Ablation</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure 6: Ablations on RealEstate10K. Colored error maps obtained by calculating the differences between the rendered images and the ground truth are attached for better comparison. All models are based on the “base” model, w&#x2F;o depth refinement module. “w&#x2F;o cross-attn” is short for “w&#x2F;o cross-view attention”. Compared to “base”, “base+refine” slightly reduces errors, “w&#x2F;o cost volume” leads to the largest drop, “w&#x2F;o U-Net” harms contents on the right that only exist in one input view, while “w&#x2F;o cross-attn” increases the overall error intensity.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 6：RealEstate10K 上的消融实验。作者附上由渲染图像与真实图像差异计算得到的彩色误差图，以便比较。除最终的 base+refine 外，图中各变体均基于不包含深度细化模块的 base 模型。<code>w/o cross-attn</code> 表示移除跨视图注意力。与 base 相比，base+refine 略微降低误差；移除 Cost Volume 导致最大性能下降；移除 U-Net 会损害只存在于某一输入视图中的右侧内容；移除跨视图注意力则增加整体误差强度。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>第一列为 Ground Truth。</li>
+<li>后续列分别为 w&#x2F;o cost volume、w&#x2F;o cross-attn、w&#x2F;o U-Net、base、base+refine。</li>
+<li>下半部分为输入视图及各变体对应的误差图。</li>
+<li>移除 Cost Volume 后，图像整体结构与 Ground Truth 差距明显。</li>
+<li>移除 U-Net 后，某些只在单个输入视图中出现的内容表现较差。</li>
+<li>移除 cross-view attention 后，整体误差增强。</li>
+<li>Depth refinement 对 base 有小幅提升。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>以可视化方式验证 Cost Volume、Cross-view Attention、U-Net 和 Depth Refinement 的作用。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.3、Table 3。</p>
+<h2 id="2-8-Figure-A：消融实验验证曲线"><a href="#2-8-Figure-A：消融实验验证曲线" class="headerlink" title="2.8 Figure A：消融实验验证曲线"></a>2.8 Figure A：消融实验验证曲线</h2><figure>
+<img src="MVSplat_精读报告_assets/supp_val_logs.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure A — Validation Curves" />
+<figcaption aria-hidden="true">Figure A — Validation Curves</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure A: Validation curves of the ablations. The setup of each model is illustrated on the top, which refers to the same one as in Tab. 3 of the main paper. The cost volume plays a fundamental role in our full model, and interestingly, the model without cross-view attention suffers from over-fitting after certain training iterations.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 A：消融模型的验证曲线。每个模型的配置在图上方展示，与正文 Table 3 中的设置一致。Cost Volume 在完整模型中发挥基础性作用；有趣的是，移除跨视图注意力的模型在训练一定迭代次数后出现过拟合。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>三个横向子图分别是 PSNR、SSIM 和 LPIPS。</li>
+<li>横轴为训练步数。</li>
+<li>曲线包括 base+refine、base、w&#x2F;o U-Net、w&#x2F;o cross-view attention、w&#x2F;o cost volume。</li>
+<li>w&#x2F;o cost volume 的曲线明显较差。</li>
+<li>w&#x2F;o cross-view attention 在训练后期出现性能回落，表现出过拟合。</li>
+<li>base+refine 在最终阶段整体表现最好。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>补充 Table 3 的单点结果，说明不同模块不仅影响最终指标，也影响训练稳定性。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.3、Table 3。</p>
+<h2 id="2-9-Figure-B：失败案例"><a href="#2-9-Figure-B：失败案例" class="headerlink" title="2.9 Figure B：失败案例"></a>2.9 Figure B：失败案例</h2><figure>
+<img src="MVSplat_精读报告_assets/supp_limitation.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B — Failure Cases" />
+<figcaption aria-hidden="true">Figure B — Failure Cases</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure B: Failure cases. Our MVSplat might be less effective on the non-Lambertian and reflective surfaces.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 B：失败案例。MVSplat 在非朗伯表面和反射表面上可能效果较差。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>两组厨房场景。</li>
+<li>输入视图中可见玻璃、窗户或反射性表面。</li>
+<li>MVSplat 结果与 Ground Truth 在大部分区域相近，但红框标记的反射区域仍存在差异。</li>
+<li>右侧误差图显示这些区域的误差更加明显。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>展示 Cost Volume &#x2F; 多视图匹配仍会受到非朗伯反射的影响。</p>
+<p><strong>正文关联</strong></p>
+<p>Appendix 0.A Limitation、Conclusion。</p>
+<h2 id="2-10-Figure-C：更多-SOTA-比较"><a href="#2-10-Figure-C：更多-SOTA-比较" class="headerlink" title="2.10 Figure C：更多 SOTA 比较"></a>2.10 Figure C：更多 SOTA 比较</h2><figure>
+<img src="MVSplat_精读报告_assets/supp_sota.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure C — More SOTA Comparisons" />
+<figcaption aria-hidden="true">Figure C — More SOTA Comparisons</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure C: More comparisons with the state of the art. These are the extended visual results of Fig. 3. Scenes of the first four rows come from the RealEstate10K, whilst scenes of the last two rows come from ACID. Our MVSplat performs the best in all cases.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 C：更多先进方法比较。这些是 Figure 3 的扩展定性结果。前四行来自 RealEstate10K，最后两行来自 ACID。作者报告 MVSplat 在所有案例中表现最好。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>前四行是室内场景，最后两行是户外航拍场景。</li>
+<li>每组仍然包含输入视图、MuRF、PixelSplat、MVSplat 和 Ground Truth。</li>
+<li>画面包含卫生间、书桌、厨房、室内走廊、海岸和道路等场景。</li>
+<li>不同方法在边缘、纹理和细节区域存在差异。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>补充主文 Figure 3 的定性证据。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.2。</p>
+<h2 id="2-11-Figure-D：更多-Gaussian-与深度图比较"><a href="#2-11-Figure-D：更多-Gaussian-与深度图比较" class="headerlink" title="2.11 Figure D：更多 Gaussian 与深度图比较"></a>2.11 Figure D：更多 Gaussian 与深度图比较</h2><figure>
+<img src="MVSplat_精读报告_assets/supp_point_cloud.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure D — More Geometry Comparisons" />
+<figcaption aria-hidden="true">Figure D — More Geometry Comparisons</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure D: More comparisons of 3D Gaussians (top) and depth maps (bottom). These are the extended visual results of Fig. 4. Extra depth-regularized fine-tuning is not applied to either model. 3D Gaussians and depth maps predicted by our MVSplat are both of higher quality than those predicted by pixelSplat.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 D：更多 3D Gaussians（上方）和深度图（下方）比较。这些是 Figure 4 的扩展结果。两种模型均未进行额外的深度正则化微调。作者认为，MVSplat 预测的 3D Gaussians 和深度图均优于 PixelSplat。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>上方展示两组室内场景的 Gaussian 结构。</li>
+<li>下方展示对应深度图。</li>
+<li>PixelSplat 的 Gaussian 中存在大量离散漂浮结构。</li>
+<li>MVSplat 的点云更接近完整室内结构。</li>
+<li>深度图中，MVSplat 的墙面、门框和家具边界整体更连贯。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>为 Figure 4 的几何质量主张提供更多定性样例。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.2、Figure 4。</p>
+<p><strong>结论边界</strong></p>
+<p>依然是定性比较，没有提供几何真值误差指标。</p>
+<h2 id="2-12-Figure-E：更多跨数据集泛化比较"><a href="#2-12-Figure-E：更多跨数据集泛化比较" class="headerlink" title="2.12 Figure E：更多跨数据集泛化比较"></a>2.12 Figure E：更多跨数据集泛化比较</h2><figure>
+<img src="MVSplat_精读报告_assets/supp_generalization.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure E — More Generalization Comparisons" />
+<figcaption aria-hidden="true">Figure E — More Generalization Comparisons</figcaption>
+</figure>
+
+<p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Figure E: More comparisons of cross-dataset generalization. These are the extended visual results of Fig. 5. By training on indoor scenes (RealEstate10K), our MVSplat generalizes much better than pixelSplat to outdoor scenes (ACID) and object-centric scenes (DTU), showing the superior of our cost volume-based architecture.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>图 E：更多跨数据集泛化比较。这些是 Figure 5 的扩展结果。通过在室内场景 RealEstate10K 上训练，MVSplat 相较于 PixelSplat 能更好地泛化到户外场景 ACID 和物体中心场景 DTU，作者据此认为基于 Cost Volume 的架构具有优势。</p>
+<p><strong>视觉观察</strong></p>
+<ul>
+<li>左侧是 RE10K → ACID。</li>
+<li>右侧是 RE10K → DTU。</li>
+<li>ACID 场景包括桥梁、海滩和海岸线。</li>
+<li>DTU 场景包括南瓜、雕塑、陶器等。</li>
+<li>MVSplat 的输出在大多数案例中更接近 Ground Truth，尤其在物体边缘和局部纹理上。</li>
+</ul>
+<p><strong>主要功能</strong></p>
+<p>补充跨数据集泛化的定性证据。</p>
+<p><strong>正文关联</strong></p>
+<p>Section 4.2、Table 2。</p>
+<h2 id="2-13-Table-1：主结果、参数量与推理时间"><a href="#2-13-Table-1：主结果、参数量与推理时间" class="headerlink" title="2.13 Table 1：主结果、参数量与推理时间"></a>2.13 Table 1：主结果、参数量与推理时间</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table 1: Comparisons with the state of the art. Running time includes both encoder and render, note that 3DGS-based methods (pixelSplat and MVSplat) render dramatically faster (~500 FPS for the render). Performances are averaged over thousands of test scenes in each dataset. For each scene, the model takes two views as input and renders three novel views for evaluation. MVSplat performs the best in terms of all visual metrics and runs the fastest with a lightweight model size.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 1：与先进方法的比较。运行时间包括编码和渲染。需要注意，基于 3DGS 的方法（PixelSplat 和 MVSplat）渲染速度明显更快，单独渲染阶段约为 500 FPS。每个数据集的性能是在数千个测试场景上平均得到的。每个场景输入两张图像，并渲染三个新视角进行评估。作者报告 MVSplat 在所有视觉指标上表现最好，同时模型规模较小、运行速度最快。</p>
+<h3 id="原始数据"><a href="#原始数据" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="right">Time (s) ↓</th>
+<th align="right">Params (M) ↓</th>
+<th align="right">RE10K PSNR ↑</th>
+<th align="right">RE10K SSIM ↑</th>
+<th align="right">RE10K LPIPS ↓</th>
+<th align="right">ACID PSNR ↑</th>
+<th align="right">ACID SSIM ↑</th>
+<th align="right">ACID LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pixelNeRF</td>
+<td align="right">5.299</td>
+<td align="right">28.2</td>
+<td align="right">20.43</td>
+<td align="right">0.589</td>
+<td align="right">0.550</td>
+<td align="right">20.97</td>
+<td align="right">0.547</td>
+<td align="right">0.533</td>
+</tr>
+<tr>
+<td>GPNR</td>
+<td align="right">13.340</td>
+<td align="right">9.6</td>
+<td align="right">24.11</td>
+<td align="right">0.793</td>
+<td align="right">0.255</td>
+<td align="right">25.28</td>
+<td align="right">0.764</td>
+<td align="right">0.332</td>
+</tr>
+<tr>
+<td>AttnRend</td>
+<td align="right">1.325</td>
+<td align="right">125.1</td>
+<td align="right">24.78</td>
+<td align="right">0.820</td>
+<td align="right">0.213</td>
+<td align="right">26.88</td>
+<td align="right">0.799</td>
+<td align="right">0.218</td>
+</tr>
+<tr>
+<td>MuRF</td>
+<td align="right">0.186</td>
+<td align="right">5.3</td>
+<td align="right">26.10</td>
+<td align="right">0.858</td>
+<td align="right">0.143</td>
+<td align="right">28.09</td>
+<td align="right">0.841</td>
+<td align="right">0.155</td>
+</tr>
+<tr>
+<td>PixelSplat</td>
+<td align="right">0.104</td>
+<td align="right">125.4</td>
+<td align="right">25.89</td>
+<td align="right">0.858</td>
+<td align="right">0.142</td>
+<td align="right">28.14</td>
+<td align="right">0.839</td>
+<td align="right">0.150</td>
+</tr>
+<tr>
+<td><strong>MVSplat</strong></td>
+<td align="right"><strong>0.044</strong></td>
+<td align="right"><strong>12.0</strong></td>
+<td align="right"><strong>26.39</strong></td>
+<td align="right"><strong>0.869</strong></td>
+<td align="right"><strong>0.128</strong></td>
+<td align="right"><strong>28.25</strong></td>
+<td align="right"><strong>0.843</strong></td>
+<td align="right"><strong>0.144</strong></td>
+</tr>
+</tbody></table>
+<p><strong>解读</strong></p>
+<ul>
+<li>MVSplat 在两个数据集的 PSNR、SSIM、LPIPS 三项指标上均优于表中其他方法。</li>
+<li>与 PixelSplat 相比，RE10K 上 PSNR 提高 0.50 dB，SSIM 提高 0.011，LPIPS 降低 0.014。</li>
+<li>ACID 上 PSNR 提高 0.11 dB，SSIM 提高 0.004，LPIPS 降低 0.006。</li>
+<li>参数量从 125.4M 降至 12.0M，约为 10.45 倍减少。</li>
+<li>运行时间从 0.104 s 降至 0.044 s，约为 2.36 倍加速。</li>
+</ul>
+<p><strong>边界</strong></p>
+<p>Table 1 的 Time 同时包含 encoder 和 render；它不是单纯 rasterization 时间。编码时间和渲染时间应分开理解。</p>
+<h2 id="2-14-Table-2：跨数据集泛化"><a href="#2-14-Table-2：跨数据集泛化" class="headerlink" title="2.14 Table 2：跨数据集泛化"></a>2.14 Table 2：跨数据集泛化</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table 2: Cross-dataset generalization. Models trained on RE10K (indoor scenes) are directly used to test on scenes from ACID (outdoor scenes) and DTU (object-centric scenes), without any further fine-tuning. Our MVSplat generalizes better than pixelSplat, where the improvement is more significant when the gap between source and target datasets is larger (RE10K to DTU). It is also worth noting that our zero-shot generalization results on ACID even slightly surpass pixelSplat’s ACID trained model (PSNR: 28.14, SSIM: 0.843, LPIPS: 0.144) reported in Tab. 1.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 2：跨数据集泛化。模型仅在 RE10K（室内场景）上训练，随后直接在 ACID（户外场景）和 DTU（物体中心场景）上测试，不进行进一步微调。作者报告 MVSplat 比 PixelSplat 具有更好的泛化能力，并且源数据集与目标数据集差异越大（RE10K 到 DTU），性能提升越明显。值得注意的是，MVSplat 在 ACID 上的零样本泛化结果甚至略微超过 PixelSplat 在 ACID 上专门训练的模型。</p>
+<h3 id="原始数据-1"><a href="#原始数据-1" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Training Data</th>
+<th>Method</th>
+<th align="right">ACID PSNR ↑</th>
+<th align="right">ACID SSIM ↑</th>
+<th align="right">ACID LPIPS ↓</th>
+<th align="right">DTU PSNR ↑</th>
+<th align="right">DTU SSIM ↑</th>
+<th align="right">DTU LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RealEstate10K</td>
+<td>PixelSplat</td>
+<td align="right">27.64</td>
+<td align="right">0.830</td>
+<td align="right">0.160</td>
+<td align="right">12.89</td>
+<td align="right">0.382</td>
+<td align="right">0.560</td>
+</tr>
+<tr>
+<td>RealEstate10K</td>
+<td><strong>MVSplat</strong></td>
+<td align="right"><strong>28.15</strong></td>
+<td align="right"><strong>0.841</strong></td>
+<td align="right"><strong>0.147</strong></td>
+<td align="right"><strong>13.94</strong></td>
+<td align="right"><strong>0.473</strong></td>
+<td align="right"><strong>0.385</strong></td>
+</tr>
+</tbody></table>
+<p><strong>解读</strong></p>
+<ul>
+<li>在 RE10K → ACID 的零样本设置中，MVSplat 三项指标均优于 PixelSplat。</li>
+<li>在 RE10K → DTU 的零样本设置中，差距进一步扩大。</li>
+<li>这说明 MVSplat 的特征匹配式结构在这些跨域测试中表现更稳健。</li>
+</ul>
+<p><strong>边界</strong></p>
+<p>表中是新视角图像指标，并非深度或点云精度指标。它验证的是跨数据集 NVS 泛化，不是直接验证几何真值泛化。</p>
+<h2 id="2-15-Table-3：主文消融实验"><a href="#2-15-Table-3：主文消融实验" class="headerlink" title="2.15 Table 3：主文消融实验"></a>2.15 Table 3：主文消融实验</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table 3: Ablations on RealEstate10K. The “base + refine” is our final model, where “refine” refers to the “depth refinement” detailed in Sec. 3.1. All other ablations are conducted on the “base” model w&#x2F;o depth refinement. The cost volume module plays an indispensable role in MVSplat. Results of all models are obtained from the final converged step (300K in our experiments), except the one “w&#x2F;o cross-view attention”, which suffers from over-fitting (details are shown in the supplementary material Fig. A), hence we report its best performance.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 3：RealEstate10K 上的消融实验。<code>base + refine</code> 是最终模型，其中 <code>refine</code> 指 Section 3.1 中的深度细化模块。其他消融均基于不包含深度细化的 base 模型。作者认为 Cost Volume 模块对 MVSplat 不可或缺。除 <code>w/o cross-view attention</code> 外，其他模型报告训练至 300K 的最终收敛结果；移除跨视图注意力的模型出现过拟合，因此报告其最佳性能，相关曲线见补充材料 Figure A。</p>
+<h3 id="原始数据-2"><a href="#原始数据-2" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Setup</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>base + refine</td>
+<td align="right"><strong>26.39</strong></td>
+<td align="right"><strong>0.869</strong></td>
+<td align="right"><strong>0.128</strong></td>
+</tr>
+<tr>
+<td>base</td>
+<td align="right">26.12</td>
+<td align="right">0.864</td>
+<td align="right">0.133</td>
+</tr>
+<tr>
+<td>w&#x2F;o cost volume</td>
+<td align="right">22.83</td>
+<td align="right">0.753</td>
+<td align="right">0.197</td>
+</tr>
+<tr>
+<td>w&#x2F;o cross-view attention</td>
+<td align="right">25.19</td>
+<td align="right">0.852</td>
+<td align="right">0.152</td>
+</tr>
+<tr>
+<td>w&#x2F;o U-Net</td>
+<td align="right">25.45</td>
+<td align="right">0.847</td>
+<td align="right">0.150</td>
+</tr>
+</tbody></table>
+<p><strong>解读</strong></p>
+<ul>
+<li>Cost Volume 是影响最大的组件：移除后 PSNR 下降 3.29 dB，SSIM 下降 0.111，LPIPS 上升 0.064。</li>
+<li>Cross-view Attention 对性能和训练稳定性都有影响。</li>
+<li>U-Net 对单个输入视图中存在、另一个视图中缺少对应内容的区域有帮助。</li>
+<li>Depth Refinement 带来小幅提升。</li>
+</ul>
+<p><strong>实验协议注意</strong></p>
+<p><code>w/o cross-view attention</code> 使用最佳 checkpoint，而不是最终 300K checkpoint。因此该行与其他行并非完全相同的 checkpoint 选择规则。</p>
+<h2 id="2-16-Table-A：将-Cost-Volume-引入-PixelSplat"><a href="#2-16-Table-A：将-Cost-Volume-引入-PixelSplat" class="headerlink" title="2.16 Table A：将 Cost Volume 引入 PixelSplat"></a>2.16 Table A：将 Cost Volume 引入 PixelSplat</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table A: Using cost volume in pixelSplat. Our cost volume-based depth prediction approach can also be used in the pixelSplat [1] model by replacing its probability density-based depth branch and its performance can be significantly boosted, which demonstrates the general applicability of our method.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 A：在 PixelSplat 中使用 Cost Volume。通过将 PixelSplat 原有的基于概率密度的深度预测分支替换为本文的 Cost Volume 深度预测方法，也可以显著提升 PixelSplat 的性能，说明该方法具有一定的通用性。</p>
+<h3 id="原始数据-3"><a href="#原始数据-3" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Setup</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PixelSplat（probability density depth）</td>
+<td align="right">25.89</td>
+<td align="right">0.858</td>
+<td align="right">0.142</td>
+</tr>
+<tr>
+<td>PixelSplat（MVSplat cost volume depth）</td>
+<td align="right"><strong>26.63</strong></td>
+<td align="right"><strong>0.875</strong></td>
+<td align="right"><strong>0.122</strong></td>
+</tr>
+</tbody></table>
+<p><strong>解读</strong></p>
+<p>将 Cost Volume 深度分支替换到 PixelSplat 后：</p>
+<ul>
+<li>PSNR 提高 0.74 dB；</li>
+<li>SSIM 提高 0.017；</li>
+<li>LPIPS 降低 0.020。</li>
+</ul>
+<p>这是全文最有价值的跨方法消融之一，因为它不仅比较两个完整模型，还将 MVSplat 的核心深度预测机制放进 PixelSplat 的架构中进行测试。</p>
+<p><strong>证据边界</strong></p>
+<p>它支持 Cost Volume 深度预测本身具有可迁移的性能价值，但不能说明 PixelSplat 的所有其他组件都不重要，也不能单独解释 MVSplat 参数量减少的全部原因。</p>
+<h2 id="2-17-Table-B：Transformer-Backbone-比较"><a href="#2-17-Table-B：Transformer-Backbone-比较" class="headerlink" title="2.17 Table B：Transformer Backbone 比较"></a>2.17 Table B：Transformer Backbone 比较</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table B: Comparisons of the backbone Transformer. Our Swin Transformer [23]-based architecture is more efficient than the Epipolar Transformer counterpart in pixelSplat [1] since the expensive epipolar sampling process is avoided. Besides, there is no clear difference observed in their rendering qualities.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 B：骨干 Transformer 的比较。由于避免了代价较高的极线采样过程，基于 Swin Transformer 的架构比 PixelSplat 中对应的 Epipolar Transformer 更高效；两者的渲染质量没有观察到明显差异。</p>
+<h3 id="原始数据-4"><a href="#原始数据-4" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Setup</th>
+<th align="right">Time (s) ↓</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MVSplat + Epipolar Transformer</td>
+<td align="right">0.055</td>
+<td align="right">26.09</td>
+<td align="right">0.865</td>
+<td align="right">0.133</td>
+</tr>
+<tr>
+<td>MVSplat + Swin Transformer</td>
+<td align="right"><strong>0.038</strong></td>
+<td align="right">26.12</td>
+<td align="right">0.864</td>
+<td align="right">0.133</td>
+</tr>
+</tbody></table>
+<p><strong>解读</strong></p>
+<ul>
+<li>Swin 版本的时间更短。</li>
+<li>PSNR 略高，但 SSIM 和 LPIPS 基本相同。</li>
+<li>这说明 MVSplat 的主要几何匹配机制不必依赖 PixelSplat 原有的 Epipolar Transformer 结构。</li>
+</ul>
+<h2 id="2-18-Table-C：每像素-Gaussian-数量"><a href="#2-18-Table-C：每像素-Gaussian-数量" class="headerlink" title="2.18 Table C：每像素 Gaussian 数量"></a>2.18 Table C：每像素 Gaussian 数量</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table C: Comparisons of Gaussians’ number per pixel. Increasing the number of Gaussians improves the performance but slows down the rendering speed.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 C：每个像素对应的 Gaussian 数量比较。增加 Gaussian 数量可以提高性能，但会降低渲染速度。</p>
+<h3 id="原始数据-5"><a href="#原始数据-5" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Setup</th>
+<th align="right">Render Time (s) ↓</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MVSplat（1 Gaussian &#x2F; pixel）</td>
+<td align="right"><strong>0.0015</strong></td>
+<td align="right">26.39</td>
+<td align="right">0.869</td>
+<td align="right">0.128</td>
+</tr>
+<tr>
+<td>MVSplat（3 Gaussians &#x2F; pixel）</td>
+<td align="right">0.0023</td>
+<td align="right"><strong>26.54</strong></td>
+<td align="right"><strong>0.872</strong></td>
+<td align="right"><strong>0.127</strong></td>
+</tr>
+</tbody></table>
+<p><strong>解读</strong></p>
+<ul>
+<li>每像素 3 个 Gaussian 带来小幅质量提升。</li>
+<li>渲染时间从 0.0015 s 增加到 0.0023 s。</li>
+<li>作者选择每像素 1 个 Gaussian，作为速度与质量之间的折中。</li>
+</ul>
+<h2 id="2-19-Table-D：Backbone-初始化"><a href="#2-19-Table-D：Backbone-初始化" class="headerlink" title="2.19 Table D：Backbone 初始化"></a>2.19 Table D：Backbone 初始化</h2><p><strong>Caption 原文</strong></p>
+<blockquote>
+<p>Table D: Comparisons of backbone initialization. By default we train our models for 300K iterations with the publicly available UniMatch pretrained weights as initialization. However, our model can also be trained with random initialization (“w&#x2F; random init”) and still outperforms previous state-of-the-art method pixelSplat. The random initialized model needs more training iterations (450K) to reach the performance of the UniMatch initialized model.</p>
+</blockquote>
+<p><strong>Caption 中文</strong></p>
+<p>表 D：骨干网络初始化方式比较。默认情况下，模型使用公开可用的 UniMatch 预训练权重初始化，并训练 300K 次迭代。但模型也可以随机初始化训练，且仍能超过此前的先进方法 PixelSplat。随机初始化模型需要更多训练迭代（450K），才能达到 UniMatch 初始化模型的性能。</p>
+<h3 id="原始数据-6"><a href="#原始数据-6" class="headerlink" title="原始数据"></a>原始数据</h3><table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PixelSplat（DINO init，300K）</td>
+<td align="right">25.89</td>
+<td align="right">0.858</td>
+<td align="right">0.142</td>
+</tr>
+<tr>
+<td>MVSplat（UniMatch init，300K）</td>
+<td align="right"><strong>26.39</strong></td>
+<td align="right"><strong>0.869</strong></td>
+<td align="right"><strong>0.128</strong></td>
+</tr>
+<tr>
+<td>MVSplat（random init，300K）</td>
+<td align="right">26.01</td>
+<td align="right">0.863</td>
+<td align="right">0.133</td>
+</tr>
+<tr>
+<td>MVSplat（random init，450K）</td>
+<td align="right">26.29</td>
+<td align="right">0.868</td>
+<td align="right">0.128</td>
+</tr>
+</tbody></table>
+<p><strong>解读</strong></p>
+<ul>
+<li>UniMatch 初始化能加快训练并提高最终表现。</li>
+<li>随机初始化也能达到较强结果，但需要更多训练。</li>
+<li>该实验说明 MVSplat 不完全依赖预训练，但不能据此说预训练无关紧要。</li>
+</ul>
+<p><strong>边界</strong></p>
+<p>PixelSplat 和 MVSplat 的骨干结构及预训练目标不同，因此表中 PixelSplat DINO init 与 MVSplat UniMatch init 的差异不能单独解释为初始化方法的因果效果。</p>
+<hr>
+<h1 id="3-阶段-3：正文逐层精读"><a href="#3-阶段-3：正文逐层精读" class="headerlink" title="3. 阶段 3：正文逐层精读"></a>3. 阶段 3：正文逐层精读</h1><h2 id="3-1-研究问题（Research-Problem）"><a href="#3-1-研究问题（Research-Problem）" class="headerlink" title="3.1 研究问题（Research Problem）"></a>3.1 研究问题（Research Problem）</h2><h3 id="论文研究什么？"><a href="#论文研究什么？" class="headerlink" title="论文研究什么？"></a>论文研究什么？</h3><p>【原文事实】</p>
+<p>给定 (K) 张带相机参数的稀疏图像：</p>
+<p>[ {(I<sup>i,P</sup>i)}_{i&#x3D;1}^{K}, ]</p>
+<p>模型需要输出一组三维 Gaussian 参数：</p>
+<p>[ {(_j,_j,<em>j,c_j)}</em>{j&#x3D;1}^{HWK}. ]</p>
+<p>其中：</p>
+<ul>
+<li>(I^i)：第 (i) 张输入图像；</li>
+<li>(P^i)：第 (i) 张图像对应的相机投影参数；</li>
+<li>(_j)：Gaussian 三维中心；</li>
+<li>(_j)：opacity；</li>
+<li>(_j)：Gaussian 协方差；</li>
+<li>(c_j)：颜色参数，使用球谐系数表示；</li>
+<li>(H,W)：图像高和宽；</li>
+<li>(K)：输入视图数量。</li>
+</ul>
+<p>输出的 Gaussian 集合被用于渲染未输入的目标视角。</p>
+<h3 id="研究目标"><a href="#研究目标" class="headerlink" title="研究目标"></a>研究目标</h3><ol>
+<li>由少量输入图像恢复可渲染的显式三维表示。</li>
+<li>准确定位 Gaussian 中心，减少漂浮和错位结构。</li>
+<li>不依赖 ground-truth depth 训练。</li>
+<li>保持前馈推理速度。</li>
+<li>支持多于两张输入图像。</li>
+<li>在跨场景、跨数据集条件下保持泛化能力。</li>
+</ol>
+<h3 id="与传统-MVS-的关系"><a href="#与传统-MVS-的关系" class="headerlink" title="与传统 MVS 的关系"></a>与传统 MVS 的关系</h3><p>传统 Multi-View Stereo 也利用多视图对应关系估计深度，但常见流程会把深度估计、点云融合和后续重建分成多个步骤。</p>
+<p>MVSplat 则将每个视图的深度预测直接反投影为 Gaussian 中心，再通过确定性的并集组合成整体 Gaussian 集合。</p>
+<p><strong>关键理解：</strong> MVSplat 的任务不是单独做深度估计，而是把多视图几何匹配作为 Gaussian 中心定位模块，最终目标仍然是可渲染的 3DGS 表示。</p>
+<h2 id="3-2-研究背景与动机（Motivation）"><a href="#3-2-研究背景与动机（Motivation）" class="headerlink" title="3.2 研究背景与动机（Motivation）"></a>3.2 研究背景与动机（Motivation）</h2><h3 id="动机一：逐场景优化不适合快速处理新场景"><a href="#动机一：逐场景优化不适合快速处理新场景" class="headerlink" title="动机一：逐场景优化不适合快速处理新场景"></a>动机一：逐场景优化不适合快速处理新场景</h3><p>【原文事实：Introduction、Related Work】</p>
+<p>传统 NeRF 和 3DGS 通常需要对每个场景单独优化。输入图像数量较多、逐场景优化耗时较长，限制了实际应用。</p>
+<p>前馈式方法通过大规模训练场景学习先验，推理时只需输入少量参考图像即可预测场景表示。</p>
+<h3 id="动机二：单视图-Gaussian-回归对一般场景信息不足"><a href="#动机二：单视图-Gaussian-回归对一般场景信息不足" class="headerlink" title="动机二：单视图 Gaussian 回归对一般场景信息不足"></a>动机二：单视图 Gaussian 回归对一般场景信息不足</h3><p>Splatter Image 从单张图像预测 pixel-aligned Gaussian，主要面向对象级重建。</p>
+<p>作者认为，单张图像对一般复杂场景的几何约束不足，因此 MVSplat 采用多视图输入。</p>
+<h3 id="动机三：PixelSplat-的深度概率预测存在歧义"><a href="#动机三：PixelSplat-的深度概率预测存在歧义" class="headerlink" title="动机三：PixelSplat 的深度概率预测存在歧义"></a>动机三：PixelSplat 的深度概率预测存在歧义</h3><p>【原文事实：Introduction】</p>
+<p>作者认为 PixelSplat 虽然使用 Epipolar Transformer 学习跨视图特征，但仍然需要从图像特征直接预测深度概率分布。这个 feature-to-depth 映射可能不可靠，导致 Gaussian 几何中出现漂浮伪影。</p>
+<p>作者因此提出：</p>
+<ul>
+<li>不让网络仅从特征回归深度分布；</li>
+<li>而是在多个深度候选位置上显式计算跨视图匹配相似度；</li>
+<li>让几何匹配证据参与深度定位。</li>
+</ul>
+<h3 id="动机四：经典-MVS-的-3D-Cost-Volume-计算成本较高"><a href="#动机四：经典-MVS-的-3D-Cost-Volume-计算成本较高" class="headerlink" title="动机四：经典 MVS 的 3D Cost Volume 计算成本较高"></a>动机四：经典 MVS 的 3D Cost Volume 计算成本较高</h3><p>【原文事实：Section 3.1】</p>
+<p>许多传统 MVS 网络使用 3D convolution 处理 Cost Volume。MVSplat 希望保留深度候选维度上的匹配信息，同时尽量避免昂贵的 3D convolution。</p>
+<p>因此，它使用：</p>
+<ul>
+<li>2D CNN；</li>
+<li>2D Transformer；</li>
+<li>2D U-Net；</li>
+<li>低分辨率 cross-view attention。</li>
+</ul>
+<p><strong>核心思想：</strong> 保留 Cost Volume 的几何匹配优势，但使用二维网络完成细化与深度估计。</p>
+<h2 id="3-3-相关工作（Related-Work）"><a href="#3-3-相关工作（Related-Work）" class="headerlink" title="3.3 相关工作（Related Work）"></a>3.3 相关工作（Related Work）</h2><h3 id="3-3-1-Sparse-View-Scene-Reconstruction-and-Synthesis"><a href="#3-3-1-Sparse-View-Scene-Reconstruction-and-Synthesis" class="headerlink" title="3.3.1 Sparse View Scene Reconstruction and Synthesis"></a>3.3.1 Sparse View Scene Reconstruction and Synthesis</h3><p>作者将稀疏视图重建方法分为两类：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>基本方式</th>
+<th>优点</th>
+<th>局限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Per-scene optimization</td>
+<td>每个场景单独优化</td>
+<td>可针对场景调整表示</td>
+<td>推理慢，需要逐场景反向传播</td>
+</tr>
+<tr>
+<td>Cross-scene feed-forward</td>
+<td>在大量场景上训练模型，测试时一次前向预测</td>
+<td>新场景推理快</td>
+<td>需要模型学习跨场景先验</td>
+</tr>
+</tbody></table>
+<p>MVSplat 属于第二类。</p>
+<h3 id="3-3-2-Feed-forward-NeRF"><a href="#3-3-2-Feed-forward-NeRF" class="headerlink" title="3.3.2 Feed-forward NeRF"></a>3.3.2 Feed-forward NeRF</h3><p>作者回顾了：</p>
+<ul>
+<li>pixelNeRF：预测像素对齐特征，条件化 radiance field；</li>
+<li>使用 feature matching 的前馈 NeRF；</li>
+<li>使用 Transformer 的前馈 NeRF；</li>
+<li>使用 3D volume representation 的前馈 NeRF；</li>
+<li>MuRF：针对目标视图构建 frustum volume，并使用 ((2+1)D) CNN。</li>
+</ul>
+<p>作者认为，NeRF 类方法仍然需要沿像素射线进行体采样，渲染效率不如 3DGS。</p>
+<h3 id="3-3-3-Feed-forward-3DGS"><a href="#3-3-3-Feed-forward-3DGS" class="headerlink" title="3.3.3 Feed-forward 3DGS"></a>3.3.3 Feed-forward 3DGS</h3><p>作者讨论了：</p>
+<ul>
+<li>Splatter Image：单视图、像素对齐 Gaussian 参数回归；</li>
+<li>Flash3D：将单视图 Gaussian 预测扩展到场景级；</li>
+<li>PixelSplat：从双视图预测 Gaussian；</li>
+<li>GPS-Gaussian：面向人体重建，使用校正后的双目图像和视差估计。</li>
+</ul>
+<p>MVSplat 的定位是：面向一般场景，使用多视图匹配信息预测 Gaussian，不需要 ground-truth depth 监督。</p>
+<h3 id="3-3-4-Multi-View-Stereo"><a href="#3-3-4-Multi-View-Stereo" class="headerlink" title="3.3.4 Multi-View Stereo"></a>3.3.4 Multi-View Stereo</h3><p>传统 MVS 的核心是通过不同视角之间的几何关系，匹配图像特征并恢复深度。</p>
+<p>MVSplat 与 MVS 的相似点：</p>
+<ul>
+<li>使用相机参数；</li>
+<li>使用深度假设；</li>
+<li>通过 Plane Sweeping 将源视图特征 Warp 到参考视图；</li>
+<li>计算不同深度候选下的跨视图相似度。</li>
+</ul>
+<p>MVSplat 与典型 MVS 流程的不同点：</p>
+<ol>
+<li>不把深度估计和点云融合设计成完全独立的阶段；</li>
+<li>各视图深度图直接反投影为 Gaussian 中心；</li>
+<li>各视图 Gaussian 通过并集构成场景表示；</li>
+<li>训练不需要 ground-truth depth；</li>
+<li>整体模型通过可微 Gaussian rendering 与 RGB 监督端到端训练。</li>
+</ol>
+<h2 id="3-4-核心方法（Method）"><a href="#3-4-核心方法（Method）" class="headerlink" title="3.4 核心方法（Method）"></a>3.4 核心方法（Method）</h2><h3 id="3-4-1-整体流程"><a href="#3-4-1-整体流程" class="headerlink" title="3.4.1 整体流程"></a>3.4.1 整体流程</h3><p>MVSplat 可以分为七个步骤：</p>
+<ol>
+<li>输入 (K) 张带相机参数的参考图像。</li>
+<li>通过浅层 CNN 提取低分辨率图像特征。</li>
+<li>通过 Multi-View Transformer 交换不同视图的信息。</li>
+<li>使用 Plane Sweeping 在一组深度候选上 Warp 跨视图特征。</li>
+<li>计算特征相似度，构建每个视图的 Cost Volume。</li>
+<li>使用 2D U-Net 细化 Cost Volume 并预测深度图。</li>
+<li>将深度图反投影为 Gaussian 中心，同时预测 opacity、covariance 和颜色参数，最后通过 3DGS rasterization 渲染目标视图。</li>
+</ol>
+<h3 id="3-4-2-多视图特征提取"><a href="#3-4-2-多视图特征提取" class="headerlink" title="3.4.2 多视图特征提取"></a>3.4.2 多视图特征提取</h3><p>【原文事实：Section 3.1、Appendix 0.C】</p>
+<p>首先使用浅层 ResNet-like CNN 提取特征。CNN 由 6 个 residual blocks 构成，整体将图像下采样 4 倍。</p>
+<p>之后使用 Multi-View Transformer：</p>
+<ul>
+<li>共 6 个 Transformer blocks；</li>
+<li>每个 block 先执行 self-attention，再执行 cross-attention；</li>
+<li>使用 Swin Transformer 的 local window attention；</li>
+<li>特征通道记为 (C)。</li>
+</ul>
+<p>最终每个视图得到：</p>
+<p>[ F<sup>i</sup>{H4W4C}. ]</p>
+<p>这些特征已经包含跨视图信息。</p>
+<p><strong>作用：</strong> 提供后续 Cost Volume 匹配所需的特征，同时让各视图能够交换上下文信息。</p>
+<h3 id="3-4-3-Plane-Sweeping：构建-Cost-Volume"><a href="#3-4-3-Plane-Sweeping：构建-Cost-Volume" class="headerlink" title="3.4.3 Plane Sweeping：构建 Cost Volume"></a>3.4.3 Plane Sweeping：构建 Cost Volume</h3><p>这是 MVSplat 的核心。</p>
+<h4 id="第一步：确定深度候选"><a href="#第一步：确定深度候选" class="headerlink" title="第一步：确定深度候选"></a>第一步：确定深度候选</h4><p>在 near&#x2F;far depth range 之间采样 (D) 个候选深度：</p>
+<p>[ {d_m}_{m&#x3D;1}^{D}. ]</p>
+<p>论文在所有实验中使用：</p>
+<p>[ D&#x3D;128. ]</p>
+<p>采样在 inverse depth domain 中均匀进行。</p>
+<p>为什么在逆深度空间采样？</p>
+<p>【背景知识】</p>
+<p>对于透视相机，近处物体的视差变化通常更敏感，远处物体的视差变化相对较小。逆深度均匀采样可以在近距离分配更密集的深度假设。</p>
+<p>注意：这是深度候选的采样策略，不意味着最终输出深度必须落在某个离散桶上。</p>
+<h4 id="第二步：将另一视图的特征-Warp-到当前视图"><a href="#第二步：将另一视图的特征-Warp-到当前视图" class="headerlink" title="第二步：将另一视图的特征 Warp 到当前视图"></a>第二步：将另一视图的特征 Warp 到当前视图</h4><p>对当前参考视图 (i)，将其他视图 (j) 的特征按照候选深度 (d_m) 投影到视图 (i)。</p>
+<p>Equation (2)：</p>
+<p>[ F^{ji}_{d_m} &#x3D; W(F<sup>j,P</sup>i,P^j,d_m) R^{H4W4C}. ]</p>
+<p>其中：</p>
+<ul>
+<li>(F^j)：源视图特征；</li>
+<li>(P<sup>i,P</sup>j)：两视图相机投影参数；</li>
+<li>(d_m)：当前深度候选；</li>
+<li>(W)：根据相机几何关系进行的 Warp 操作；</li>
+<li>(F^{ji}_{d_m})：在深度假设 (d_m) 下，Warp 到视图 (i) 的特征。</li>
+</ul>
+<p>【背景知识：几何直觉】</p>
+<p>对于参考视图中的一个像素，如果假设它位于深度 (d_m)，就可以利用相机参数计算对应的三维点，再投影到其他视图中。不同深度假设会对应不同的投影位置，因此也会得到不同的匹配特征。</p>
+<h4 id="第三步：计算跨视图特征相似度"><a href="#第三步：计算跨视图特征相似度" class="headerlink" title="第三步：计算跨视图特征相似度"></a>第三步：计算跨视图特征相似度</h4><p>Equation (3)：</p>
+<p>[ C^i_{d_m} &#x3D; R^{H4W4}. ]</p>
+<p>这里的点积是在特征通道维度上进行的。</p>
+<ul>
+<li>如果某个深度候选对应的 Warp 特征与参考视图特征相似度较高，那么该深度候选更可能对应真实表面。</li>
+<li>如果某个深度候选下两视图特征不匹配，则其匹配分数较低。</li>
+</ul>
+<p>除以 (C) 是常见的 scaled dot-product 处理，用于控制通道维度增加时点积数值的尺度。</p>
+<h4 id="第四步：沿深度维堆叠"><a href="#第四步：沿深度维堆叠" class="headerlink" title="第四步：沿深度维堆叠"></a>第四步：沿深度维堆叠</h4><p>Equation (4)：</p>
+<p>[ C^i&#x3D; [C<sup>i_{d_1},C</sup>i_{d_2},,C^i_{d_D}] R^{H4W4D}. ]</p>
+<p>这样，每个像素位置都对应一个长度为 (D) 的匹配分数向量。</p>
+<p>这就是当前视图的 Cost Volume。</p>
+<p>对于多于两张输入图像的情况，作者将其他视图 Warp 到当前视图，分别计算相关性，然后对这些相关性进行逐像素平均。</p>
+<p>最终得到 (K) 个 Cost Volumes：</p>
+<p>[ {C^i}_{i&#x3D;1}^{K}. ]</p>
+<p><strong>重要理解：</strong> Cost Volume 的每个深度切片对应一个几何深度假设；Cost Volume 的数值表示该深度假设下的跨视图特征匹配程度。</p>
+<h3 id="3-4-4-Cost-Volume-Refinement"><a href="#3-4-4-Cost-Volume-Refinement" class="headerlink" title="3.4.4 Cost Volume Refinement"></a>3.4.4 Cost Volume Refinement</h3><p>初始 Cost Volume 可能在纹理缺失区域存在歧义。</p>
+<p>作者使用一个轻量级 2D U-Net 对其进行细化。</p>
+<p>输入为：</p>
+<p>[ [F<sup>i,C</sup>i]. ]</p>
+<p>U-Net 输出残差：</p>
+<p>[ C^i R^{H4W4D}. ]</p>
+<p>Equation (5)：</p>
+<p>[ C<sup>i&#x3D;C</sup>i+C^i. ]</p>
+<p>之后，作者在 U-Net 最低分辨率处加入 3 个 cross-view attention layers，使不同视图的 Cost Volumes 可以交换信息。</p>
+<p>最后通过 CNN-based upsampler 将 refined Cost Volume 上采样到：</p>
+<p>[ C<sup>iR</sup>{HWD}. ]</p>
+<p><strong>为什么要 U-Net？</strong></p>
+<ul>
+<li>初始匹配分数可能在纹理不足、遮挡或匹配不完整的区域出现歧义；</li>
+<li>U-Net 能利用局部空间上下文修正匹配结果；</li>
+<li>cross-view attention 则进一步交换不同视图的几何信息。</li>
+</ul>
+<p><strong>为什么是 2D U-Net，而不是 3D U-Net？</strong></p>
+<p>Cost Volume 虽然有深度维度，但作者把深度维作为特征通道的一部分处理，通过 2D convolution 和 attention 进行细化，从而避免昂贵的 3D convolution。</p>
+<h3 id="3-4-5-Depth-Estimation"><a href="#3-4-5-Depth-Estimation" class="headerlink" title="3.4.5 Depth Estimation"></a>3.4.5 Depth Estimation</h3><p>作者通过 softmax 将 refined Cost Volume 变成深度候选权重，再计算加权平均。</p>
+<p>定义深度候选向量：</p>
+<p>[ G&#x3D;[d_1,d_2,,d_D]R^D. ]</p>
+<p>Equation (6)：</p>
+<p>[ V<sup>i&#x3D;(C</sup>i)G R^{HW}. ]</p>
+<p>其中 softmax 在深度候选维度进行。</p>
+<p>展开为：</p>
+<p>[ V^i(u,v) &#x3D; _{m&#x3D;1}^{D} p^i_m(u,v)d_m, ]</p>
+<p>其中：</p>
+<p>[ p^i_m(u,v) &#x3D; {_{n&#x3D;1}<sup>{D}(C</sup>i_n(u,v))}. ]</p>
+<p>因此，输出深度是深度候选的概率加权平均。</p>
+<p><strong>关键区别：</strong> MVSplat 并不是从 softmax 分布中随机采样一个深度桶作为 Gaussian 中心，而是计算所有候选深度的加权期望。这与 PixelSplat 的概率采样机制有本质区别，详见第 5 章。</p>
+<h3 id="3-4-6-Depth-Refinement"><a href="#3-4-6-Depth-Refinement" class="headerlink" title="3.4.6 Depth Refinement"></a>3.4.6 Depth Refinement</h3><p>作者还引入额外的 Depth Refinement 模块。</p>
+<p>输入包括：</p>
+<ul>
+<li>多视图图像；</li>
+<li>图像特征；</li>
+<li>当前深度预测。</li>
+</ul>
+<p>通过轻量级 2D U-Net 输出每个视图的 residual depth：</p>
+<p>[ V^i. ]</p>
+<p>最终深度：</p>
+<p>[ V<sup>i_{}&#x3D;V</sup>i+V^i. ]</p>
+<p>该 U-Net 同样在低分辨率加入 cross-view attention，以便不同视图交换信息。</p>
+<p><strong>作用：</strong> 在 Cost Volume 已经提供初始几何估计的基础上，进一步修正深度图。</p>
+<p>主文 Table 3 中：</p>
+<ul>
+<li><code>base</code>：不包含该 Depth Refinement；</li>
+<li><code>base + refine</code>：包含该模块，也是最终模型。</li>
+</ul>
+<h3 id="3-4-7-Gaussian-Centers：由深度图反投影到三维"><a href="#3-4-7-Gaussian-Centers：由深度图反投影到三维" class="headerlink" title="3.4.7 Gaussian Centers：由深度图反投影到三维"></a>3.4.7 Gaussian Centers：由深度图反投影到三维</h3><p>【原文事实：Section 3.2】</p>
+<p>得到各视图深度图后，作者利用相机参数将每个像素反投影到三维点云。</p>
+<p>然后：</p>
+<ol>
+<li>将各视图点云变换到对齐的 world coordinate system；</li>
+<li>将不同视图的点云直接合并；</li>
+<li>把合并后的三维点作为 Gaussian centers。</li>
+</ol>
+<p>可概括为：</p>
+<p>[ G_{} &#x3D; _{i&#x3D;1}^{K} (V<sup>i,P</sup>i). ]</p>
+<p>这是对原文操作的数学概括，不是论文新增编号公式。</p>
+<p><strong>重要细节：</strong> 作者采用确定性的 union 操作，而不是显式地对不同视图中的重复 Gaussian 做匹配、融合或去重。</p>
+<h3 id="3-4-8-Opacity：从匹配置信度预测"><a href="#3-4-8-Opacity：从匹配置信度预测" class="headerlink" title="3.4.8 Opacity：从匹配置信度预测"></a>3.4.8 Opacity：从匹配置信度预测</h3><p>从 Equation (6) 中的 softmax 深度分布，可以计算每个像素的最大匹配置信度：</p>
+<p>[ q^i(u,v) &#x3D; _m p^i_m(u,v). ]</p>
+<p>作者认为：</p>
+<ul>
+<li>高匹配置信度意味着该位置更可能是可靠表面点；</li>
+<li>低匹配置信度意味着深度假设不够明确。</li>
+</ul>
+<p>因此，作者使用两层 convolution，以最大匹配置信度作为输入预测 opacity：</p>
+<p>[ ^i &#x3D; g_(q^i). ]</p>
+<p><strong>注意：</strong> MVSplat 并不是简单地令 opacity 等于最大 softmax 概率，而是将该置信度输入两个卷积层，由网络预测 opacity。</p>
+<h3 id="3-4-9-Covariance-与颜色"><a href="#3-4-9-Covariance-与颜色" class="headerlink" title="3.4.9 Covariance 与颜色"></a>3.4.9 Covariance 与颜色</h3><p>Covariance 和颜色参数通过两个卷积层预测。</p>
+<p>输入由以下信息拼接而成：</p>
+<ul>
+<li>图像特征；</li>
+<li>refined Cost Volume；</li>
+<li>原始多视图图像。</li>
+</ul>
+<p>协方差矩阵按论文给出的形式参数化：</p>
+<p>[ &#x3D;R()^{T} (s)R(), ]</p>
+<p>其中：</p>
+<ul>
+<li>(s)：Gaussian 的尺度参数；</li>
+<li>(R())：由 quaternion 表示的旋转矩阵。</li>
+</ul>
+<p>颜色由预测的 spherical harmonic coefficients 表示。</p>
+<h3 id="3-4-10-最终-Gaussian-渲染"><a href="#3-4-10-最终-Gaussian-渲染" class="headerlink" title="3.4.10 最终 Gaussian 渲染"></a>3.4.10 最终 Gaussian 渲染</h3><p>最终每个 Gaussian 包含：</p>
+<p>[ (,,,c). ]</p>
+<p>将所有视图预测的 Gaussian 组合后，使用 differentiable Gaussian splatting rasterization 渲染目标视角。</p>
+<h2 id="3-5-训练损失与监督方式"><a href="#3-5-训练损失与监督方式" class="headerlink" title="3.5 训练损失与监督方式"></a>3.5 训练损失与监督方式</h2><h3 id="3-5-1-训练损失"><a href="#3-5-1-训练损失" class="headerlink" title="3.5.1 训练损失"></a>3.5.1 训练损失</h3><p>【原文事实：Section 3.3】</p>
+<p>作者使用目标视角真实 RGB 图像作为监督。</p>
+<p>损失为：</p>
+<p>[ L &#x3D; 1.0,L_2 + 0.05,L_{}. ]</p>
+<p>其中：</p>
+<ul>
+<li>(L_2)：像素级重建损失；</li>
+<li>(L_{})：感知特征距离；</li>
+<li>两项权重分别为 1 和 0.05。</li>
+</ul>
+<h3 id="3-5-2-是否需要-Ground-truth-Depth？"><a href="#3-5-2-是否需要-Ground-truth-Depth？" class="headerlink" title="3.5.2 是否需要 Ground-truth Depth？"></a>3.5.2 是否需要 Ground-truth Depth？</h3><p>不需要。</p>
+<p>作者明确表示模型完全通过 photometric supervision 训练，不需要 ground-truth geometry supervision。</p>
+<h3 id="3-5-3-为什么没有深度真值也能学深度？"><a href="#3-5-3-为什么没有深度真值也能学深度？" class="headerlink" title="3.5.3 为什么没有深度真值也能学深度？"></a>3.5.3 为什么没有深度真值也能学深度？</h3><p>【背景知识 + 独立解释】</p>
+<p>虽然没有直接对深度图计算监督损失，但预测的深度决定 Gaussian 的三维位置，而 Gaussian 的位置会影响目标视角的渲染结果。</p>
+<p>如果预测深度不合理，Gaussian 就可能出现在错误位置，导致目标视图出现：</p>
+<ul>
+<li>重影；</li>
+<li>结构错位；</li>
+<li>遮挡关系错误；</li>
+<li>图像细节不一致。</li>
+</ul>
+<p>这些渲染误差通过可微 rasterization 反向传播到深度预测网络。</p>
+<p>因此，目标 RGB 的 photometric loss 可以间接约束几何。</p>
+<p><strong>边界：</strong> 这种监督并不保证唯一真实几何。不同的几何与外观参数组合有时可能产生相似的目标图像，这仍然存在表示歧义。</p>
+<h2 id="3-6-实现细节（Appendix-0-C）"><a href="#3-6-实现细节（Appendix-0-C）" class="headerlink" title="3.6 实现细节（Appendix 0.C）"></a>3.6 实现细节（Appendix 0.C）</h2><h3 id="3-6-1-网络结构"><a href="#3-6-1-网络结构" class="headerlink" title="3.6.1 网络结构"></a>3.6.1 网络结构</h3><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>论文给出的实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Shallow CNN</td>
+<td>6 个 residual blocks</td>
+</tr>
+<tr>
+<td>CNN 下采样</td>
+<td>最后 4 个 block 中，每连续两个 block 之后下采样一次，整体 4× 下采样</td>
+</tr>
+<tr>
+<td>Multi-View Transformer</td>
+<td>6 个 Transformer blocks</td>
+</tr>
+<tr>
+<td>每个 Transformer block</td>
+<td>一个 self-attention，随后一个 cross-attention</td>
+</tr>
+<tr>
+<td>Transformer 注意力</td>
+<td>Swin Transformer local window attention</td>
+</tr>
+<tr>
+<td>Cost Volume U-Net</td>
+<td>通道数 128，2 次 2× 下采样</td>
+</tr>
+<tr>
+<td>Cost Volume U-Net Attention</td>
+<td>4× 下采样层级加入 self-attention，并通过 flatten 特征进行跨 Cost Volume 信息传播</td>
+</tr>
+<tr>
+<td>Depth Refinement U-Net</td>
+<td>类似配置，但进行 4 次 2× 下采样</td>
+</tr>
+<tr>
+<td>Depth Refinement Attention</td>
+<td>16× 下采样层级加入 attention</td>
+</tr>
+</tbody></table>
+<h3 id="3-6-2-训练设置"><a href="#3-6-2-训练设置" class="headerlink" title="3.6.2 训练设置"></a>3.6.2 训练设置</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>设置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>图像分辨率</td>
+<td>256 × 256</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>单张 NVIDIA A100</td>
+</tr>
+<tr>
+<td>训练迭代</td>
+<td>300,000</td>
+</tr>
+<tr>
+<td>Optimizer</td>
+<td>Adam</td>
+</tr>
+<tr>
+<td>Batch size</td>
+<td>14</td>
+</tr>
+<tr>
+<td>每个 batch 的场景数</td>
+<td>1</td>
+</tr>
+<tr>
+<td>输入视图</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Target views</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Depth candidates</td>
+<td>128</td>
+</tr>
+<tr>
+<td>Backbone initialization</td>
+<td>UniMatch 预训练权重</td>
+</tr>
+<tr>
+<td>Near &#x2F; Far（RE10K、ACID）</td>
+<td>1 &#x2F; 100</td>
+</tr>
+<tr>
+<td>Near &#x2F; Far（DTU）</td>
+<td>2.125 &#x2F; 4.525</td>
+</tr>
+</tbody></table>
+<p>训练过程中，输入视图之间的帧间隔逐步增大，作者说明该策略与 PixelSplat 类似。</p>
+<h3 id="3-6-3-预训练的作用"><a href="#3-6-3-预训练的作用" class="headerlink" title="3.6.3 预训练的作用"></a>3.6.3 预训练的作用</h3><p>默认模型使用公开可用的 UniMatch pretrained weights 初始化。</p>
+<p>作者通过随机初始化实验进一步说明：</p>
+<ul>
+<li>随机初始化训练 300K iterations 仍能超过 PixelSplat；</li>
+<li>随机初始化训练 450K iterations 后接近 UniMatch 初始化版本；</li>
+<li>因此预训练提高了训练效率，但并非模型获得较好结果的唯一条件。</li>
+</ul>
+<h2 id="3-7-实验设置（Experiments）"><a href="#3-7-实验设置（Experiments）" class="headerlink" title="3.7 实验设置（Experiments）"></a>3.7 实验设置（Experiments）</h2><h3 id="3-7-1-数据集"><a href="#3-7-1-数据集" class="headerlink" title="3.7.1 数据集"></a>3.7.1 数据集</h3><table>
+<thead>
+<tr>
+<th>数据集</th>
+<th>场景类型</th>
+<th align="right">训练集</th>
+<th align="right">测试&#x2F;验证集</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RealEstate10K</td>
+<td>室内房屋视频</td>
+<td align="right">67,477 scenes</td>
+<td align="right">7,289 scenes</td>
+<td>主要场景级训练与测试</td>
+</tr>
+<tr>
+<td>ACID</td>
+<td>无人机航拍自然场景</td>
+<td align="right">11,075 scenes</td>
+<td align="right">1,972 scenes</td>
+<td>户外场景训练与测试</td>
+</tr>
+<tr>
+<td>DTU</td>
+<td>物体中心、多视图扫描</td>
+<td align="right">未在此处作为主要训练集</td>
+<td align="right">16 validation scenes</td>
+<td>跨数据集泛化</td>
+</tr>
+</tbody></table>
+<h3 id="3-7-2-输入与输出协议"><a href="#3-7-2-输入与输出协议" class="headerlink" title="3.7.2 输入与输出协议"></a>3.7.2 输入与输出协议</h3><ul>
+<li>每个场景输入两张参考图像。</li>
+<li>RealEstate10K 和 ACID 每个测试场景渲染三个 novel views。</li>
+<li>DTU 的跨数据集评估使用四个 novel views。</li>
+<li>图像分辨率统一为 256 × 256。</li>
+</ul>
+<h3 id="3-7-3-Baselines"><a href="#3-7-3-Baselines" class="headerlink" title="3.7.3 Baselines"></a>3.7.3 Baselines</h3><p>作者比较：</p>
+<ul>
+<li>pixelNeRF；</li>
+<li>GPNR；</li>
+<li>AttnRend；</li>
+<li>MuRF；</li>
+<li>PixelSplat。</li>
+</ul>
+<p>其中 PixelSplat 是最直接的比较对象。</p>
+<h3 id="3-7-4-评价指标"><a href="#3-7-4-评价指标" class="headerlink" title="3.7.4 评价指标"></a>3.7.4 评价指标</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>趋势</th>
+<th>评价内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PSNR</td>
+<td>越高越好</td>
+<td>像素级重建误差</td>
+</tr>
+<tr>
+<td>SSIM</td>
+<td>越高越好</td>
+<td>图像结构相似性</td>
+</tr>
+<tr>
+<td>LPIPS</td>
+<td>越低越好</td>
+<td>感知特征距离</td>
+</tr>
+<tr>
+<td>Time</td>
+<td>越低越好</td>
+<td>编码与渲染的运行时间</td>
+</tr>
+<tr>
+<td>Params</td>
+<td>越低越好</td>
+<td>模型参数量</td>
+</tr>
+</tbody></table>
+<p><strong>重要边界：</strong> MVSplat 主文没有报告 AbsRel、RMSE、MAE 等深度真值指标，也没有报告点云 Chamfer Distance 等独立几何误差指标。</p>
+<h2 id="3-8-主实验结果分析"><a href="#3-8-主实验结果分析" class="headerlink" title="3.8 主实验结果分析"></a>3.8 主实验结果分析</h2><h3 id="3-8-1-图像质量"><a href="#3-8-1-图像质量" class="headerlink" title="3.8.1 图像质量"></a>3.8.1 图像质量</h3><p>Table 1 显示 MVSplat 在 RealEstate10K 和 ACID 上均优于表中比较方法。</p>
+<p>但需要注意：</p>
+<ul>
+<li>RE10K 上 MVSplat 相对 PixelSplat 的提升更明显；</li>
+<li>ACID 上提升较小，但三项指标仍然更好；</li>
+<li>不能将两个数据集的提升幅度混为一个统一结论。</li>
+</ul>
+<h3 id="3-8-2-模型效率"><a href="#3-8-2-模型效率" class="headerlink" title="3.8.2 模型效率"></a>3.8.2 模型效率</h3><p>MVSplat：</p>
+<ul>
+<li>12.0M parameters；</li>
+<li>0.044 s；</li>
+<li>约 22 fps。</li>
+</ul>
+<p>PixelSplat：</p>
+<ul>
+<li>125.4M parameters；</li>
+<li>0.104 s。</li>
+</ul>
+<p>因此 MVSplat：</p>
+<ul>
+<li>参数量约为 PixelSplat 的 (1&#x2F;10.45)；</li>
+<li>报告运行时间约为 PixelSplat 的 (1&#x2F;2.36)。</li>
+</ul>
+<p>作者还指出，MVSplat 默认每个像素预测 1 个 Gaussian，而 PixelSplat 预测 3 个 Gaussian，这也是渲染更快的重要原因之一。</p>
+<h3 id="3-8-3-几何表现"><a href="#3-8-3-几何表现" class="headerlink" title="3.8.3 几何表现"></a>3.8.3 几何表现</h3><p>作者通过 Figure 4 和 Figure D 展示：</p>
+<ul>
+<li>PixelSplat 有明显 floating artifacts；</li>
+<li>MVSplat 的 Gaussian 更集中；</li>
+<li>MVSplat 的深度图更平滑。</li>
+</ul>
+<p>但这些结果属于定性几何诊断，没有几何真值指标。</p>
+<h3 id="3-8-4-跨数据集泛化"><a href="#3-8-4-跨数据集泛化" class="headerlink" title="3.8.4 跨数据集泛化"></a>3.8.4 跨数据集泛化</h3><p>Table 2 显示，RE10K 训练模型直接测试 ACID、DTU 时，MVSplat 优于 PixelSplat。</p>
+<p>作者给出的解释是：</p>
+<ul>
+<li>Cost Volume 表达的是跨视图特征之间的相对相似度；</li>
+<li>相对相似度相比绝对特征幅值，对特征分布变化可能更稳定；</li>
+<li>因此跨数据集泛化更好。</li>
+</ul>
+<p>【独立评价】实验结果支持该架构在指定数据集上的泛化优势，但尚未直接证明“相对特征相似度具有普遍特征不变性”。这仍是作者对性能差异的机制解释。</p>
+<h3 id="3-8-5-更多输入视图"><a href="#3-8-5-更多输入视图" class="headerlink" title="3.8.5 更多输入视图"></a>3.8.5 更多输入视图</h3><p>作者还使用在两视图 RE10K 上训练的模型，在 DTU 上测试三视图输入。</p>
+<p>结果：</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PixelSplat</td>
+<td align="right">12.52</td>
+<td align="right">0.367</td>
+<td align="right">0.585</td>
+</tr>
+<tr>
+<td>MVSplat</td>
+<td align="right"><strong>14.30</strong></td>
+<td align="right"><strong>0.508</strong></td>
+<td align="right"><strong>0.371</strong></td>
+</tr>
+</tbody></table>
+<p>作者报告 MVSplat 在增加输入视图后表现更好；PixelSplat 的适配版本则略有下降。</p>
+<p><strong>边界：</strong> 作者说明 PixelSplat 的公开模型原本只针对两视图，扩展到更多视图时做了尽可能的适配。因此这一比较并非两个原生多视图模型之间完全对称的测试。</p>
+<h2 id="3-9-消融实验分析"><a href="#3-9-消融实验分析" class="headerlink" title="3.9 消融实验分析"></a>3.9 消融实验分析</h2><h3 id="3-9-1-Cost-Volume-的重要性"><a href="#3-9-1-Cost-Volume-的重要性" class="headerlink" title="3.9.1 Cost Volume 的重要性"></a>3.9.1 Cost Volume 的重要性</h3><p><code>base</code> 的 PSNR 为 26.12；<code>w/o cost volume</code> 为 22.83。</p>
+<p>下降：</p>
+<p>[ 26.12-22.83&#x3D;3.29 . ]</p>
+<p>SSIM 从 0.864 降至 0.753；LPIPS 从 0.133 上升至 0.197。</p>
+<p>这是所有消融中影响最大的模块。</p>
+<p>作者指出，去掉 Cost Volume 后，两个输入视图的 Gaussian 可能无法正确对齐到同一个三维空间，渲染图像出现两张输入视图直接叠加的现象。</p>
+<p><strong>评价：</strong> 这是 Cost Volume 对整个方法至关重要的强证据。</p>
+<h3 id="3-9-2-Cross-view-Attention"><a href="#3-9-2-Cross-view-Attention" class="headerlink" title="3.9.2 Cross-view Attention"></a>3.9.2 Cross-view Attention</h3><p>去掉 cross-view attention 后：</p>
+<ul>
+<li>PSNR 从 26.12 降至 25.19；</li>
+<li>SSIM 从 0.864 降至 0.852；</li>
+<li>LPIPS 从 0.133 上升至 0.152。</li>
+</ul>
+<p>Figure A 还显示该变体在训练后期发生过拟合。</p>
+<p><strong>评价：</strong> 跨视图信息交换不仅改善匹配，也与训练稳定性有关。</p>
+<h3 id="3-9-3-Cost-Volume-Refinement-U-Net"><a href="#3-9-3-Cost-Volume-Refinement-U-Net" class="headerlink" title="3.9.3 Cost Volume Refinement U-Net"></a>3.9.3 Cost Volume Refinement U-Net</h3><p>去掉 U-Net 后：</p>
+<ul>
+<li>PSNR 从 26.12 降至 25.45；</li>
+<li>SSIM 从 0.864 降至 0.847；</li>
+<li>LPIPS 从 0.133 上升至 0.150。</li>
+</ul>
+<p>作者特别指出，U-Net 对只存在于一个输入视图中的内容有帮助，因为这些区域在其他视图中可能找不到匹配。</p>
+<p><strong>评价：</strong> U-Net 的作用不只是平滑 Cost Volume，还包括利用上下文信息修正匹配失败区域。</p>
+<h3 id="3-9-4-Depth-Refinement"><a href="#3-9-4-Depth-Refinement" class="headerlink" title="3.9.4 Depth Refinement"></a>3.9.4 Depth Refinement</h3><p>加入 Depth Refinement 后：</p>
+<ul>
+<li>PSNR 从 26.12 提高到 26.39；</li>
+<li>SSIM 从 0.864 提高到 0.869；</li>
+<li>LPIPS 从 0.133 降到 0.128。</li>
+</ul>
+<p>提升幅度较小，但三个指标方向一致。</p>
+<hr>
+<h1 id="4-阶段-4：综合理解与独立评价"><a href="#4-阶段-4：综合理解与独立评价" class="headerlink" title="4. 阶段 4：综合理解与独立评价"></a>4. 阶段 4：综合理解与独立评价</h1><h2 id="4-1-贡献是否成立？"><a href="#4-1-贡献是否成立？" class="headerlink" title="4.1 贡献是否成立？"></a>4.1 贡献是否成立？</h2><h3 id="贡献-A：将-Cost-Volume-用于前馈-Gaussian-中心定位"><a href="#贡献-A：将-Cost-Volume-用于前馈-Gaussian-中心定位" class="headerlink" title="贡献 A：将 Cost Volume 用于前馈 Gaussian 中心定位"></a>贡献 A：将 Cost Volume 用于前馈 Gaussian 中心定位</h3><p><strong>判断：得到较强实验支持。</strong></p>
+<p>依据：</p>
+<ul>
+<li>Method 给出完整 Cost Volume 构建流程；</li>
+<li>Table 3 移除 Cost Volume 后性能显著下降；</li>
+<li>Figure 6 显示几何匹配缺失时的视觉退化；</li>
+<li>Table A 将 Cost Volume 引入 PixelSplat 后也获得明显提升。</li>
+</ul>
+<p>这是本文最扎实的贡献。</p>
+<h3 id="贡献-B：轻量级-2D-Cost-Volume-Refinement"><a href="#贡献-B：轻量级-2D-Cost-Volume-Refinement" class="headerlink" title="贡献 B：轻量级 2D Cost Volume Refinement"></a>贡献 B：轻量级 2D Cost Volume Refinement</h3><p><strong>判断：得到一定支持。</strong></p>
+<p>依据：</p>
+<ul>
+<li>Section 3.1 给出 2D U-Net 和 cross-view attention 结构；</li>
+<li>Table 3 显示去掉 U-Net 和 cross-view attention 后性能下降；</li>
+<li>Figure A 展示 cross-view attention 对训练稳定性的影响。</li>
+</ul>
+<p>但论文没有系统比较不同 2D&#x2F;3D Cost Volume 网络的 FLOPs、峰值显存和规模曲线，因此“轻量级”的全部计算优势尚未被完全拆解。</p>
+<h3 id="贡献-C：由多视图深度图直接生成-Gaussian"><a href="#贡献-C：由多视图深度图直接生成-Gaussian" class="headerlink" title="贡献 C：由多视图深度图直接生成 Gaussian"></a>贡献 C：由多视图深度图直接生成 Gaussian</h3><p><strong>判断：方法流程清楚，几何质量证据以定性为主。</strong></p>
+<p>依据：</p>
+<ul>
+<li>Equation (1)；</li>
+<li>Section 3.2；</li>
+<li>Figure 2、Figure 4、Figure D。</li>
+</ul>
+<p>但没有深度真值或点云真值误差指标，不能将“Gaussian 看起来更规整”直接等价于“几何精度已被定量证明”。</p>
+<h3 id="贡献-D：不需要-ground-truth-depth"><a href="#贡献-D：不需要-ground-truth-depth" class="headerlink" title="贡献 D：不需要 ground-truth depth"></a>贡献 D：不需要 ground-truth depth</h3><p><strong>判断：训练设定明确，属于有价值的系统设计。</strong></p>
+<p>模型使用目标 RGB 图像的 photometric loss 训练，不依赖真实深度图。</p>
+<p>但这不意味着模型完全没有几何先验：它仍然使用相机参数、深度候选、Plane Sweeping 和多视图特征匹配。</p>
+<h3 id="贡献-E：跨数据集泛化"><a href="#贡献-E：跨数据集泛化" class="headerlink" title="贡献 E：跨数据集泛化"></a>贡献 E：跨数据集泛化</h3><p><strong>判断：在指定数据集上有明确证据。</strong></p>
+<p>Table 2 支持 RE10K → ACID 和 RE10K → DTU 的零样本 NVS 泛化优势。</p>
+<p>但这不等于在所有场景分布上都具有 feature invariance。</p>
+<h2 id="4-2-理论、方法与实验的证据关系"><a href="#4-2-理论、方法与实验的证据关系" class="headerlink" title="4.2 理论、方法与实验的证据关系"></a>4.2 理论、方法与实验的证据关系</h2><table>
+<thead>
+<tr>
+<th>作者主张</th>
+<th>对应方法</th>
+<th>主要证据</th>
+<th>证据边界</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cost Volume 能改善深度和 Gaussian 中心定位</td>
+<td>Plane Sweeping + Feature Correlation</td>
+<td>Eq. (2)–(6)、Table 3、Table A</td>
+<td>强烈支持其对 NVS 的作用，但没有独立深度真值误差</td>
+</tr>
+<tr>
+<td>Cross-view Attention 有必要</td>
+<td>Transformer &#x2F; U-Net 中的 cross-view attention</td>
+<td>Table 3、Figure A</td>
+<td>支持性能与稳定性作用</td>
+</tr>
+<tr>
+<td>U-Net 能修正困难区域</td>
+<td>Cost Volume Refinement</td>
+<td>Table 3、Figure 6</td>
+<td>支持视觉效果改善，但没有独立匹配精度指标</td>
+</tr>
+<tr>
+<td>MVSplat 几何质量优于 PixelSplat</td>
+<td>Cost Volume 深度估计</td>
+<td>Figure 4、Figure D</td>
+<td>定性证据，没有定量几何真值</td>
+</tr>
+<tr>
+<td>MVSplat 更高效</td>
+<td>轻量骨干、2D 网络、每像素 1 Gaussian</td>
+<td>Table 1、Table B、Table C</td>
+<td>支持论文设置下的时间与参数优势</td>
+</tr>
+<tr>
+<td>跨数据集泛化更好</td>
+<td>Cost Volume 相对匹配特征</td>
+<td>Table 2、Figure 5、Figure E</td>
+<td>支持指定数据集结果，机制解释仍需更直接验证</td>
+</tr>
+<tr>
+<td>可处理更多视图</td>
+<td>Per-view Cost Volume 与跨视图注意力</td>
+<td>三视图 DTU 结果</td>
+<td>只验证有限的更多视图场景，未给出大规模视图数量曲线</td>
+</tr>
+</tbody></table>
+<h2 id="4-3-方法的技术边界与局限"><a href="#4-3-方法的技术边界与局限" class="headerlink" title="4.3 方法的技术边界与局限"></a>4.3 方法的技术边界与局限</h2><h3 id="1-依赖相机参数"><a href="#1-依赖相机参数" class="headerlink" title="1. 依赖相机参数"></a>1. 依赖相机参数</h3><p>MVSplat 的 Plane Sweeping 需要相机投影参数。它不是无位姿输入的图像到三维模型。</p>
+<h3 id="2-深度候选范围受-near-far-设置影响"><a href="#2-深度候选范围受-near-far-设置影响" class="headerlink" title="2. 深度候选范围受 near&#x2F;far 设置影响"></a>2. 深度候选范围受 near&#x2F;far 设置影响</h3><p>论文对不同数据集设置不同的 near&#x2F;far：</p>
+<ul>
+<li>RE10K、ACID：1–100；</li>
+<li>DTU：2.125–4.525。</li>
+</ul>
+<p>因此，深度候选范围并非完全由模型自动决定。候选范围之外的几何无法被当前 Cost Volume 直接搜索到。</p>
+<h3 id="3-特征匹配可能存在歧义"><a href="#3-特征匹配可能存在歧义" class="headerlink" title="3. 特征匹配可能存在歧义"></a>3. 特征匹配可能存在歧义</h3><p>纹理缺失、重复纹理、遮挡和非朗伯表面都会影响特征匹配。</p>
+<p>Cost Volume 提供几何候选和匹配证据，但并不保证每个像素都能获得正确对应关系。</p>
+<h3 id="4-反射表面表现较差"><a href="#4-反射表面表现较差" class="headerlink" title="4. 反射表面表现较差"></a>4. 反射表面表现较差</h3><p>作者在 Figure B 明确展示玻璃和反射区域的失败案例。</p>
+<p>这说明基于跨视图相似性的匹配假设在非朗伯表面上会受到破坏。</p>
+<h3 id="5-Gaussian-union-不等于显式几何融合"><a href="#5-Gaussian-union-不等于显式几何融合" class="headerlink" title="5. Gaussian union 不等于显式几何融合"></a>5. Gaussian union 不等于显式几何融合</h3><p>作者将不同视图反投影的 Gaussian 直接取并集。</p>
+<p>这意味着：</p>
+<ul>
+<li>没有显式去重；</li>
+<li>没有显式的 Gaussian-to-Gaussian correspondence；</li>
+<li>没有单独的多视图点云融合优化。</li>
+</ul>
+<h3 id="6-几何质量缺少独立定量指标"><a href="#6-几何质量缺少独立定量指标" class="headerlink" title="6. 几何质量缺少独立定量指标"></a>6. 几何质量缺少独立定量指标</h3><p>论文展示了深度图和 Gaussian 点云，但没有提供 AbsRel、RMSE、MAE、Chamfer Distance、F-score 等深度或点云真值误差。</p>
+<p>因此，几何主张的证据仍以可视化为主。</p>
+<h3 id="7-Photometric-supervision-仍存在外观—几何耦合"><a href="#7-Photometric-supervision-仍存在外观—几何耦合" class="headerlink" title="7. Photometric supervision 仍存在外观—几何耦合"></a>7. Photometric supervision 仍存在外观—几何耦合</h3><p>仅使用渲染 RGB 监督，意味着网络需要同时解释几何、颜色、遮挡和视角变化。</p>
+<p>当跨视图外观变化较大时，Cost Volume 的特征相似度也可能受到影响。</p>
+<h3 id="8-多视图扩展的实际成本尚未充分报告"><a href="#8-多视图扩展的实际成本尚未充分报告" class="headerlink" title="8. 多视图扩展的实际成本尚未充分报告"></a>8. 多视图扩展的实际成本尚未充分报告</h3><p>作者称方法支持任意数量输入视图，但没有提供随着视图数 (K) 增长的显存曲线、推理时间曲线、Cost Volume 大小曲线或匹配准确率变化。</p>
+<p>因此，“支持可变视图数”是结构能力，不应被扩展解释为“任意数量视图均可高效处理”。</p>
+<h3 id="9-数据集多样性仍有限"><a href="#9-数据集多样性仍有限" class="headerlink" title="9. 数据集多样性仍有限"></a>9. 数据集多样性仍有限</h3><p>作者承认训练数据的多样性不足以保证在任意真实场景中稳健泛化，并提出使用更大、更丰富的数据集作为未来方向。</p>
+<hr>
+<h1 id="5-跨论文关联分析：MVSplat-与-PixelSplat"><a href="#5-跨论文关联分析：MVSplat-与-PixelSplat" class="headerlink" title="5. 跨论文关联分析：MVSplat 与 PixelSplat"></a>5. 跨论文关联分析：MVSplat 与 PixelSplat</h1><blockquote>
+<p>本章是本次阅读新增的核心内容。PixelSplat 的技术信息来自此前完成的《PixelSplat_精读报告.md》；MVSplat 的改进主张来自本论文正文与附录。两篇论文之间的关系不仅通过最终指标比较，也通过 MVSplat 的 Table A 进行模块级对照。</p>
+</blockquote>
+<h2 id="5-1-两篇工作的关系定位"><a href="#5-1-两篇工作的关系定位" class="headerlink" title="5.1 两篇工作的关系定位"></a>5.1 两篇工作的关系定位</h2><p><strong>PixelSplat 是 MVSplat 最直接的前序参照和竞争基线。</strong></p>
+<p>两者研究的是同一类问题：</p>
+<ul>
+<li>输入少量带相机参数的图像；</li>
+<li>跨场景训练；</li>
+<li>新场景一次前向预测；</li>
+<li>输出显式 3D Gaussian；</li>
+<li>通过 Gaussian Splatting 渲染 novel views。</li>
+</ul>
+<p>两者最关键的区别在于 Gaussian 中心的几何定位方式：</p>
+<ul>
+<li>PixelSplat：从跨视图特征预测离散深度概率分布，再进行概率采样。</li>
+<li>MVSplat：显式构造深度候选上的跨视图匹配 Cost Volume，再通过 softmax 加权平均得到深度。</li>
+</ul>
+<p>因此，MVSplat 并没有改变整个研究范式，而是针对 PixelSplat 的深度预测环节提出一种更显式的几何匹配方案。</p>
+<h2 id="5-2-核心技术对照"><a href="#5-2-核心技术对照" class="headerlink" title="5.2 核心技术对照"></a>5.2 核心技术对照</h2><table>
+<thead>
+<tr>
+<th>比较维度</th>
+<th>PixelSplat</th>
+<th>MVSplat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务</td>
+<td>稀疏图像对到泛化 3DGS</td>
+<td>稀疏多视图图像到泛化 3DGS</td>
+</tr>
+<tr>
+<td>主要输入</td>
+<td>两张图像及相机参数</td>
+<td>(K) 张图像及相机参数</td>
+</tr>
+<tr>
+<td>主实验输入视图数</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>多视图扩展</td>
+<td>附录展示三视图模型</td>
+<td>结构支持可变视图数，测试三视图</td>
+</tr>
+<tr>
+<td>特征主干</td>
+<td>ResNet-50 + ViT-B&#x2F;8，DINO 预训练</td>
+<td>浅层 ResNet-like CNN + Multi-View Swin Transformer</td>
+</tr>
+<tr>
+<td>跨视图信息</td>
+<td>Epipolar Sampling + Epipolar Cross-attention</td>
+<td>Multi-View Transformer + Plane Sweeping Cost Volume</td>
+</tr>
+<tr>
+<td>深度表示</td>
+<td>每像素离散深度概率分布</td>
+<td>每像素深度候选匹配 Cost Volume</td>
+</tr>
+<tr>
+<td>深度预测</td>
+<td>从概率分布采样深度桶</td>
+<td>Softmax 后对候选深度求加权平均</td>
+</tr>
+<tr>
+<td>Gaussian 中心</td>
+<td>由采样深度沿相机射线确定</td>
+<td>由深度图反投影到三维</td>
+</tr>
+<tr>
+<td>Gaussian &#x2F; pixel</td>
+<td>实际设置 3 个</td>
+<td>默认 1 个</td>
+</tr>
+<tr>
+<td>Opacity</td>
+<td>被采样深度桶的概率，再按每像素 Gaussian 数量处理</td>
+<td>最大匹配置信度输入卷积层预测</td>
+</tr>
+<tr>
+<td>Covariance &#x2F; Color</td>
+<td>网络预测协方差与 SH 参数</td>
+<td>从图像特征、Cost Volume 和原始图像联合预测</td>
+</tr>
+<tr>
+<td>多视图 Gaussian 组合</td>
+<td>各视图 Gaussian 组成集合</td>
+<td>各视图点云反投影后直接 union</td>
+</tr>
+<tr>
+<td>训练监督</td>
+<td>目标视图 RGB 的 MSE + LPIPS</td>
+<td>目标视图 RGB 的 (_2) + LPIPS</td>
+</tr>
+<tr>
+<td>Ground-truth depth</td>
+<td>不需要</td>
+<td>不需要</td>
+</tr>
+<tr>
+<td>主要几何设计动机</td>
+<td>处理 Gaussian 直接回归的局部最优、尺度相关信息</td>
+<td>用显式跨视图匹配改善 Gaussian 中心定位</td>
+</tr>
+<tr>
+<td>参数量</td>
+<td>125.4M</td>
+<td>12.0M</td>
+</tr>
+<tr>
+<td>报告运行时间</td>
+<td>0.104 s</td>
+<td>0.044 s</td>
+</tr>
+</tbody></table>
+<h2 id="5-3-最重要的技术差异：概率采样-vs-Cost-Volume-匹配"><a href="#5-3-最重要的技术差异：概率采样-vs-Cost-Volume-匹配" class="headerlink" title="5.3 最重要的技术差异：概率采样 vs. Cost Volume 匹配"></a>5.3 最重要的技术差异：概率采样 vs. Cost Volume 匹配</h2><h3 id="PixelSplat-的深度预测"><a href="#PixelSplat-的深度预测" class="headerlink" title="PixelSplat 的深度预测"></a>PixelSplat 的深度预测</h3><p>PixelSplat 对每个像素预测深度概率分布：</p>
+<p>[ p(zF[u]). ]</p>
+<p>然后从分布中采样深度桶：</p>
+<p>[ zp(zF[u]). ]</p>
+<p>采样得到的深度决定 Gaussian 位置，而该桶的概率与 opacity 耦合。</p>
+<p>核心思路是：</p>
+<p><strong>不直接把 Gaussian 固定在一个回归深度上，而是让模型在候选深度中进行概率采样，并通过 opacity 梯度调整概率分布。</strong></p>
+<p>这主要针对 Gaussian primitive regression 中的局部最优问题。</p>
+<h3 id="MVSplat-的深度预测"><a href="#MVSplat-的深度预测" class="headerlink" title="MVSplat 的深度预测"></a>MVSplat 的深度预测</h3><p>MVSplat 首先通过 Plane Sweeping 计算不同深度候选下的跨视图特征相似度：</p>
+<p>[ C^i_{d_m} &#x3D; . ]</p>
+<p>然后对深度维做 softmax：</p>
+<p>[ p^i_m(u,v) &#x3D; (C^i(u,v))_m. ]</p>
+<p>最后计算加权平均：</p>
+<p>[ V^i(u,v) &#x3D; _{m&#x3D;1}<sup>{D}p</sup>i_m(u,v)d_m. ]</p>
+<p>核心思路是：</p>
+<p><strong>先利用相机几何把跨视图特征放到相同的深度假设下比较，再根据匹配相似度确定深度。</strong></p>
+<h3 id="两者不能混淆的地方"><a href="#两者不能混淆的地方" class="headerlink" title="两者不能混淆的地方"></a>两者不能混淆的地方</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>PixelSplat</th>
+<th>MVSplat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否有离散深度候选</td>
+<td>有</td>
+<td>有</td>
+</tr>
+<tr>
+<td>是否有深度概率&#x2F;权重</td>
+<td>有</td>
+<td>有</td>
+</tr>
+<tr>
+<td>是否直接从分布随机采样深度作为 Gaussian 中心</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>深度分布从哪里来</td>
+<td>网络从跨视图特征预测</td>
+<td>显式 Cost Volume 匹配分数经网络细化得到</td>
+</tr>
+<tr>
+<td>最终深度</td>
+<td>采样桶及偏移</td>
+<td>候选深度的加权期望</td>
+</tr>
+<tr>
+<td>主要解决的问题</td>
+<td>Gaussian 位置回归的局部最优</td>
+<td>深度定位的特征歧义与几何匹配不足</td>
+</tr>
+</tbody></table>
+<p><strong>关键结论：MVSplat 不是把 PixelSplat 的概率采样简单换成另一种采样，而是改变了深度证据的构造方式和最终深度估计方式。</strong></p>
+<h2 id="5-4-从隐式跨视图特征到显式几何匹配"><a href="#5-4-从隐式跨视图特征到显式几何匹配" class="headerlink" title="5.4 从隐式跨视图特征到显式几何匹配"></a>5.4 从隐式跨视图特征到显式几何匹配</h2><p>PixelSplat 的 Epipolar Transformer 已经使用了双视图几何关系：</p>
+<ol>
+<li>在另一视图的极线上采样特征；</li>
+<li>对采样位置附加三角化深度位置编码；</li>
+<li>通过 cross-attention 聚合跨视图信息；</li>
+<li>再由网络预测深度概率分布。</li>
+</ol>
+<p>因此，不能把 PixelSplat 描述成“完全没有几何信息”。</p>
+<p>更准确的区别是：</p>
+<ul>
+<li>PixelSplat 使用极线几何来增强特征表示，但深度概率仍由特征预测分支生成；</li>
+<li>MVSplat 在每个深度候选上显式 Warp 特征，并直接计算匹配相似度，形成具有深度维度的 Cost Volume。</li>
+</ul>
+<p>也就是说，MVSplat 把几何匹配证据放到了深度预测的中间表示中，而不是只把几何信息编码进 Transformer 特征。</p>
+<h2 id="5-5-Table-A：最有价值的跨论文实验"><a href="#5-5-Table-A：最有价值的跨论文实验" class="headerlink" title="5.5 Table A：最有价值的跨论文实验"></a>5.5 Table A：最有价值的跨论文实验</h2><p>MVSplat 附录 Table A 将自己的 Cost Volume 深度预测方法替换进 PixelSplat：</p>
+<table>
+<thead>
+<tr>
+<th>PixelSplat 变体</th>
+<th align="right">PSNR ↑</th>
+<th align="right">SSIM ↑</th>
+<th align="right">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原始概率深度分支</td>
+<td align="right">25.89</td>
+<td align="right">0.858</td>
+<td align="right">0.142</td>
+</tr>
+<tr>
+<td>替换为 MVSplat Cost Volume</td>
+<td align="right"><strong>26.63</strong></td>
+<td align="right"><strong>0.875</strong></td>
+<td align="right"><strong>0.122</strong></td>
+</tr>
+</tbody></table>
+<p>变化：</p>
+<ul>
+<li>PSNR：+0.74 dB；</li>
+<li>SSIM：+0.017；</li>
+<li>LPIPS：−0.020。</li>
+</ul>
+<h3 id="为什么这个实验重要？"><a href="#为什么这个实验重要？" class="headerlink" title="为什么这个实验重要？"></a>为什么这个实验重要？</h3><p>如果只比较 PixelSplat 和 MVSplat 的最终结果，无法区分提升究竟来自：</p>
+<ul>
+<li>Cost Volume；</li>
+<li>Swin Transformer；</li>
+<li>更少的 Gaussian 数量；</li>
+<li>更轻量的网络；</li>
+<li>其他训练细节。</li>
+</ul>
+<p>Table A 将 Cost Volume 插入 PixelSplat，尽量保留其余架构，从而更直接地验证 Cost Volume 深度预测的作用。</p>
+<h3 id="独立评价"><a href="#独立评价" class="headerlink" title="独立评价"></a>独立评价</h3><p>这是本文比单纯 SOTA 对比更有说服力的实验之一。它表明 Cost Volume 不只是 MVSplat 完整系统中的一个有效组件，也可能作为深度预测模块迁移到其他 feed-forward Gaussian 架构。</p>
+<p>但它仍然不是严格的完整因果分解：替换深度分支可能改变后续参数分布和训练动态，不能据此断言所有性能差异都只由 Cost Volume 的单一机制造成。</p>
+<h2 id="5-6-MVSplat-是否真正解决了-PixelSplat-的所有问题？"><a href="#5-6-MVSplat-是否真正解决了-PixelSplat-的所有问题？" class="headerlink" title="5.6 MVSplat 是否真正解决了 PixelSplat 的所有问题？"></a>5.6 MVSplat 是否真正解决了 PixelSplat 的所有问题？</h2><p>不能这样理解。</p>
+<h3 id="PixelSplat-的尺度问题"><a href="#PixelSplat-的尺度问题" class="headerlink" title="PixelSplat 的尺度问题"></a>PixelSplat 的尺度问题</h3><p>PixelSplat 明确讨论 SfM 相机位姿的尺度歧义，并将三角化深度位置编码加入 Epipolar Transformer，使网络预测与相机位姿尺度一致的深度。</p>
+<p>MVSplat 使用相机投影参数和深度候选进行 Plane Sweeping，也在给定相机几何的坐标体系中估计深度。</p>
+<p>但 MVSplat 没有把“尺度歧义”作为一个独立理论问题进行展开，也没有提供绝对尺度恢复实验。</p>
+<p>因此：</p>
+<ul>
+<li>两者都使用相机几何；</li>
+<li>两者都需要预测与相机参数一致的深度；</li>
+<li>不能说 MVSplat 已经证明恢复了真实米制尺度；</li>
+<li>MVSplat 的 near&#x2F;far range 仍然需要按数据集设置。</li>
+</ul>
+<h3 id="PixelSplat-的局部最优问题"><a href="#PixelSplat-的局部最优问题" class="headerlink" title="PixelSplat 的局部最优问题"></a>PixelSplat 的局部最优问题</h3><p>PixelSplat 通过概率采样与 opacity-probability 耦合处理 Gaussian 位置回归的局部最优。</p>
+<p>MVSplat 的深度定位依赖 Cost Volume 的匹配峰值和加权期望，而不是直接回归 Gaussian 中心。</p>
+<p>这改变了中心定位的学习问题，但 MVSplat 没有在论文中直接分析 Gaussian 局部最优的数量或优化动力学。</p>
+<h3 id="PixelSplat-的几何伪影"><a href="#PixelSplat-的几何伪影" class="headerlink" title="PixelSplat 的几何伪影"></a>PixelSplat 的几何伪影</h3><p>MVSplat Figure 4 和 Figure D 展示更规整的 Gaussian 结构，但没有深度真值定量评估。</p>
+<p>因此，更严谨的结论是：</p>
+<p><strong>MVSplat 在论文展示的场景中产生了更规整的 Gaussian 和更平滑的深度图；它改善了几何表现的定性证据，但尚不能据此证明在所有场景中都恢复了更准确的真实几何。</strong></p>
+<h2 id="5-7-两篇论文的研究演进关系"><a href="#5-7-两篇论文的研究演进关系" class="headerlink" title="5.7 两篇论文的研究演进关系"></a>5.7 两篇论文的研究演进关系</h2><p>可以把两篇工作理解为同一研究方向中的两个阶段：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs text">稀疏图像 → 泛化 3D Gaussian → Novel View Synthesis<br>                  |<br>                  v<br>             PixelSplat<br>                  |<br>       Epipolar Transformer<br>                  |<br>       概率深度分布 + 采样<br>                  |<br>                  v<br>       Gaussian 中心与属性预测<br>                  |<br>                  v<br>             MVSplat<br>                  |<br>       Plane Sweeping<br>                  |<br>       Feature Matching Cost Volume<br>                  |<br>       Softmax 深度加权估计<br>                  |<br>                  v<br>       Gaussian 中心与属性预测<br></code></pre></td></tr></table></figure>
+
+<p>关系分类：</p>
+<ul>
+<li><strong>任务继承：</strong> 两者研究相同的稀疏视图泛化 3DGS 任务。</li>
+<li><strong>表示继承：</strong> 两者都输出 3D Gaussian primitives。</li>
+<li><strong>技术改进：</strong> MVSplat 针对深度定位，引入显式 Cost Volume。</li>
+<li><strong>实验继承：</strong> MVSplat 将 PixelSplat 作为最直接比较对象，并在附录中直接替换其深度分支。</li>
+<li><strong>不是简单架构继承：</strong> MVSplat 的默认 Transformer 主干采用 Swin，而不是照搬 PixelSplat 的 Epipolar Transformer。</li>
+</ul>
+<hr>
+<h1 id="6-与-Omni-Sea-水下三维重建研究的关联"><a href="#6-与-Omni-Sea-水下三维重建研究的关联" class="headerlink" title="6. 与 Omni-Sea 水下三维重建研究的关联"></a>6. 与 Omni-Sea 水下三维重建研究的关联</h1><blockquote>
+<p>本章是独立研究分析，不属于 MVSplat 原文结论。关联分析以此前讨论的 Omni-Sea 研究定位为参照：Omni-Sea 关注水下宽带成像下的有效介质系数随传播距离变化，以及这种距离依赖对外观、几何和介质建模的影响。</p>
+</blockquote>
+<h2 id="6-1-两项工作解决的问题不同，但具有互补性"><a href="#6-1-两项工作解决的问题不同，但具有互补性" class="headerlink" title="6.1 两项工作解决的问题不同，但具有互补性"></a>6.1 两项工作解决的问题不同，但具有互补性</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>MVSplat</th>
+<th>Omni-Sea</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心问题</td>
+<td>稀疏视图中如何可靠定位 Gaussian 中心</td>
+<td>水下介质有效传输系数如何随观察上下文和传播距离变化</td>
+</tr>
+<tr>
+<td>主要信息</td>
+<td>多视图图像特征、相机参数</td>
+<td>观察位置、方向、传播距离及介质参数</td>
+</tr>
+<tr>
+<td>核心变量</td>
+<td>深度候选 (d_m)、Cost Volume</td>
+<td>观察位置 (o)、方向 (d)、传播距离 (t)</td>
+</tr>
+<tr>
+<td>核心建模</td>
+<td>Feature Matching &#x2F; Plane Sweeping</td>
+<td>Broadband Effective Transport</td>
+</tr>
+<tr>
+<td>几何作用</td>
+<td>改善深度与 Gaussian 中心定位</td>
+<td>减少介质外观与几何之间的补偿性耦合</td>
+</tr>
+<tr>
+<td>外观建模</td>
+<td>Gaussian SH 等外观参数</td>
+<td>Direct attenuation、Backscatter 与有效介质系数</td>
+</tr>
+<tr>
+<td>监督方式</td>
+<td>目标 RGB 的 photometric loss</td>
+<td>水下成像模型与多视图重建联合约束</td>
+</tr>
+<tr>
+<td>主要目标</td>
+<td>稀疏视图前馈三维重建与 NVS</td>
+<td>水下 3D 重建、去水色与可解释介质建模</td>
+</tr>
+</tbody></table>
+<p>两者的核心问题不同：</p>
+<ul>
+<li>MVSplat 主要解决几何对应和 Gaussian 中心定位；</li>
+<li>Omni-Sea 主要解决水下光传输与几何&#x2F;外观&#x2F;介质之间的耦合。</li>
+</ul>
+<p>因此，两者更接近<strong>互补关系</strong>，而不是直接替代关系。</p>
+<h2 id="6-2-最值得关注的联系：Cost-Volume-对水下多视图匹配的潜在帮助"><a href="#6-2-最值得关注的联系：Cost-Volume-对水下多视图匹配的潜在帮助" class="headerlink" title="6.2 最值得关注的联系：Cost Volume 对水下多视图匹配的潜在帮助"></a>6.2 最值得关注的联系：Cost Volume 对水下多视图匹配的潜在帮助</h2><p>MVSplat 的 Cost Volume 利用不同深度假设下的跨视图特征相似度，为深度定位提供显式几何线索。</p>
+<p>这对水下重建有潜在价值：</p>
+<ol>
+<li>水下图像中，直接从单视图外观特征回归深度可能受到颜色衰减和散射影响。</li>
+<li>多视图几何关系仍然提供了独立于单张图像外观的约束。</li>
+<li>Plane Sweeping 可以在多个深度假设下检查跨视图特征是否一致。</li>
+<li>这可能为 Gaussian 中心定位提供比单纯 feature-to-depth regression 更强的几何依据。</li>
+</ol>
+<p>但不能直接把 MVSplat 的 Cost Volume 原样迁移到水下场景并假设有效。</p>
+<h3 id="主要风险"><a href="#主要风险" class="headerlink" title="主要风险"></a>主要风险</h3><p>水下图像的跨视图外观不一定保持稳定：</p>
+<ul>
+<li>不同观察位置到同一表面点的传播距离不同；</li>
+<li>光谱衰减会改变 RGB 通道比例；</li>
+<li>Backscatter 会引入与距离有关的附加光；</li>
+<li>介质和照明变化可能影响特征相似度；</li>
+<li>悬浮颗粒、反射和非朗伯表面可能破坏稳定匹配。</li>
+</ul>
+<p>因此，水下 Cost Volume 可能出现错误匹配，进而造成深度错误。</p>
+<h2 id="6-3-Omni-Sea-与-MVSplat-可以形成怎样的互补？"><a href="#6-3-Omni-Sea-与-MVSplat-可以形成怎样的互补？" class="headerlink" title="6.3 Omni-Sea 与 MVSplat 可以形成怎样的互补？"></a>6.3 Omni-Sea 与 MVSplat 可以形成怎样的互补？</h2><p>【研究假设，不是 MVSplat 原文结论】</p>
+<p>一种潜在的组合方式是：</p>
+<ol>
+<li>使用 MVSplat 式 Plane Sweeping 构建多视图几何 Cost Volume；</li>
+<li>使用 Omni-Sea 式传播距离相关有效介质模型，解释不同视图之间的颜色和强度差异；</li>
+<li>在计算跨视图相似度时，减少由介质传输差异导致的匹配偏差；</li>
+<li>使用几何 Cost Volume 预测 Gaussian 中心；</li>
+<li>使用传播感知的 Gaussian rendering 解释 direct attenuation 和 backscatter；</li>
+<li>通过目标 RGB、几何约束和介质相关损失共同训练。</li>
+</ol>
+<p>这一思路可以理解为：</p>
+<p><strong>MVSplat 负责回答“Gaussian 应该放在哪里”；Omni-Sea 负责回答“从不同观察位置和传播距离看，这个 Gaussian 应该如何呈现水下外观”。</strong></p>
+<h2 id="6-4-一个必须区分的变量：MVSplat-的深度-d-m-与-Omni-Sea-的传播距离-t"><a href="#6-4-一个必须区分的变量：MVSplat-的深度-d-m-与-Omni-Sea-的传播距离-t" class="headerlink" title="6.4 一个必须区分的变量：MVSplat 的深度 (d_m) 与 Omni-Sea 的传播距离 (t)"></a>6.4 一个必须区分的变量：MVSplat 的深度 (d_m) 与 Omni-Sea 的传播距离 (t)</h2><p>这两个变量不能直接等同。</p>
+<p>MVSplat 中：</p>
+<ul>
+<li>(d_m) 是 Plane Sweeping 使用的深度候选；</li>
+<li>它参与相机投影与特征 Warp；</li>
+<li>其具体几何含义依赖论文使用的相机投影与深度定义。</li>
+</ul>
+<p>Omni-Sea 中：</p>
+<p>[ t&#x3D;|x-o| ]</p>
+<p>表示从观察位置 (o) 到三维点 (x) 的传播距离。</p>
+<p>二者具有几何联系，但不必然数值相等。</p>
+<p>例如，如果 MVSplat 的深度定义为相机光轴方向的 Z-depth，而 Omni-Sea 的 (t) 是沿射线的欧氏距离，那么对于离轴像素，两者会有差异。实际组合时必须依据相机模型进行显式转换，不能直接把 Cost Volume 的 depth bin 当作光学传播距离。</p>
+<h2 id="6-5-对水下研究最有价值的启发"><a href="#6-5-对水下研究最有价值的启发" class="headerlink" title="6.5 对水下研究最有价值的启发"></a>6.5 对水下研究最有价值的启发</h2><h3 id="启发一：将几何匹配与物理外观解释分开建模"><a href="#启发一：将几何匹配与物理外观解释分开建模" class="headerlink" title="启发一：将几何匹配与物理外观解释分开建模"></a>启发一：将几何匹配与物理外观解释分开建模</h3><p>MVSplat 的 Cost Volume 可以提供几何匹配证据；Omni-Sea 的距离依赖介质模型可以解释外观随传播距离变化的原因。</p>
+<p>二者结合有望减少网络仅靠外观误差同时补偿几何和介质的压力。</p>
+<h3 id="启发二：检查水下介质变化对-Cost-Volume-的影响"><a href="#启发二：检查水下介质变化对-Cost-Volume-的影响" class="headerlink" title="启发二：检查水下介质变化对 Cost Volume 的影响"></a>启发二：检查水下介质变化对 Cost Volume 的影响</h3><p>可以设置对照：</p>
+<ul>
+<li>原始 RGB 特征 Cost Volume；</li>
+<li>经过物理校正或介质条件化的特征 Cost Volume；</li>
+<li>不同传播距离下的匹配相似度；</li>
+<li>不同水体条件下的匹配置信度与深度误差。</li>
+</ul>
+<p>这样能够直接判断介质建模是否改善几何匹配。</p>
+<h3 id="启发三：将几何误差与外观误差分开评估"><a href="#启发三：将几何误差与外观误差分开评估" class="headerlink" title="启发三：将几何误差与外观误差分开评估"></a>启发三：将几何误差与外观误差分开评估</h3><p>MVSplat 的主实验主要依赖 NVS 图像指标。对于水下重建，建议进一步分开报告：</p>
+<ul>
+<li>PSNR &#x2F; SSIM &#x2F; LPIPS；</li>
+<li>Depth AbsRel &#x2F; RMSE &#x2F; MAE；</li>
+<li>Depth continuity；</li>
+<li>Gaussian 几何结构；</li>
+<li>Transmittance 或介质参数误差；</li>
+<li>去水色的颜色误差。</li>
+</ul>
+<p>这样才能判断性能提升究竟来自几何、外观，还是二者之间的补偿。</p>
+<h2 id="6-6-需要验证的研究假设"><a href="#6-6-需要验证的研究假设" class="headerlink" title="6.6 需要验证的研究假设"></a>6.6 需要验证的研究假设</h2><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>假设</th>
+<th>可验证实验</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>H1</td>
+<td>传播距离相关外观变化会降低原始 Cost Volume 的匹配可靠性</td>
+<td>按传播距离分组统计匹配置信度和深度误差</td>
+</tr>
+<tr>
+<td>H2</td>
+<td>介质感知特征可以改善水下 Cost Volume</td>
+<td>对比 RGB、de-watered、medium-conditioned 三种特征</td>
+</tr>
+<tr>
+<td>H3</td>
+<td>Cost Volume 可改善 Omni-Sea 的 Gaussian 中心定位</td>
+<td>比较直接深度预测与 Plane Sweeping 深度预测</td>
+</tr>
+<tr>
+<td>H4</td>
+<td>几何 Cost Volume 与传播感知渲染具有互补性</td>
+<td>进行几何模块 × 介质模块的 2×2 消融</td>
+</tr>
+<tr>
+<td>H5</td>
+<td>匹配置信度可以辅助判断水下深度不确定性</td>
+<td>对比最大 softmax confidence 与真实深度误差的相关性</td>
+</tr>
+</tbody></table>
+<p><strong>独立评价：</strong> 对 Omni-Sea 最有价值的并不是照搬 MVSplat 的完整网络，而是借鉴其“在明确几何假设下进行跨视图特征匹配”的思路，并研究如何将水下传播模型融入匹配过程。</p>
+<hr>
+<h1 id="7-最终知识内化"><a href="#7-最终知识内化" class="headerlink" title="7. 最终知识内化"></a>7. 最终知识内化</h1><h2 id="7-1-用一段话解释-MVSplat"><a href="#7-1-用一段话解释-MVSplat" class="headerlink" title="7.1 用一段话解释 MVSplat"></a>7.1 用一段话解释 MVSplat</h2><p>MVSplat 研究如何从少量带相机参数的图像中，前馈预测可用于新视角合成的 3D Gaussian 场景。与 PixelSplat 主要从跨视图特征预测深度概率分布不同，MVSplat 使用 Plane Sweeping 在多个深度假设下 Warp 其他视图的特征，并计算跨视图相似度，构建 Cost Volume。随后通过 2D U-Net 和跨视图注意力细化 Cost Volume，再用 softmax 对深度候选进行加权平均得到深度图。深度图反投影为 Gaussian 中心，其他 Gaussian 参数联合预测，最后通过 Gaussian rasterization 渲染目标视角。模型只使用目标 RGB 图像的 photometric loss 训练，不需要 ground-truth depth。</p>
+<h2 id="7-2-MVSplat-相对-PixelSplat-的核心推进"><a href="#7-2-MVSplat-相对-PixelSplat-的核心推进" class="headerlink" title="7.2 MVSplat 相对 PixelSplat 的核心推进"></a>7.2 MVSplat 相对 PixelSplat 的核心推进</h2><p>PixelSplat 已经把双视图几何关系引入前馈 Gaussian 预测，但深度概率分布仍由跨视图特征预测分支生成。</p>
+<p>MVSplat 将几何匹配进一步显式化：</p>
+<p>[ . ]</p>
+<p>这使 Gaussian 中心定位不再完全依赖网络从特征中隐式学习深度映射。</p>
+<h2 id="7-3-最重要的三点"><a href="#7-3-最重要的三点" class="headerlink" title="7.3 最重要的三点"></a>7.3 最重要的三点</h2><ol>
+<li><strong>Cost Volume 是本文最核心的几何模块。</strong> 移除后 PSNR 下降 3.29 dB；将它替换进 PixelSplat 也能带来明显提升。</li>
+<li><strong>MVSplat 使用深度候选加权期望，不是 PixelSplat 式的随机深度采样。</strong> 两者虽然都涉及深度概率，但计算路径和几何定位机制不同。</li>
+<li><strong>几何质量的证据仍以定性为主。</strong> 论文的 NVS 指标、Gaussian 点云图和深度图不能替代深度真值或点云真值评估。</li>
+</ol>
+<h2 id="7-4-当前已读两篇工作的技术脉络"><a href="#7-4-当前已读两篇工作的技术脉络" class="headerlink" title="7.4 当前已读两篇工作的技术脉络"></a>7.4 当前已读两篇工作的技术脉络</h2><table>
+<thead>
+<tr>
+<th>工作</th>
+<th>研究定位</th>
+<th>核心几何预测思路</th>
+<th>当前理解</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PixelSplat</td>
+<td>双视图泛化 3DGS</td>
+<td>Epipolar Transformer + 概率深度采样</td>
+<td>从图像对前馈预测 Gaussian，并处理尺度相关信息与位置回归局部最优</td>
+</tr>
+<tr>
+<td>MVSplat</td>
+<td>稀疏多视图泛化 3DGS</td>
+<td>Plane Sweeping + Cost Volume + 深度期望</td>
+<td>用显式多视图匹配证据改善 Gaussian 中心定位与效率</td>
+</tr>
+</tbody></table>
+<p>两篇工作的共同基础：</p>
+<ul>
+<li>相机参数已知；</li>
+<li>跨场景训练；</li>
+<li>稀疏视图输入；</li>
+<li>前馈预测；</li>
+<li>显式 Gaussian 表示；</li>
+<li>photometric supervision；</li>
+<li>Gaussian rasterization。</li>
+</ul>
+<p>两篇工作的主要差异：</p>
+<ul>
+<li>PixelSplat 更强调概率式 Gaussian 位置预测；</li>
+<li>MVSplat 更强调几何匹配式深度估计。</li>
+</ul>
+<hr>
+<h1 id="8-核心术语表"><a href="#8-核心术语表" class="headerlink" title="8. 核心术语表"></a>8. 核心术语表</h1><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>中文解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sparse Multi-View</td>
+<td>稀疏多视图</td>
+</tr>
+<tr>
+<td>Feed-forward Reconstruction</td>
+<td>前馈式重建</td>
+</tr>
+<tr>
+<td>3D Gaussian Splatting</td>
+<td>三维高斯泼溅</td>
+</tr>
+<tr>
+<td>Gaussian Primitive</td>
+<td>高斯基元</td>
+</tr>
+<tr>
+<td>Plane Sweeping</td>
+<td>平面扫描</td>
+</tr>
+<tr>
+<td>Cost Volume</td>
+<td>代价体</td>
+</tr>
+<tr>
+<td>Feature Matching</td>
+<td>特征匹配</td>
+</tr>
+<tr>
+<td>Feature Correlation</td>
+<td>特征相关性</td>
+</tr>
+<tr>
+<td>Feature Warping</td>
+<td>特征变换 &#x2F; Warp</td>
+</tr>
+<tr>
+<td>Multi-View Stereo</td>
+<td>多视图立体视觉</td>
+</tr>
+<tr>
+<td>Depth Hypothesis</td>
+<td>深度假设</td>
+</tr>
+<tr>
+<td>Inverse Depth</td>
+<td>逆深度</td>
+</tr>
+<tr>
+<td>Cross-view Attention</td>
+<td>跨视图注意力</td>
+</tr>
+<tr>
+<td>U-Net Refinement</td>
+<td>U-Net 细化</td>
+</tr>
+<tr>
+<td>Softmax Expectation</td>
+<td>Softmax 加权期望</td>
+</tr>
+<tr>
+<td>Unprojection</td>
+<td>反投影</td>
+</tr>
+<tr>
+<td>Gaussian Center</td>
+<td>Gaussian 中心</td>
+</tr>
+<tr>
+<td>Opacity</td>
+<td>不透明度</td>
+</tr>
+<tr>
+<td>Covariance</td>
+<td>协方差</td>
+</tr>
+<tr>
+<td>Spherical Harmonics</td>
+<td>球谐函数</td>
+</tr>
+<tr>
+<td>Photometric Supervision</td>
+<td>光度监督</td>
+</tr>
+<tr>
+<td>Zero-shot Generalization</td>
+<td>零样本泛化</td>
+</tr>
+<tr>
+<td>Non-Lambertian Surface</td>
+<td>非朗伯表面</td>
+</tr>
+<tr>
+<td>Reflective Surface</td>
+<td>反射表面</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="9-来源与资源完整性记录"><a href="#9-来源与资源完整性记录" class="headerlink" title="9. 来源与资源完整性记录"></a>9. 来源与资源完整性记录</h1><h2 id="9-1-用户提供的来源"><a href="#9-1-用户提供的来源" class="headerlink" title="9.1 用户提供的来源"></a>9.1 用户提供的来源</h2><p>压缩包：</p>
+<p><code>MVSplat_ Efficient 3D Gaussian Splatting from Sparse Multi-View Images.zip</code></p>
+<p>HTML：</p>
+<p><code>MVSplat_ Efficient 3D Gaussian Splatting from Sparse Multi-View Images.html</code></p>
+<p>HTML 标注版本：</p>
+<p><code>arXiv:2403.14627v2 [cs.CV] 18 Jul 2024</code></p>
+<h2 id="9-2-Figure-原图资源"><a href="#9-2-Figure-原图资源" class="headerlink" title="9.2 Figure 原图资源"></a>9.2 Figure 原图资源</h2><p>以下文件均来自用户上传 ZIP 的 HTML 配套目录，原始文件名和 PNG 格式保持不变：</p>
+<ul>
+<li><code>teaser.png</code></li>
+<li><code>pipeline.png</code></li>
+<li><code>sota_comparisons.png</code></li>
+<li><code>point_cloud_fig.png</code></li>
+<li><code>re10k_generalization_fig.png</code></li>
+<li><code>re10k_ablation_fig.png</code></li>
+<li><code>supp_val_logs.png</code></li>
+<li><code>supp_limitation.png</code></li>
+<li><code>supp_sota.png</code></li>
+<li><code>supp_point_cloud.png</code></li>
+<li><code>supp_generalization.png</code></li>
+</ul>
+<h2 id="9-3-图像处理状态"><a href="#9-3-图像处理状态" class="headerlink" title="9.3 图像处理状态"></a>9.3 图像处理状态</h2><ul>
+<li>已定位全部 11 幅 Figure 原图；</li>
+<li>已检查 PNG 格式和图像尺寸；</li>
+<li>已实际观察全部 11 幅原图；</li>
+<li>已复制到报告配套资源目录；</li>
+<li>复制前后 SHA-256 一致；</li>
+<li>未转换格式；</li>
+<li>未缩放；</li>
+<li>未压缩；</li>
+<li>未修改原图内容；</li>
+<li>未调用图片搜索；</li>
+<li>未使用 AI 生成图片替代。</li>
+</ul>
+<p><strong>使用说明：</strong> 请将 <code>MVSplat_精读报告.md</code> 与 <code>MVSplat_精读报告_assets</code> 文件夹放在同一目录，或解压完整资源包。Markdown 中使用相对路径引用原始 Figure。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Research/" class="category-chain-item">Research</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/Hexo/tags/3D-Gaussian-Splatting/" class="print-no-link">#3D Gaussian Splatting</a>
+      
+        <a href="/Hexo/tags/3D-Reconstruction/" class="print-no-link">#3D Reconstruction</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MVSplat 论文交互式精读报告</div>
+      <div>https://zhangq.github.io/2026/11/23/MVSplat/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Hexo/2026/11/23/PixelSplat/" title="PixelSplat 论文交互式精读报告">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PixelSplat 论文交互式精读报告</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
