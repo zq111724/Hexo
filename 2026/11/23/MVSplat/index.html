@@ -19,21 +19,21 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="MVSplat 论文交互式精读报告 论文： MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images作者： Yuedong Chen, Haofei Xu, Chuanxia Zheng, Bohan Zhuang, Marc Pollefeys, Andreas Geiger, Tat-Jen Cham, Jia">
+    <meta name="description" content="精读 MVSplat 如何利用稀疏多视图图像构建代价体并预测三维高斯，比较新视角合成、几何质量和跨数据集泛化。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MVSplat 论文交互式精读报告">
 <meta property="og:url" content="https://zq111724.github.io/2026/11/23/MVSplat/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="MVSplat 论文交互式精读报告 论文： MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images作者： Yuedong Chen, Haofei Xu, Chuanxia Zheng, Bohan Zhuang, Marc Pollefeys, Andreas Geiger, Tat-Jen Cham, Jia">
+<meta property="og:description" content="精读 MVSplat 如何利用稀疏多视图图像构建代价体并预测三维高斯，比较新视角合成、几何质量和跨数据集泛化。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zq111724.github.io/Hexo/MVSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser.png">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/2026/11/23/MVSplat/teaser.png">
 <meta property="article:published_time" content="2026-11-23T09:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-23T14:17:41.637Z">
+<meta property="article:modified_time" content="2026-11-24T11:22:16.600Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="3D Gaussian Splatting">
 <meta property="article:tag" content="3D Reconstruction">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zq111724.github.io/Hexo/MVSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser.png">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/2026/11/23/MVSplat/teaser.png">
   
   
   
@@ -856,7 +856,7 @@
 </tr>
 </tbody></table>
 <h2 id="2-2-Figure-1：MVSplat-与-PixelSplat-的总体比较"><a href="#2-2-Figure-1：MVSplat-与-PixelSplat-的总体比较" class="headerlink" title="2.2 Figure 1：MVSplat 与 PixelSplat 的总体比较"></a>2.2 Figure 1：MVSplat 与 PixelSplat 的总体比较</h2><figure>
-<img src="MVSplat_精读报告_assets/teaser.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — MVSplat vs PixelSplat" />
+<img src="/Hexo/2026/11/23/MVSplat/teaser.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — MVSplat vs PixelSplat" />
 <figcaption aria-hidden="true">Figure 1 — MVSplat vs PixelSplat</figcaption>
 </figure>
 
@@ -882,7 +882,7 @@
 <p><strong>结论边界</strong></p>
 <p>该图是定性和汇总指标示意。Gaussian 可视化能说明输出结构的差异，但不是独立几何真值评估；柱状图中的数值应以正文 Table 1 为准。</p>
 <h2 id="2-3-Figure-2：MVSplat-总体架构"><a href="#2-3-Figure-2：MVSplat-总体架构" class="headerlink" title="2.3 Figure 2：MVSplat 总体架构"></a>2.3 Figure 2：MVSplat 总体架构</h2><figure>
-<img src="MVSplat_精读报告_assets/pipeline.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — MVSplat Architecture" />
+<img src="/Hexo/2026/11/23/MVSplat/pipeline.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — MVSplat Architecture" />
 <figcaption aria-hidden="true">Figure 2 — MVSplat Architecture</figcaption>
 </figure>
 
@@ -909,7 +909,7 @@
 <p><strong>关键理解</strong></p>
 <p>Cost Volume 是 Gaussian 中心预测的中间几何表示；它不是最终的 3D 场景，也不是直接渲染的体素网格。最终仍然是 Gaussian primitives。</p>
 <h2 id="2-4-Figure-3：与现有方法的新视角合成比较"><a href="#2-4-Figure-3：与现有方法的新视角合成比较" class="headerlink" title="2.4 Figure 3：与现有方法的新视角合成比较"></a>2.4 Figure 3：与现有方法的新视角合成比较</h2><figure>
-<img src="MVSplat_精读报告_assets/sota_comparisons.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — SOTA Comparison" />
+<img src="/Hexo/2026/11/23/MVSplat/sota_comparisons.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — SOTA Comparison" />
 <figcaption aria-hidden="true">Figure 3 — SOTA Comparison</figcaption>
 </figure>
 
@@ -934,7 +934,7 @@
 <p><strong>结论边界</strong></p>
 <p>这是定性图像证据。它支持作者关于 NVS 质量的主张，但不能单独证明 Gaussian 中心对应真实物体表面。</p>
 <h2 id="2-5-Figure-4：Gaussian-几何与深度图比较"><a href="#2-5-Figure-4：Gaussian-几何与深度图比较" class="headerlink" title="2.5 Figure 4：Gaussian 几何与深度图比较"></a>2.5 Figure 4：Gaussian 几何与深度图比较</h2><figure>
-<img src="MVSplat_精读报告_assets/point_cloud_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — Gaussian Geometry" />
+<img src="/Hexo/2026/11/23/MVSplat/point_cloud_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — Gaussian Geometry" />
 <figcaption aria-hidden="true">Figure 4 — Gaussian Geometry</figcaption>
 </figure>
 
@@ -964,7 +964,7 @@
 <li>PixelSplat 自身论文中的几何可视化曾使用额外深度正则化微调；两篇论文的几何展示设置需要区分，不能把不同处理条件下的点云图直接视为同一实验协议。</li>
 </ol>
 <h2 id="2-6-Figure-5：跨数据集泛化"><a href="#2-6-Figure-5：跨数据集泛化" class="headerlink" title="2.6 Figure 5：跨数据集泛化"></a>2.6 Figure 5：跨数据集泛化</h2><figure>
-<img src="MVSplat_精读报告_assets/re10k_generalization_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Cross-dataset Generalization" />
+<img src="/Hexo/2026/11/23/MVSplat/re10k_generalization_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Cross-dataset Generalization" />
 <figcaption aria-hidden="true">Figure 5 — Cross-dataset Generalization</figcaption>
 </figure>
 
@@ -990,7 +990,7 @@
 <p><strong>结论边界</strong></p>
 <p>实验支持 MVSplat 在这两个指定目标数据集上的 NVS 泛化优势，但不能证明它对所有分布外场景都具有不变性。作者关于“相对特征相似度比绝对特征幅值更稳定”的解释仍需要更直接的特征分布分析来验证。</p>
 <h2 id="2-7-Figure-6：消融实验"><a href="#2-7-Figure-6：消融实验" class="headerlink" title="2.7 Figure 6：消融实验"></a>2.7 Figure 6：消融实验</h2><figure>
-<img src="MVSplat_精读报告_assets/re10k_ablation_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — Ablation" />
+<img src="/Hexo/2026/11/23/MVSplat/re10k_ablation_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — Ablation" />
 <figcaption aria-hidden="true">Figure 6 — Ablation</figcaption>
 </figure>
 
@@ -1015,7 +1015,7 @@
 <p><strong>正文关联</strong></p>
 <p>Section 4.3、Table 3。</p>
 <h2 id="2-8-Figure-A：消融实验验证曲线"><a href="#2-8-Figure-A：消融实验验证曲线" class="headerlink" title="2.8 Figure A：消融实验验证曲线"></a>2.8 Figure A：消融实验验证曲线</h2><figure>
-<img src="MVSplat_精读报告_assets/supp_val_logs.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure A — Validation Curves" />
+<img src="/Hexo/2026/11/23/MVSplat/supp_val_logs.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure A — Validation Curves" />
 <figcaption aria-hidden="true">Figure A — Validation Curves</figcaption>
 </figure>
 
@@ -1039,7 +1039,7 @@
 <p><strong>正文关联</strong></p>
 <p>Section 4.3、Table 3。</p>
 <h2 id="2-9-Figure-B：失败案例"><a href="#2-9-Figure-B：失败案例" class="headerlink" title="2.9 Figure B：失败案例"></a>2.9 Figure B：失败案例</h2><figure>
-<img src="MVSplat_精读报告_assets/supp_limitation.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B — Failure Cases" />
+<img src="/Hexo/2026/11/23/MVSplat/supp_limitation.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B — Failure Cases" />
 <figcaption aria-hidden="true">Figure B — Failure Cases</figcaption>
 </figure>
 
@@ -1061,7 +1061,7 @@
 <p><strong>正文关联</strong></p>
 <p>Appendix 0.A Limitation、Conclusion。</p>
 <h2 id="2-10-Figure-C：更多-SOTA-比较"><a href="#2-10-Figure-C：更多-SOTA-比较" class="headerlink" title="2.10 Figure C：更多 SOTA 比较"></a>2.10 Figure C：更多 SOTA 比较</h2><figure>
-<img src="MVSplat_精读报告_assets/supp_sota.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure C — More SOTA Comparisons" />
+<img src="/Hexo/2026/11/23/MVSplat/supp_sota.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure C — More SOTA Comparisons" />
 <figcaption aria-hidden="true">Figure C — More SOTA Comparisons</figcaption>
 </figure>
 
@@ -1083,7 +1083,7 @@
 <p><strong>正文关联</strong></p>
 <p>Section 4.2。</p>
 <h2 id="2-11-Figure-D：更多-Gaussian-与深度图比较"><a href="#2-11-Figure-D：更多-Gaussian-与深度图比较" class="headerlink" title="2.11 Figure D：更多 Gaussian 与深度图比较"></a>2.11 Figure D：更多 Gaussian 与深度图比较</h2><figure>
-<img src="MVSplat_精读报告_assets/supp_point_cloud.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure D — More Geometry Comparisons" />
+<img src="/Hexo/2026/11/23/MVSplat/supp_point_cloud.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure D — More Geometry Comparisons" />
 <figcaption aria-hidden="true">Figure D — More Geometry Comparisons</figcaption>
 </figure>
 
@@ -1108,7 +1108,7 @@
 <p><strong>结论边界</strong></p>
 <p>依然是定性比较，没有提供几何真值误差指标。</p>
 <h2 id="2-12-Figure-E：更多跨数据集泛化比较"><a href="#2-12-Figure-E：更多跨数据集泛化比较" class="headerlink" title="2.12 Figure E：更多跨数据集泛化比较"></a>2.12 Figure E：更多跨数据集泛化比较</h2><figure>
-<img src="MVSplat_精读报告_assets/supp_generalization.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure E — More Generalization Comparisons" />
+<img src="/Hexo/2026/11/23/MVSplat/supp_generalization.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure E — More Generalization Comparisons" />
 <figcaption aria-hidden="true">Figure E — More Generalization Comparisons</figcaption>
 </figure>
 
@@ -2786,7 +2786,7 @@
     
       <span class="category-chain">
         
-  <a href="/Hexo/categories/Research/" class="category-chain-item">Research</a>
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
   
   
 
@@ -2860,15 +2860,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Hexo/2026/11/23/PixelSplat/" title="PixelSplat 论文交互式精读报告">
+                      <a href="/Hexo/2026/11/23/DepthSplat/" title="DepthSplat 论文交互式精读报告">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">PixelSplat 论文交互式精读报告</span>
+                        <span class="hidden-mobile">DepthSplat 论文交互式精读报告</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/Hexo/2026/11/23/PixelSplat/" title="PixelSplat 论文交互式精读报告">
+                        <span class="hidden-mobile">PixelSplat 论文交互式精读报告</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>

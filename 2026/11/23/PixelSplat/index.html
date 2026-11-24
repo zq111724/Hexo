@@ -19,21 +19,21 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="PixelSplat 论文交互式精读报告 论文： pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction阅读方式： 按 AI 科研论文交互式精读导师 V1.5 的完整顺序执行；本报告按用户要求一次性完成，不在各题之间暂停。证据规则： 以用户上传的 HTML 与配套 ZI">
+    <meta name="description" content="精读 pixelSplat 如何从图像对预测概率化的三维高斯，分析尺度歧义、可微采样和新视角合成实验。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PixelSplat 论文交互式精读报告">
 <meta property="og:url" content="https://zq111724.github.io/2026/11/23/PixelSplat/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="PixelSplat 论文交互式精读报告 论文： pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction阅读方式： 按 AI 科研论文交互式精读导师 V1.5 的完整顺序执行；本报告按用户要求一次性完成，不在各题之间暂停。证据规则： 以用户上传的 HTML 与配套 ZI">
+<meta property="og:description" content="精读 pixelSplat 如何从图像对预测概率化的三维高斯，分析尺度歧义、可微采样和新视角合成实验。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zq111724.github.io/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser_bigger_text.png">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/2026/11/23/PixelSplat/teaser_bigger_text.png">
 <meta property="article:published_time" content="2026-11-23T09:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-23T14:11:45.306Z">
+<meta property="article:modified_time" content="2026-11-24T11:22:16.599Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="3D Gaussian Splatting">
 <meta property="article:tag" content="3D Reconstruction">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zq111724.github.io/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser_bigger_text.png">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/2026/11/23/PixelSplat/teaser_bigger_text.png">
   
   
   
@@ -810,7 +810,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h2 id="2-2-Figure-1：总体方法示意"><a href="#2-2-Figure-1：总体方法示意" class="headerlink" title="2.2 Figure 1：总体方法示意"></a>2.2 Figure 1：总体方法示意</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser_bigger_text.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — Overall Overview"></p>
+<h2 id="2-2-Figure-1：总体方法示意"><a href="#2-2-Figure-1：总体方法示意" class="headerlink" title="2.2 Figure 1：总体方法示意"></a>2.2 Figure 1：总体方法示意</h2><p><img src="/Hexo/2026/11/23/PixelSplat/teaser_bigger_text.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — Overall Overview"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 1: Overview. Given a pair of input images, pixelSplat reconstructs a 3D radiance field parameterized via 3D Gaussian primitives. This yields an explicit 3D representation that is renderable in real time, remains editable, and is cheap to train.</p>
@@ -831,7 +831,7 @@
 <p><strong>结论边界</strong></p>
 <p>该图是方法概念示意，不是几何精度证明，也没有展示实际网络结构的全部细节。</p>
 <hr>
-<h2 id="2-3-Figure-2：尺度歧义"><a href="#2-3-Figure-2：尺度歧义" class="headerlink" title="2.3 Figure 2：尺度歧义"></a>2.3 Figure 2：尺度歧义</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/scale_ambiguity_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — Scale Ambiguity"></p>
+<h2 id="2-3-Figure-2：尺度歧义"><a href="#2-3-Figure-2：尺度歧义" class="headerlink" title="2.3 Figure 2：尺度歧义"></a>2.3 Figure 2：尺度歧义</h2><p><img src="/Hexo/2026/11/23/PixelSplat/scale_ambiguity_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — Scale Ambiguity"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 2: Scale ambiguity. SfM does not reconstruct camera poses in real-world, metric scale—poses are scaled by an arbitrary scale factor that is different for each scene. To render correct views, our model’s 3D reconstruction needs to be consistent with this arbitrary scale. We illustrate how our epipolar encoder solves this problem. Features belonging to the ray’s corresponding pixel on the left are compared with features sampled along the epipolar line on the right. Epipolar samples are augmented with their positionally-encoded depths along the ray, which allows our encoder to record correct depths. Recorded depths are later used for depth prediction.</p>
@@ -852,7 +852,7 @@
 <p><strong>重要理解</strong></p>
 <p>模型需要预测的是<strong>与输入 SfM 相机位姿坐标尺度一致的深度</strong>。这不等于恢复真实世界中的绝对米制尺度。</p>
 <hr>
-<h2 id="2-4-Figure-3：概率式-Pixel-aligned-Gaussian-预测"><a href="#2-4-Figure-3：概率式-Pixel-aligned-Gaussian-预测" class="headerlink" title="2.4 Figure 3：概率式 Pixel-aligned Gaussian 预测"></a>2.4 Figure 3：概率式 Pixel-aligned Gaussian 预测</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/sampling_v2.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — Probabilistic Gaussian Prediction"></p>
+<h2 id="2-4-Figure-3：概率式-Pixel-aligned-Gaussian-预测"><a href="#2-4-Figure-3：概率式-Pixel-aligned-Gaussian-预测" class="headerlink" title="2.4 Figure 3：概率式 Pixel-aligned Gaussian 预测"></a>2.4 Figure 3：概率式 Pixel-aligned Gaussian 预测</h2><p><img src="/Hexo/2026/11/23/PixelSplat/sampling_v2.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — Probabilistic Gaussian Prediction"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 3: Proposed probabilistic prediction of pixel-aligned Gaussians. For every pixel feature ([]) in the input feature map, a neural network (f) predicts Gaussian primitive parameters () and (). Gaussian locations () and opacities () are not predicted directly, which would lead to local minima. Instead, (f) predicts per-pixel discrete probability distributions over depths (p_{}(z)), parameterized by (). Sampling then yields the locations of Gaussian primitives. The opacity of each Gaussian is set to the probability of the sampled depth bucket. The final set of Gaussian primitives can then be rendered from novel views using the splatting algorithm proposed by Kerbl et al. [19]. Note that for brevity, we use (h) to represent the function that computes depths from bucket indices (see equations 6 and 7).</p>
@@ -876,7 +876,7 @@
 <p><strong>结论边界</strong></p>
 <p>该图是算法结构示意，不能单独证明概率分布会收敛到正确深度；相关实验依据是 Table 2 和 Figure 7。</p>
 <hr>
-<h2 id="2-5-Figure-4：预测的三维-Gaussian-与深度图"><a href="#2-5-Figure-4：预测的三维-Gaussian-与深度图" class="headerlink" title="2.5 Figure 4：预测的三维 Gaussian 与深度图"></a>2.5 Figure 4：预测的三维 Gaussian 与深度图</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/point_clouds_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — 3D Gaussians and Depth Maps"></p>
+<h2 id="2-5-Figure-4：预测的三维-Gaussian-与深度图"><a href="#2-5-Figure-4：预测的三维-Gaussian-与深度图" class="headerlink" title="2.5 Figure 4：预测的三维 Gaussian 与深度图"></a>2.5 Figure 4：预测的三维 Gaussian 与深度图</h2><p><img src="/Hexo/2026/11/23/PixelSplat/point_clouds_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — 3D Gaussians and Depth Maps"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 4: 3D Gaussians (top) and corresponding depth maps (bottom) predicted by our method. In contrast to light field rendering methods like GPNR [47] and that of Du et al. [10], our method produces an explicit 3D representation. Here, we show zoomed-out views of the Gaussians our method produces along with rendered depth maps, as viewed from the two reference viewpoints.</p>
@@ -897,7 +897,7 @@
 <p><strong>重要限制</strong></p>
 <p>作者同时指出，这些 Gaussian 在分布内视角下有利于高质量 NVS，但在反射表面和分布外视角下仍会出现透明表面、billboard-like 等问题。</p>
 <hr>
-<h2 id="2-6-Figure-5：新视角合成定性比较"><a href="#2-6-Figure-5：新视角合成定性比较" class="headerlink" title="2.6 Figure 5：新视角合成定性比较"></a>2.6 Figure 5：新视角合成定性比较</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x1.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Qualitative NVS Comparison"></p>
+<h2 id="2-6-Figure-5：新视角合成定性比较"><a href="#2-6-Figure-5：新视角合成定性比较" class="headerlink" title="2.6 Figure 5：新视角合成定性比较"></a>2.6 Figure 5：新视角合成定性比较</h2><p><img src="/Hexo/2026/11/23/PixelSplat/x1.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Qualitative NVS Comparison"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 5: Qualitative comparison of novel views on the RealEstate10k (top) and ACID (bottom) test sets. Compared to the baselines, our approach not only produces more accurate and perceptually appealing images, but also generalizes better to out-of-distribution examples like the creek in the bottom row.</p>
@@ -919,7 +919,7 @@
 <p><strong>结论边界</strong></p>
 <p>定性图像可支持视觉差异观察，但不能替代 PSNR、SSIM、LPIPS 等定量指标；也不能仅凭图像判断几何深度是否准确。</p>
 <hr>
-<h2 id="2-7-Figure-6：极线注意力可视化"><a href="#2-7-Figure-6：极线注意力可视化" class="headerlink" title="2.7 Figure 6：极线注意力可视化"></a>2.7 Figure 6：极线注意力可视化</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/attention_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — Attention Visualization"></p>
+<h2 id="2-7-Figure-6：极线注意力可视化"><a href="#2-7-Figure-6：极线注意力可视化" class="headerlink" title="2.7 Figure 6：极线注意力可视化"></a>2.7 Figure 6：极线注意力可视化</h2><p><img src="/Hexo/2026/11/23/PixelSplat/attention_fig.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — Attention Visualization"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 6: Attention visualization. We visualize the epipolar cross-attention weights between the rays on the left and the corresponding epipolar lines on the right to confirm that our model learns to find the correct correspondence along each ray.</p>
@@ -940,7 +940,7 @@
 <p><strong>结论边界</strong></p>
 <p>该图能够展示注意力权重的空间分布，但不能单独证明所有场景、所有像素都获得了正确匹配，也没有给出独立的匹配准确率。</p>
 <hr>
-<h2 id="2-8-Figure-7：消融实验定性结果"><a href="#2-8-Figure-7：消融实验定性结果" class="headerlink" title="2.8 Figure 7：消融实验定性结果"></a>2.8 Figure 7：消融实验定性结果</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x2.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 7 — Ablations"></p>
+<h2 id="2-8-Figure-7：消融实验定性结果"><a href="#2-8-Figure-7：消融实验定性结果" class="headerlink" title="2.8 Figure 7：消融实验定性结果"></a>2.8 Figure 7：消融实验定性结果</h2><p><img src="/Hexo/2026/11/23/PixelSplat/x2.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 7 — Ablations"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 7: Ablations. Without the epipolar transformer, our model is unable to resolve scale ambiguity, leading to ghosting artifacts. Without our sampling approach, our model falls into local minima that manifest themselves as speckling artifacts. Regularizing our model’s predicted depths minimally affects rendering quality.</p>
@@ -958,7 +958,7 @@
 <p><strong>正文关联</strong></p>
 <p>Section 5.3、Table 2。</p>
 <hr>
-<h2 id="2-9-Figure-8：网络架构图（Appendix-A）"><a href="#2-9-Figure-8：网络架构图（Appendix-A）" class="headerlink" title="2.9 Figure 8：网络架构图（Appendix A）"></a>2.9 Figure 8：网络架构图（Appendix A）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/architecture_pdf.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 8 — Architecture Diagram"></p>
+<h2 id="2-9-Figure-8：网络架构图（Appendix-A）"><a href="#2-9-Figure-8：网络架构图（Appendix-A）" class="headerlink" title="2.9 Figure 8：网络架构图（Appendix A）"></a>2.9 Figure 8：网络架构图（Appendix A）</h2><p><img src="/Hexo/2026/11/23/PixelSplat/architecture_pdf.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 8 — Architecture Diagram"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 8: Architecture diagram.</p>
@@ -1006,7 +1006,7 @@
 <p><strong>正文关联</strong></p>
 <p>Section 4.1、Section 4.2、Appendix A.1。</p>
 <hr>
-<h2 id="2-10-Figure-9：两视图与三视图比较（Appendix-B）"><a href="#2-10-Figure-9：两视图与三视图比较（Appendix-B）" class="headerlink" title="2.10 Figure 9：两视图与三视图比较（Appendix B）"></a>2.10 Figure 9：两视图与三视图比较（Appendix B）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x3.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 9 — Two-view vs Three-view"></p>
+<h2 id="2-10-Figure-9：两视图与三视图比较（Appendix-B）"><a href="#2-10-Figure-9：两视图与三视图比较（Appendix-B）" class="headerlink" title="2.10 Figure 9：两视图与三视图比较（Appendix B）"></a>2.10 Figure 9：两视图与三视图比较（Appendix B）</h2><p><img src="/Hexo/2026/11/23/PixelSplat/x3.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 9 — Two-view vs Three-view"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 9: Qualitative comparison of novel views given 2 and 3 reference views. Our method can be extended to use an arbitrary, fixed number of reference views as input. Here, we compare the results from a 3-view model with those from the original 2-view model. The 2-view model uses the top and bottom reference views as input, while the 3-view model uses all three.</p>
@@ -1026,7 +1026,7 @@
 <p><strong>结论边界</strong></p>
 <p>论文展示了三视图实验，并说明结构上可扩展到任意固定数量的视图；这不等于已经充分验证了任意大视图数量下的效果和资源开销。</p>
 <hr>
-<h2 id="2-11-Figure-10：RealEstate10k-补充结果（Appendix-D）"><a href="#2-11-Figure-10：RealEstate10k-补充结果（Appendix-D）" class="headerlink" title="2.11 Figure 10：RealEstate10k 补充结果（Appendix D）"></a>2.11 Figure 10：RealEstate10k 补充结果（Appendix D）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x4.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 10 — Additional RealEstate10k Results"></p>
+<h2 id="2-11-Figure-10：RealEstate10k-补充结果（Appendix-D）"><a href="#2-11-Figure-10：RealEstate10k-补充结果（Appendix-D）" class="headerlink" title="2.11 Figure 10：RealEstate10k 补充结果（Appendix D）"></a>2.11 Figure 10：RealEstate10k 补充结果（Appendix D）</h2><p><img src="/Hexo/2026/11/23/PixelSplat/x4.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 10 — Additional RealEstate10k Results"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 10: More results on the Real Estate 10k dataset.</p>
@@ -1047,7 +1047,7 @@
 <p><strong>结论边界</strong></p>
 <p>该图没有给出独立定量指标，也没有在图注中逐列标注所有方法，因此主要作为补充定性证据。</p>
 <hr>
-<h2 id="2-12-Figure-11：ACID-补充结果（Appendix-D）"><a href="#2-12-Figure-11：ACID-补充结果（Appendix-D）" class="headerlink" title="2.12 Figure 11：ACID 补充结果（Appendix D）"></a>2.12 Figure 11：ACID 补充结果（Appendix D）</h2><p><img src="/Hexo/PixelSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/x5.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 11 — Additional ACID Results"></p>
+<h2 id="2-12-Figure-11：ACID-补充结果（Appendix-D）"><a href="#2-12-Figure-11：ACID-补充结果（Appendix-D）" class="headerlink" title="2.12 Figure 11：ACID 补充结果（Appendix D）"></a>2.12 Figure 11：ACID 补充结果（Appendix D）</h2><p><img src="/Hexo/2026/11/23/PixelSplat/x5.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 11 — Additional ACID Results"></p>
 <p><strong>Caption 原文</strong></p>
 <blockquote>
 <p>Figure 11: More results on the ACID dataset.</p>
@@ -2464,7 +2464,7 @@
     
       <span class="category-chain">
         
-  <a href="/Hexo/categories/Research/" class="category-chain-item">Research</a>
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
   
   
 
@@ -2538,9 +2538,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Hexo/2026/11/23/DepthSplat/" title="DepthSplat 论文交互式精读报告">
+                      <a href="/Hexo/2026/11/23/MVSplat/" title="MVSplat 论文交互式精读报告">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">DepthSplat 论文交互式精读报告</span>
+                        <span class="hidden-mobile">MVSplat 论文交互式精读报告</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -2548,8 +2548,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Hexo/2026/11/23/MVSplat/" title="MVSplat 论文交互式精读报告">
-                        <span class="hidden-mobile">MVSplat 论文交互式精读报告</span>
+                      <a href="/Hexo/2026/11/23/AnySplat/" title="AnySplat 论文交互式精读报告">
+                        <span class="hidden-mobile">AnySplat 论文交互式精读报告</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

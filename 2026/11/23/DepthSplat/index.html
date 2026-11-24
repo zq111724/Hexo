@@ -19,21 +19,21 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="DepthSplat 论文交互式精读报告 论文标题： DepthSplat: Connecting Gaussian Splatting and Depth中文标题： DepthSplat：连接高斯泼溅与深度估计作者： Haofei Xu, Songyou Peng, Fangjinhua Wang, Hermann Blum, Daniel Barath, Andreas Geiger, Mar">
+    <meta name="description" content="精读 DepthSplat 如何结合单目深度特征与多视图匹配，并分析深度预训练、深度估计和新视角合成实验。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DepthSplat 论文交互式精读报告">
 <meta property="og:url" content="https://zq111724.github.io/2026/11/23/DepthSplat/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="DepthSplat 论文交互式精读报告 论文标题： DepthSplat: Connecting Gaussian Splatting and Depth中文标题： DepthSplat：连接高斯泼溅与深度估计作者： Haofei Xu, Songyou Peng, Fangjinhua Wang, Hermann Blum, Daniel Barath, Andreas Geiger, Mar">
+<meta property="og:description" content="精读 DepthSplat 如何结合单目深度特征与多视图匹配，并分析深度预训练、深度估计和新视角合成实验。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zq111724.github.io/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser.png">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/2026/11/23/DepthSplat/teaser.png">
 <meta property="article:published_time" content="2026-11-23T09:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-23T14:18:03.685Z">
+<meta property="article:modified_time" content="2026-11-24T11:22:16.601Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="3D Gaussian Splatting">
 <meta property="article:tag" content="3D Reconstruction">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zq111724.github.io/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser.png">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/2026/11/23/DepthSplat/teaser.png">
   
   
   
@@ -932,7 +932,7 @@
 <td>验证完整深度模型预训练对 3DGS 的帮助</td>
 </tr>
 </tbody></table>
-<h2 id="2-2-Figure-1：Depth-与-Gaussian-Splatting-的双向联系"><a href="#2-2-Figure-1：Depth-与-Gaussian-Splatting-的双向联系" class="headerlink" title="2.2 Figure 1：Depth 与 Gaussian Splatting 的双向联系"></a>2.2 Figure 1：Depth 与 Gaussian Splatting 的双向联系</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/teaser.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — DepthSplat teaser"></p>
+<h2 id="2-2-Figure-1：Depth-与-Gaussian-Splatting-的双向联系"><a href="#2-2-Figure-1：Depth-与-Gaussian-Splatting-的双向联系" class="headerlink" title="2.2 Figure 1：Depth 与 Gaussian Splatting 的双向联系"></a>2.2 Figure 1：Depth 与 Gaussian Splatting 的双向联系</h2><p><img src="/Hexo/2026/11/23/DepthSplat/teaser.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1 — DepthSplat teaser"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 1 展示 DepthSplat 中深度估计与 Gaussian Splatting 的双向作用：更好的深度提升 Gaussian 重建；Gaussian Splatting 的无监督预训练反过来降低深度预测误差。</p>
 <p><strong>中文理解</strong></p>
@@ -956,7 +956,7 @@
 <p>Introduction、Section 3、Section 4.3、Table 4。</p>
 <p><strong>结论边界</strong></p>
 <p>右侧曲线支持 GS 预训练改善深度预测，但它并不单独证明所有改善都来自几何监督。渲染损失还包含外观、遮挡和可见性等因素。</p>
-<h2 id="2-3-Figure-2：DepthSplat-总体架构"><a href="#2-3-Figure-2：DepthSplat-总体架构" class="headerlink" title="2.3 Figure 2：DepthSplat 总体架构"></a>2.3 Figure 2：DepthSplat 总体架构</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/pipeline.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — DepthSplat Architecture"></p>
+<h2 id="2-3-Figure-2：DepthSplat-总体架构"><a href="#2-3-Figure-2：DepthSplat-总体架构" class="headerlink" title="2.3 Figure 2：DepthSplat 总体架构"></a>2.3 Figure 2：DepthSplat 总体架构</h2><p><img src="/Hexo/2026/11/23/DepthSplat/pipeline.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2 — DepthSplat Architecture"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 2 展示共享深度架构如何连接多视图匹配、单目特征、深度回归、Gaussian 参数预测和新视角渲染，并支持深度监督与 GS 渲染预训练两种训练方式。</p>
 <p><strong>中文理解</strong></p>
@@ -987,7 +987,7 @@
 <p>Section 3.1–3.5、Equations (1)–(2)。</p>
 <p><strong>关键理解</strong></p>
 <p>Monocular Branch 输出的是预训练模型的 feature map，而不是直接输出最终深度图。最终深度仍然由融合后的 Cost Volume 与 Monocular Features 经 2D U-Net 回归。</p>
-<h2 id="2-4-Figure-3：单目特征对深度估计的帮助"><a href="#2-4-Figure-3：单目特征对深度估计的帮助" class="headerlink" title="2.4 Figure 3：单目特征对深度估计的帮助"></a>2.4 Figure 3：单目特征对深度估计的帮助</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/depth_ablation.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — Monocular Feature for Depth"></p>
+<h2 id="2-4-Figure-3：单目特征对深度估计的帮助"><a href="#2-4-Figure-3：单目特征对深度估计的帮助" class="headerlink" title="2.4 Figure 3：单目特征对深度估计的帮助"></a>2.4 Figure 3：单目特征对深度估计的帮助</h2><p><img src="/Hexo/2026/11/23/DepthSplat/depth_ablation.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — Monocular Feature for Depth"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 3 比较 ScanNet 场景中有无单目特征时的深度结果，重点展示纹理缺失区域和反射表面上的改善。</p>
 <p><strong>中文理解</strong></p>
@@ -1009,7 +1009,7 @@
 <p>Section 4.2、Table 2。</p>
 <p><strong>结论边界</strong></p>
 <p>图像展示的是特定 ScanNet 案例，不能单独证明单目特征对所有类型的遮挡、反射和弱纹理都有效。</p>
-<h2 id="2-5-Figure-4：单目特征对-Gaussian-Splatting-的帮助"><a href="#2-5-Figure-4：单目特征对-Gaussian-Splatting-的帮助" class="headerlink" title="2.5 Figure 4：单目特征对 Gaussian Splatting 的帮助"></a>2.5 Figure 4：单目特征对 Gaussian Splatting 的帮助</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/re10k_monofeature_ablation.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — Monocular Feature for 3DGS"></p>
+<h2 id="2-5-Figure-4：单目特征对-Gaussian-Splatting-的帮助"><a href="#2-5-Figure-4：单目特征对-Gaussian-Splatting-的帮助" class="headerlink" title="2.5 Figure 4：单目特征对 Gaussian Splatting 的帮助"></a>2.5 Figure 4：单目特征对 Gaussian Splatting 的帮助</h2><p><img src="/Hexo/2026/11/23/DepthSplat/re10k_monofeature_ablation.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — Monocular Feature for 3DGS"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 4 比较 RealEstate10K 上有无单目特征的 Gaussian Splatting 结果，展示缺少跨视图对应关系时错误深度如何导致新视角渲染错位。</p>
 <p><strong>中文理解</strong></p>
@@ -1037,7 +1037,7 @@
 <p><strong>关键理解</strong></p>
 <p>该图体现了一个重要的因果链条：</p>
 <p>[<br>\text{缺少多视图对应}<br>\rightarrow<br>\text{深度估计不可靠}<br>\rightarrow<br>\text{Gaussian 中心错误}<br>\rightarrow<br>\text{Novel View 渲染错位}.<br>]</p>
-<h2 id="2-6-Figure-5：RealEstate10K-新视角合成比较"><a href="#2-6-Figure-5：RealEstate10K-新视角合成比较" class="headerlink" title="2.6 Figure 5：RealEstate10K 新视角合成比较"></a>2.6 Figure 5：RealEstate10K 新视角合成比较</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/re10k_sota.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Novel View Synthesis on RealEstate10K"></p>
+<h2 id="2-6-Figure-5：RealEstate10K-新视角合成比较"><a href="#2-6-Figure-5：RealEstate10K-新视角合成比较" class="headerlink" title="2.6 Figure 5：RealEstate10K 新视角合成比较"></a>2.6 Figure 5：RealEstate10K 新视角合成比较</h2><p><img src="/Hexo/2026/11/23/DepthSplat/re10k_sota.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5 — Novel View Synthesis on RealEstate10K"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 5 在 RealEstate10K 上比较 DepthSplat 与 PixelSplat、MVSplat 等方法的 Novel View Synthesis 结果，作者强调困难区域的改善。</p>
 <p><strong>中文理解</strong></p>
@@ -1063,7 +1063,7 @@
 <p>Section 4.4、Table 6。</p>
 <p><strong>结论边界</strong></p>
 <p>定性图支持图像质量改善，但不能代替 Table 6 的定量指标，也不能证明所有场景都获得相同提升。</p>
-<h2 id="2-7-Figure-6：DL3DV-上的-MVSplat-与-DepthSplat-比较"><a href="#2-7-Figure-6：DL3DV-上的-MVSplat-与-DepthSplat-比较" class="headerlink" title="2.7 Figure 6：DL3DV 上的 MVSplat 与 DepthSplat 比较"></a>2.7 Figure 6：DL3DV 上的 MVSplat 与 DepthSplat 比较</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/dl3dv_depthsplat_vs_mvsplat.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — DL3DV Depth and NVS Comparison"></p>
+<h2 id="2-7-Figure-6：DL3DV-上的-MVSplat-与-DepthSplat-比较"><a href="#2-7-Figure-6：DL3DV-上的-MVSplat-与-DepthSplat-比较" class="headerlink" title="2.7 Figure 6：DL3DV 上的 MVSplat 与 DepthSplat 比较"></a>2.7 Figure 6：DL3DV 上的 MVSplat 与 DepthSplat 比较</h2><p><img src="/Hexo/2026/11/23/DepthSplat/dl3dv_depthsplat_vs_mvsplat.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6 — DL3DV Depth and NVS Comparison"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 6 比较 DL3DV 场景中 MVSplat 与 DepthSplat 的深度图和 Novel View，重点关注重复纹理等难以匹配的区域。</p>
 <p><strong>中文理解</strong></p>
@@ -1088,7 +1088,7 @@
 <p>Section 4.4、Table 7。</p>
 <p><strong>结论边界</strong></p>
 <p>该图展示了一个具有代表性的重复纹理场景。它不能单独证明单目特征在所有重复纹理模式下都能消除深度歧义。</p>
-<h2 id="2-8-Figure-B-1：Gaussian-Splatting-无监督预训练对深度的影响"><a href="#2-8-Figure-B-1：Gaussian-Splatting-无监督预训练对深度的影响" class="headerlink" title="2.8 Figure B.1：Gaussian Splatting 无监督预训练对深度的影响"></a>2.8 Figure B.1：Gaussian Splatting 无监督预训练对深度的影响</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/depth_pretrain.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.1 — Depth Pre-training"></p>
+<h2 id="2-8-Figure-B-1：Gaussian-Splatting-无监督预训练对深度的影响"><a href="#2-8-Figure-B-1：Gaussian-Splatting-无监督预训练对深度的影响" class="headerlink" title="2.8 Figure B.1：Gaussian Splatting 无监督预训练对深度的影响"></a>2.8 Figure B.1：Gaussian Splatting 无监督预训练对深度的影响</h2><p><img src="/Hexo/2026/11/23/DepthSplat/depth_pretrain.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.1 — Depth Pre-training"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 B.1 比较有无 Gaussian Splatting 预训练时的深度预测和误差，作者强调无监督预训练对低纹理区域的改善。</p>
 <p><strong>中文理解</strong></p>
@@ -1109,7 +1109,7 @@
 <p>补充 Table 4 的定量深度预训练结果。</p>
 <p><strong>正文关联</strong></p>
 <p>Section 4.3、Table 4。</p>
-<h2 id="2-9-Figure-B-2：从-RealEstate10K-到-DL3DV-的泛化"><a href="#2-9-Figure-B-2：从-RealEstate10K-到-DL3DV-的泛化" class="headerlink" title="2.9 Figure B.2：从 RealEstate10K 到 DL3DV 的泛化"></a>2.9 Figure B.2：从 RealEstate10K 到 DL3DV 的泛化</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/re10k_to_dl3dv.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.2 — RE10K to DL3DV"></p>
+<h2 id="2-9-Figure-B-2：从-RealEstate10K-到-DL3DV-的泛化"><a href="#2-9-Figure-B-2：从-RealEstate10K-到-DL3DV-的泛化" class="headerlink" title="2.9 Figure B.2：从 RealEstate10K 到 DL3DV 的泛化"></a>2.9 Figure B.2：从 RealEstate10K 到 DL3DV 的泛化</h2><p><img src="/Hexo/2026/11/23/DepthSplat/re10k_to_dl3dv.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.2 — RE10K to DL3DV"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 B.2 展示使用 RealEstate10K 训练模型在 DL3DV 上的跨数据集泛化结果。</p>
 <p><strong>中文理解</strong></p>
@@ -1131,7 +1131,7 @@
 <p>为 Table 8 的跨数据集泛化比较提供定性补充。</p>
 <p><strong>正文关联</strong></p>
 <p>Section 4.4、Table 8。</p>
-<h2 id="2-10-Figure-B-3：DL3DV-四输入视图的-NVS"><a href="#2-10-Figure-B-3：DL3DV-四输入视图的-NVS" class="headerlink" title="2.10 Figure B.3：DL3DV 四输入视图的 NVS"></a>2.10 Figure B.3：DL3DV 四输入视图的 NVS</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/dl3dv_compare_4view.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.3 — Four-view NVS"></p>
+<h2 id="2-10-Figure-B-3：DL3DV-四输入视图的-NVS"><a href="#2-10-Figure-B-3：DL3DV-四输入视图的-NVS" class="headerlink" title="2.10 Figure B.3：DL3DV 四输入视图的 NVS"></a>2.10 Figure B.3：DL3DV 四输入视图的 NVS</h2><p><img src="/Hexo/2026/11/23/DepthSplat/dl3dv_compare_4view.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.3 — Four-view NVS"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 B.3 比较 DL3DV 上四张输入视图条件下的 MVSplat 与 DepthSplat 新视角合成结果。</p>
 <p><strong>中文理解</strong></p>
@@ -1155,7 +1155,7 @@
 <p>展示方法在超过两张输入图像时的定性表现。</p>
 <p><strong>正文关联</strong></p>
 <p>Appendix B.3、Table 7。</p>
-<h2 id="2-11-Figure-B-4：512-×-960-高分辨率新视角合成"><a href="#2-11-Figure-B-4：512-×-960-高分辨率新视角合成" class="headerlink" title="2.11 Figure B.4：512 × 960 高分辨率新视角合成"></a>2.11 Figure B.4：512 × 960 高分辨率新视角合成</h2><p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/dl3dv_512x960_render.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.4 — High-resolution NVS"></p>
+<h2 id="2-11-Figure-B-4：512-×-960-高分辨率新视角合成"><a href="#2-11-Figure-B-4：512-×-960-高分辨率新视角合成" class="headerlink" title="2.11 Figure B.4：512 × 960 高分辨率新视角合成"></a>2.11 Figure B.4：512 × 960 高分辨率新视角合成</h2><p><img src="/Hexo/2026/11/23/DepthSplat/dl3dv_512x960_render.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.4 — High-resolution NVS"></p>
 <p><strong>Caption 要点（忠实转述）</strong></p>
 <p>图 B.4 展示六张输入视图条件下、512 × 960 分辨率的 Novel View Synthesis 结果。</p>
 <p><strong>中文理解</strong></p>
@@ -1180,7 +1180,7 @@
 <p><strong>结论边界</strong></p>
 <p>这是定性结果。图中没有给出对应的高分辨率 PSNR、SSIM、LPIPS 或几何真值误差。</p>
 <h2 id="2-12-Figure-B-5：12-输入视图的深度预测"><a href="#2-12-Figure-B-5：12-输入视图的深度预测" class="headerlink" title="2.12 Figure B.5：12 输入视图的深度预测"></a>2.12 Figure B.5：12 输入视图的深度预测</h2><p><em>原始 Figure B.5 未能完整读取，以下仅提供原文题注和资源状态，不进行视觉推断。</em></p>
-<p><img src="/Hexo/DepthSplat_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A_assets/dl3dv_mvdepth.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.5 — Depth predictions with 12 input views"></p>
+<p><img src="/Hexo/2026/11/23/DepthSplat/dl3dv_mvdepth.png" srcset="/Hexo/img/loading.gif" lazyload alt="Figure B.5 — Depth predictions with 12 input views"></p>
 <p>由于原始 PNG 数据截断，该原图可能无法在 Markdown 阅读器中正常显示；此处保留原始路径，不创建转换副本。</p>
 <p><strong>Caption 要点</strong></p>
 <p>图 B.5 的题注说明：展示 DL3DV 上使用 12 张输入视图进行深度预测，图像分辨率为 512 × 960。</p>
@@ -3092,7 +3092,7 @@
     
       <span class="category-chain">
         
-  <a href="/Hexo/categories/Research/" class="category-chain-item">Research</a>
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
   
   
 
@@ -3166,18 +3166,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Hexo/2026/11/23/AnySplat/" title="AnySplat 论文交互式精读报告">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AnySplat 论文交互式精读报告</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Hexo/2026/11/23/PixelSplat/" title="PixelSplat 论文交互式精读报告">
-                        <span class="hidden-mobile">PixelSplat 论文交互式精读报告</span>
+                      <a href="/Hexo/2026/11/23/MVSplat/" title="MVSplat 论文交互式精读报告">
+                        <span class="hidden-mobile">MVSplat 论文交互式精读报告</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
