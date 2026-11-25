@@ -1,0 +1,1587 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2308.04079v1（2023-08-08）；缓存记录 v1（2023-08-08）；最新版未能确认。核验日期：2026-11-26。 官方资源： arXiv | PDF | Project Page | Code  Figure 1：原论文以实时渲染、训练耗时和新视角合成质量的共同对比定位其贡献。以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3D Gaussian Splatting for Real-Time Radiance Field Rendering">
+<meta property="og:url" content="https://zq111724.github.io/3DGS/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2308.04079v1（2023-08-08）；缓存记录 v1（2023-08-08）；最新版未能确认。核验日期：2026-11-26。 官方资源： arXiv | PDF | Project Page | Code  Figure 1：原论文以实时渲染、训练耗时和新视角合成质量的共同对比定位其贡献。以">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/3DGS/Figures/Figure_01.jpg">
+<meta property="article:published_time" content="2026-11-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-25T23:15:54.009Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/3DGS/Figures/Figure_01.jpg">
+  
+  
+  
+  <title>3D Gaussian Splatting for Real-Time Radiance Field Rendering - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zq111724.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="3D Gaussian Splatting for Real-Time Radiance Field Rendering"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-26 00:00" pubdate>
+          2026年11月26日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          121 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">3D Gaussian Splatting for Real-Time Radiance Field Rendering</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <figure>
+<img src="/Hexo/3DGS/Figures/Figure_01.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1" />
+<figcaption aria-hidden="true">Figure 1</figcaption>
+</figure>
+<p><a href="/Hexo/3DGS_Full/">阅读完整精读报告</a></p>
+<!-- PAPER-METADATA BEGIN -->
+<p><strong>论文版本：</strong>
+arXiv:2308.04079v1（2023-08-08）；缓存记录
+v1（2023-08-08）；最新版未能确认。核验日期：2026-11-26。</p>
+<p><strong>官方资源：</strong> <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.04079">arXiv</a> | <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.04079v1">PDF</a> | <a
+target="_blank" rel="noopener" href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/">Project
+Page</a> | <a
+target="_blank" rel="noopener" href="https://github.com/graphdeco-inria/gaussian-splatting">Code</a></p>
+<!-- PAPER-METADATA END -->
+<p><em>Figure
+1：原论文以实时渲染、训练耗时和新视角合成质量的共同对比定位其贡献。以下解析以
+arXiv v1 为准。</em></p>
+<h2 id="dgs-究竟解决了什么问题">1. 3DGS 究竟解决了什么问题？</h2>
+<p>3D Gaussian
+Splatting（3DGS，三维高斯泼溅）研究的是静态场景的新视角合成（Novel View
+Synthesis, NVS）。给定一组具有标定相机参数的场景照片，通常还通过
+Structure from
+Motion（SfM，运动恢复结构）获得稀疏三维点云；目标是为该场景学习一种能够从新相机位置和方向生成逼真
+RGB
+图像的表示。它是逐场景优化方法，而非输入任意几张图即可前馈重建的通用模型。训练后给定目标相机即可渲染，不再需要对目标图像进行优化。</p>
+<p>论文的主要矛盾并不是 NeRF
+无法生成高质量图像，而是当时高质量辐射场的训练和渲染成本仍然较高。沿射线反复查询场的颜色和密度，尤其对大量像素、采样位置和神经网络计算而言，难以达到高质量的交互式显示。加速方案（例如
+InstantNGP 和
+Plenoxels）减少了查询成本，却仍面临质量、训练时间与渲染速度的折衷。传统点渲染可直接投影几何，但稀疏无形状的点不容易覆盖完整场景，且需要合适的可见性处理。</p>
+<p>3DGS
+的突破不是单独换用一种几何基元，而是把三个设计组合为一个系统：<strong>以可学习各向异性三维高斯表示场景，通过自适应增删基元组织表示容量，再用面向
+GPU 的可微分块光栅器实现有序透明度合成。</strong>
+这种表示既有局部连续的空间响应，又能作为显式基元被投影、排序和批量处理。模型不需要像典型
+NeRF 一样逐射线查询完整场。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_02.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 2 — 高斯参数优化与分块光栅化" />
+<figcaption aria-hidden="true">Figure 2 —
+高斯参数优化与分块光栅化</figcaption>
+</figure>
+<p>Figure 2（原文 §3）给出了信息流：SfM
+点初始化高斯集合；当前相机下投影并光栅化；预测图像与观测图像的误差反向传播；连续参数优化和离散的密度控制共同改善表示。以下首先建立渲染数学，再解释这些设计如何协作。</p>
+<h2 id="从-nerf-体渲染到有序-alpha-合成">2. 从 NeRF 体渲染到有序 alpha
+合成</h2>
+<p>两种表示的联系来自原文公式 1–3。考虑射线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>o</mi><mo>+</mo><mi>t</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">r(t)=o+td</annotation></semantics></math>（<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+为单位方向），在近远边界内用分段常量近似密度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>、颜色
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>i</mi></msub><annotation encoding="application/x-tex">c_i</annotation></semantics></math>，每段长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\delta_i</annotation></semantics></math>。在吸收—发射模型中，透射率满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>T</mi><mi>/</mi><mi>d</mi><mi>t</mi><mo>=</mo><mi>−</mi><mi>σ</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">dT/dt=-\sigma T</annotation></semantics></math>。第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+段之前的透射率和该段的颜色贡献为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><munder><mo>∑</mo><mrow><mi>j</mi><mo>&lt;</mo><mi>i</mi></mrow></munder><msub><mi>σ</mi><mi>j</mi></msub><msub><mi>δ</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>C</mi><mi>i</mi></msub><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><msub><mi>δ</mi><mi>i</mi></msub></msubsup><msub><mi>T</mi><mi>i</mi></msub><msub><mi>σ</mi><mi>i</mi></msub><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>σ</mi><mi>i</mi></msub><mi>u</mi></mrow></msup><msub><mi>c</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><mi>d</mi><mi>u</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">T_i=\exp\left(-\sum_{j&lt;i}\sigma_j\delta_j\right),\qquad C_i=\int_0^{\delta_i}T_i\sigma_i e^{-\sigma_i u}c_i\,du.</annotation></semantics></math></p>
+<p>因此像素颜色（原文 Eq. 1）是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msub><mi>T</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>σ</mi><mi>i</mi></msub><msub><mi>δ</mi><mi>i</mi></msub></mrow></msup><mo stretchy="false" form="postfix">)</mo><msub><mi>c</mi><mi>i</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">C=\sum_{i=1}^N T_i(1-e^{-\sigma_i\delta_i})c_i.</annotation></semantics></math></p>
+<p>密度具有长度倒数的量纲，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>i</mi></msub><msub><mi>δ</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_i\delta_i</annotation></semantics></math>
+是无量纲的光学厚度。令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>σ</mi><mi>i</mi></msub><msub><mi>δ</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">\alpha_i=1-e^{-\sigma_i\delta_i}</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>σ</mi><mi>i</mi></msub><msub><mi>δ</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">1-\alpha_i=e^{-\sigma_i\delta_i}</annotation></semantics></math>。于是
+Eq. 2 的颜色合成可以改写为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub><mo>=</mo><munder><mo>∏</mo><mrow><mi>j</mi><mo>&lt;</mo><mi>i</mi></mrow></munder><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>C</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>T</mi><mi>i</mi></msub><msub><mi>α</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">T_i=\prod_{j&lt;i}(1-\alpha_j),\qquad C=\sum_i T_i\alpha_i c_i.</annotation></semantics></math></p>
+<p>原文 v1 的 Eq. 2 后乘积中印为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math>；按
+Eq. 1 展开以及紧接的 Eq. 3，乘积应遍历各个前序项
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\alpha_j</annotation></semantics></math>，这里采用数学自洽的下标。若存在固定背景颜色
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>，可另加
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mi>b</mi></mrow><annotation encoding="application/x-tex">T_{N+1}b</annotation></semantics></math>。</p>
+<p>对于投影到像素上的高斯，3DGS 也使用这种合成形式（Eq. 3），但 alpha
+不由射线密度积分产生，而是由学习的不透明度与二维高斯响应相乘得到。第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+个近到远排列的基元的可见性权重
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><mo>−</mo><msub><mi>T</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">w_i=T_i\alpha_i=T_i-T_{i+1}</annotation></semantics></math>，前景不透明时后方权重自然变小。所有权重的和为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msub><mi>T</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">1-T_{N+1}</annotation></semantics></math>，加上背景权重后为
+1。</p>
+<p>排序不能省略。作为数学示例，红、蓝两个基元 alpha 分别为
+0.6、0.5，背景黑色。红在前得到 RGB
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0.6</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0.2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.6,0,0.2)</annotation></semantics></math>，蓝在前得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0.3</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0.5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.3,0,0.5)</annotation></semantics></math>。虽然总不透明度都是
+0.8，颜色却不同。这个差异将在后文解释为什么快速排序可能产生视角跳变。</p>
+<p><strong>相同合成公式并不意味着底层物理传输严格等价。</strong> NeRF 的
+alpha 源自连续密度的分段积分，3DGS 的 alpha
+源自投影空间中的可学习核。即使给定某个 alpha 并定义有效光学厚度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mrow><mi mathvariant="normal">ln</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">-\ln(1-\alpha)</annotation></semantics></math>，也没有唯一确定真实三维消光系数所需的空间积分区间与分布。这一点对需要物理解释的场景尤其重要。</p>
+<h2 id="如何表示一个三维高斯并让它参与图像生成">3.
+如何表示一个三维高斯，并让它参与图像生成？</h2>
+<h3 id="可学习的局部空间核">3.1 可学习的局部空间核</h3>
+<p>每个高斯具有中心
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>i</mi></msub><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\mu_i\in\mathbb R^3</annotation></semantics></math>、正尺度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">s_i\in\mathbb R^3</annotation></semantics></math>、单位四元数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mi>i</mi></msub><annotation encoding="application/x-tex">q_i</annotation></semantics></math>、不透明度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>o</mi><mi>i</mi></msub><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">o_i\in[0,1]</annotation></semantics></math>
+以及方向颜色系数。原文 Eq. 4 的坐标以中心为原点，用绝对位置
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+表示为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>−</mi><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>−</mo><msub><mi>μ</mi><mi>i</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mi>T</mi></msup><msubsup><mi mathvariant="normal">Σ</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>−</mo><msub><mi>μ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">G_i(X)=\exp\left[-\frac12(X-\mu_i)^T\Sigma_i^{-1}(X-\mu_i)\right].</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\Sigma_i</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3\times3</annotation></semantics></math>
+协方差矩阵。这是峰值为 1
+的非归一化空间核，不是带概率密度归一化常数的高斯
+PDF。基元的不透明度是独立参数。若直接优化协方差元素，梯度更新可能使矩阵失去正定性，无法作为有效空间核。原文
+Eq. 6 采用尺度与旋转参数化：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Σ</mi><mi>i</mi></msub><mo>=</mo><msub><mi>R</mi><mi>i</mi></msub><msub><mi>S</mi><mi>i</mi></msub><msubsup><mi>S</mi><mi>i</mi><mi>T</mi></msubsup><msubsup><mi>R</mi><mi>i</mi><mi>T</mi></msubsup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>S</mi><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">diag</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>y</mi></mrow></msub><mo>,</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>z</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\Sigma_i=R_i S_i S_i^T R_i^T,\qquad S_i=\operatorname{diag}(s_{ix},s_{iy},s_{iz}),</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>i</mi></msub><annotation encoding="application/x-tex">R_i</annotation></semantics></math>
+由归一化四元数生成，尺度使用指数激活保证严格为正。于是任意非零
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+都满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>v</mi><mi>T</mi></msup><msub><mi mathvariant="normal">Σ</mi><mi>i</mi></msub><mi>v</mi><mo>=</mo><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>S</mi><mi>i</mi><mi>T</mi></msubsup><msubsup><mi>R</mi><mi>i</mi><mi>T</mi></msubsup><mi>v</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">v^T\Sigma_i v=\|S_i^TR_i^Tv\|_2^2&gt;0</annotation></semantics></math>。另一方面，由正定矩阵的谱分解，任意正定协方差均可用这种形式表达。</p>
+<p>各向异性（Anisotropy）在几何上意味着三轴尺度可以不同。在等值面
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>i</mi></msub><mo>=</mo><msup><mi>e</mi><mrow><mi>−</mi><msup><mi>k</mi><mn>2</mn></msup><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">G_i=e^{-k^2/2}</annotation></semantics></math>
+上，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><msubsup><mi>R</mi><mi>i</mi><mi>T</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>−</mo><msub><mi>μ</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">y=R_i^T(X-\mu_i)</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>a</mi></msub><msubsup><mi>y</mi><mi>a</mi><mn>2</mn></msubsup><mi>/</mi><msubsup><mi>s</mi><mrow><mi>i</mi><mi>a</mi></mrow><mn>2</mn></msubsup><mo>=</mo><msup><mi>k</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\sum_a y_a^2/s_{ia}^2=k^2</annotation></semantics></math>，三个半轴是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><msub><mi>s</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">ks_{ia}</annotation></semantics></math>。因此高斯可以是扁平的、细长的或近似球形的。薄结构不必由大量固定大小球形基元填满。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_03.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 3 — 各向异性高斯适应场景结构" />
+<figcaption aria-hidden="true">Figure 3 —
+各向异性高斯适应场景结构</figcaption>
+</figure>
+<p>Figure 3
+展示了训练所得基元的形状及火车结构细节：右侧仅为观察形状而缩小高斯，并非正常渲染的质量对比。形状可适应局部外观与空间结构是该表示的优势；但仅凭
+RGB 拟合不应认定其小轴必然等于真实表面法线。</p>
+<h3 id="从-3d-协方差到屏幕二维协方差">3.2 从 3D
+协方差到屏幕二维协方差</h3>
+<p>渲染器真正要计算的是每个高斯在当前图像上的覆盖位置和形状。中心
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mu_i</annotation></semantics></math>
+经过相机变换
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>=</mo><mi>W</mi><msub><mi>μ</mi><mi>i</mi></msub><mo>+</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">Y=W\mu_i+t</annotation></semantics></math>
+以及透视投影
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mi>i</mi></msub><mo>=</mo><mi>π</mi><mo stretchy="false" form="prefix">(</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">u_i=\pi(Y)</annotation></semantics></math>
+得到二维中心。原文 Eq. 5 用投影在中心的一阶仿射近似传播协方差：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi mathvariant="normal">Σ</mi><mi>i</mi><mo>′</mo></msubsup><mo>=</mo><mi>J</mi><mi>W</mi><msub><mi mathvariant="normal">Σ</mi><mi>i</mi></msub><msup><mi>W</mi><mi>T</mi></msup><msup><mi>J</mi><mi>T</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">\Sigma&#39;_i=JW\Sigma_i W^TJ^T.</annotation></semantics></math></p>
+<p>去掉原文投影协方差的第三行和第三列即得到二维屏幕协方差。等价地，直接令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>J</mi><mn>2</mn></msub><annotation encoding="application/x-tex">J_2</annotation></semantics></math>
+为二维投影的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">2\times3</annotation></semantics></math>
+Jacobian，就有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mi>i</mi></msub><mo>=</mo><msub><mi>J</mi><mn>2</mn></msub><mi>W</mi><msub><mi mathvariant="normal">Σ</mi><mi>i</mi></msub><msup><mi>W</mi><mi>T</mi></msup><msubsup><mi>J</mi><mn>2</mn><mi>T</mi></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">Q_i=J_2W\Sigma_i W^T J_2^T.</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+为相机变换的旋转线性部分，平移不改变协方差。理解这一式的关键是：局部位移
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>X</mi></mrow><annotation encoding="application/x-tex">\Delta X</annotation></semantics></math>
+被近似映射为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>u</mi><mo>=</mo><msub><mi>J</mi><mn>2</mn></msub><mi>W</mi><mi mathvariant="normal">Δ</mi><mi>X</mi></mrow><annotation encoding="application/x-tex">\Delta u=J_2W\Delta X</annotation></semantics></math>，对位移外积取期望就得到上式。以无畸变针孔相机为例（补充推导），<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><msub><mi>f</mi><mi>x</mi></msub><msub><mi>X</mi><mi>c</mi></msub><mi>/</mi><msub><mi>Z</mi><mi>c</mi></msub><mo>+</mo><msub><mi>c</mi><mi>x</mi></msub><mo>,</mo><mspace width="0.222em"></mspace><mi>v</mi><mo>=</mo><msub><mi>f</mi><mi>y</mi></msub><msub><mi>Y</mi><mi>c</mi></msub><mi>/</mi><msub><mi>Z</mi><mi>c</mi></msub><mo>+</mo><msub><mi>c</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">u=f_x X_c/Z_c+c_x,\ v=f_y Y_c/Z_c+c_y</annotation></semantics></math>，在中心相机坐标
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>c</mi></msub><mo>,</mo><msub><mi>Y</mi><mi>c</mi></msub><mo>,</mo><msub><mi>Z</mi><mi>c</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X_c,Y_c,Z_c)</annotation></semantics></math>
+处有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>J</mi><mn>2</mn></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>f</mi><mi>x</mi></msub><mi>/</mi><msub><mi>Z</mi><mi>c</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mi>−</mi><msub><mi>f</mi><mi>x</mi></msub><msub><mi>X</mi><mi>c</mi></msub><mi>/</mi><msubsup><mi>Z</mi><mi>c</mi><mn>2</mn></msubsup></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>f</mi><mi>y</mi></msub><mi>/</mi><msub><mi>Z</mi><mi>c</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mi>−</mi><msub><mi>f</mi><mi>y</mi></msub><msub><mi>Y</mi><mi>c</mi></msub><mi>/</mi><msubsup><mi>Z</mi><mi>c</mi><mn>2</mn></msubsup></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">J_2=\begin{bmatrix} f_x/Z_c &amp; 0 &amp; -f_x X_c/Z_c^2\\ 0 &amp; f_y/Z_c &amp; -f_y Y_c/Z_c^2\end{bmatrix}.</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>x</mi></msub><mo>,</mo><msub><mi>f</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">f_x,f_y</annotation></semantics></math>
+是像素焦距，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>x</mi></msub><mo>,</mo><msub><mi>c</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">c_x,c_y</annotation></semantics></math>
+是主点坐标。由此可解释近处高斯投影通常更大、接近相机近平面时数值可能不稳定，以及同一高斯随相机方向变化表现出不同的屏幕形状。严格的非线性透视变换一般不把三维高斯变为精确二维高斯；该局部线性化是渲染近似，而不是任意尺度下的精确射线积分。</p>
+<p>得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>u</mi><mi>i</mi></msub><annotation encoding="application/x-tex">u_i</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>i</mi></msub><annotation encoding="application/x-tex">Q_i</annotation></semantics></math>
+后，光栅器就可以估计该高斯在屏幕上的有限候选覆盖区域（footprint）。数学高斯本身具有无限支撑，实际渲染只处理有限范围内的候选。这个区域可能跨越多个屏幕分块（Tile），因此一个三维基元并不只对应一个
+Tile。其屏幕中心、协方差与代表深度为第 5.1
+节的分块、排序和像素合成提供输入。</p>
+<h3 id="像素-alpha方向颜色与最终合成">3.3 像素
+alpha、方向颜色与最终合成</h3>
+<p>像素
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+处，第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+个高斯的贡献程度写为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>o</mi><mi>i</mi></msub><mrow><mi mathvariant="normal">exp</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>−</mi><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><msub><mi>u</mi><mi>i</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mi>T</mi></msup><msubsup><mi>Q</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><msub><mi>u</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">a_i(p)=o_i\exp\left[-\frac12(p-u_i)^TQ_i^{-1}(p-u_i)\right].</annotation></semantics></math></p>
+<p>这个式子区分了基元自身学习的 opacity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>o</mi><mi>i</mi></msub><annotation encoding="application/x-tex">o_i</annotation></semantics></math>
+与随像素位置变化的 alpha
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_i(p)</annotation></semantics></math>。它不是高斯体密度的归一化积分。与像素重叠的候选按深度近到远排列，代入
+Eq. 3：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>c</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><munder><mo>∏</mo><mrow><mi>j</mi><mo>&lt;</mo><mi>i</mi></mrow></munder><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>a</mi><mi>j</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">C(p)=\sum_i c_i(d)\,a_i(p)\prod_{j&lt;i}(1-a_j(p)).</annotation></semantics></math></p>
+<p>实际计算还包含裁剪、alpha 阈值和早停。</p>
+<p>这里需要区分两个层次：候选列表决定像素要依次检查哪些高斯，而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_i(p)</annotation></semantics></math>
+决定每个候选对当前像素究竟有多大影响。即使两个像素位于同一个
+Tile、共享候选顺序，它们的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>−</mo><msub><mi>u</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">p-u_i</annotation></semantics></math>
+也不同，因而二维核响应、alpha、透射率与最终颜色可以不同。颜色不是必然与观察方向无关。原文采用球谐函数（Spherical
+Harmonics, SH）表示方向外观。作为常见实球谐基展开的数学解释，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>∈</mo><msup><mi mathvariant="double-struck">𝕊</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">d\in\mathbb S^2</annotation></semantics></math>
+为观察方向，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>ℓ</mi><mo>=</mo><mn>0</mn></mrow><mi>L</mi></munderover><munderover><mo>∑</mo><mrow><mi>m</mi><mo>=</mo><mi>−</mi><mi>ℓ</mi></mrow><mi>ℓ</mi></munderover><msub><mi>h</mi><mrow><mi>i</mi><mo>,</mo><mi>ℓ</mi><mi>m</mi></mrow></msub><msub><mi>Y</mi><mrow><mi>ℓ</mi><mi>m</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">c_i(d)=\sum_{\ell=0}^L\sum_{m=-\ell}^{\ell}h_{i,\ell m}Y_{\ell m}(d).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>h</mi><mrow><mi>i</mi><mo>,</mo><mi>ℓ</mi><mi>m</mi></mrow></msub><annotation encoding="application/x-tex">h_{i,\ell m}</annotation></semantics></math>
+为 RGB
+系数，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mrow><mi>ℓ</mi><mi>m</mi></mrow></msub><annotation encoding="application/x-tex">Y_{\ell m}</annotation></semantics></math>
+为方向基。零阶是常量，高阶表达角度变化。四个频带若对应
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\ell=0,1,2,3</annotation></semantics></math>，数学上共有每通道
+16 个系数；论文未给出源码中的布局或方向正负约定。SH
+能拟合视角依赖外观，但不等价于显式材质、光照或 BRDF 分解。</p>
+<p>至此，前向数学闭环已建立：世界坐标下的高斯形状决定二维覆盖，opacity
+决定其影响强度，SH
+决定方向颜色，深度顺序与透射率决定可见性。训练要做的就是由图像误差反向调整这些参数。</p>
+<h2 id="学习高斯集合不仅调整参数还改变基元数量">4.
+学习高斯集合：不仅调整参数，还改变基元数量</h2>
+<h3 id="初始化与图像监督">4.1 初始化与图像监督</h3>
+<p>真实场景从 SfM
+点初始化中心，初始尺度为最近三个点距离的平均值，初始协方差为各向同性。这是有价值的几何起点，但不是真实稠密几何监督。模型通过
+sigmoid 得到 opacity，通过 exp
+得到正尺度，旋转四元数归一化。每轮采样训练相机并渲染 RGB 图像，使用原文
+Eq. 7：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">ℒ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>λ</mi><mo stretchy="false" form="postfix">)</mo><msub><mi mathvariant="script">ℒ</mi><mn>1</mn></msub><mo>+</mo><mi>λ</mi><msub><mi mathvariant="script">ℒ</mi><mrow><mi>D</mi><mtext mathvariant="normal">-</mtext><mi>S</mi><mi>S</mi><mi>I</mi><mi>M</mi></mrow></msub><mo>,</mo><mspace width="2.0em"></mspace><mi>λ</mi><mo>=</mo><mn>0.2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal L=(1-\lambda)\mathcal L_1+\lambda\mathcal L_{D\text{-}SSIM},\qquad \lambda=0.2.</annotation></semantics></math></p>
+<p>L1 约束像素颜色，D-SSIM
+约束局部结构不相似性。损失经投影和合成传到位置、尺度、旋转、opacity 与
+SH 系数。附录 B Algorithm 1 使用
+Adam，位置学习率指数衰减。训练初始以较低分辨率运行，第 250 与 500
+次迭代逐步提高；SH 先使用零阶，每 1000
+次迭代增加一个频带，直到四个频带均使用。逐步增加方向表达能力有助于避免角度覆盖不足时高阶项干扰基础颜色的拟合，但不保证唯一外观分解。</p>
+<h3 id="自适应密度控制adaptive-density-control">4.2
+自适应密度控制（Adaptive Density Control）</h3>
+<p>只有连续参数更新是不够的。如果初始化在细节或远处区域缺失基元，固定数量的高斯既要覆盖原区域，又要移动到缺失区域，表示能力会受限。论文将高斯视空间位置梯度的平均模长作为增密信号：warm-up
+后每 100 次迭代检查，超过
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mrow><mi>p</mi><mi>o</mi><mi>s</mi></mrow></msub><mo>=</mo><mn>0.0002</mn></mrow><annotation encoding="application/x-tex">\tau_{pos}=0.0002</annotation></semantics></math>
+的基元成为候选。梯度大意味着图像损失对位置变化敏感，不代表已知道真实几何的位置。</p>
+<p><strong>图像误差为何会产生位置梯度？</strong> 以下是依据第 3.3 节和第
+5.2 节建立的局部教学推导。固定当前相机、排序、有效贡献集合、协方差
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>i</mi></msub><annotation encoding="application/x-tex">Q_i</annotation></semantics></math>、opacity
+和方向颜色，并考虑未被截断的 alpha。记
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>p</mi></msub><mo>=</mo><msub><mi>∇</mi><mrow><mi>C</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mi mathvariant="script">ℒ</mi></mrow><annotation encoding="application/x-tex">g_p=\nabla_{C(p)}\mathcal L</annotation></semantics></math>
+为整幅图像损失对像素 RGB 的梯度（包含 L1 和 D-SSIM
+的影响），<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">B_{i+1}(p)</annotation></semantics></math>
+为第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+个基元之后的相对合成颜色，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><msub><mi>u</mi><mi>i</mi></msub></msub><mi mathvariant="script">ℒ</mi><mo>=</mo><munder><mo>∑</mo><mrow><mi>p</mi><mo>∈</mo><msub><mi mathvariant="script">𝒫</mi><mi>i</mi></msub></mrow></munder><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">[</mo><msubsup><mi>g</mi><mi>p</mi><mi>T</mi></msubsup><msub><mi>T</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>c</mi><mi>i</mi></msub><mo>−</mo><msub><mi>B</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">]</mo><mspace width="0.167em"></mspace><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><msubsup><mi>Q</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><msub><mi>u</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\nabla_{u_i}\mathcal L=\sum_{p\in\mathcal P_i}\big[g_p^T T_i(p)(c_i-B_{i+1}(p))\big]\,a_i(p)Q_i^{-1}(p-u_i).</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">𝒫</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal P_i</annotation></semantics></math>
+是该高斯实际参与混合的像素集合。方括号内是损失对该像素 alpha
+的导数，后一项是 alpha
+对屏幕中心的导数。移动中心会改变周围像素上的核响应，进而改变自身颜色贡献及对后方基元的遮挡；这些像素的梯度累积，就给出了屏幕中心的局部优化信号。中心对三维位置的投影导数还能将这部分梯度传回世界坐标（另有协方差、方向颜色等依赖路径）。这一关系仅解释位置梯度的来源，不是对
+CUDA 完整反传或实际增密统计细节的源码核验。</p>
+<p>连续位置优化（如
+Adam）是在已有高斯集合内调整参数：移动一个中心通常会同时改变其多个像素和多个视角的覆盖。若一个小高斯需要同时解释分离的局部结构，单纯移动可能改善一处却损害另一处；Clone
+新增一个可独立优化的基元，使邻域可以有更多覆盖。若一个大高斯把不同细节混在一起，Split
+用多个更小、可独立优化的基元增加局部表示自由度。两种操作均改变表示容量，并非一次普通的连续梯度更新。论文用视空间位置梯度的平均模长筛选这些候选，再以尺度区分两种策略；该梯度只是图像拟合敏感性的启发式信号，受颜色、可见性、观测和当前表示共同影响，不是真实三维几何误差。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_04.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 4 — 小高斯复制和大高斯分裂" />
+<figcaption aria-hidden="true">Figure 4 —
+小高斯复制和大高斯分裂</figcaption>
+</figure>
+<p>Figure 4
+对应两种情况：欠重建时，小高斯需要向邻域补充覆盖；过重建时，大高斯需要更细的局部表示。具体策略如下。</p>
+<table>
+
+<thead>
+<tr>
+<th>操作</th>
+<th>适用条件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clone（复制）</td>
+<td>高梯度、小尺度</td>
+<td>新增同尺度基元，作者描述沿位置梯度方向移动副本，补充附近覆盖</td>
+</tr>
+<tr>
+<td>Split（分裂）</td>
+<td>高梯度、大尺度</td>
+<td>用两个较小高斯替代原基元，新中心从原高斯分布采样，各轴尺度除以
+1.6</td>
+</tr>
+<tr>
+<td>Prune（剪枝）</td>
+<td>opacity 过低，或世界/屏幕空间尺度过大</td>
+<td>删除不必要或造成伪影的基元</td>
+</tr>
+<tr>
+<td>Reset（重置）</td>
+<td>每 3000 次迭代</td>
+<td>将 opacity
+设得接近零，再由优化重新建立必要的可见性，帮助清除漂浮伪影</td>
+</tr>
+</tbody>
+</table>
+<p>论文用体积守恒描述 split
+的设计意图，但这不是严格的固定等值面椭球体积守恒：按
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><mn>4</mn><mi>π</mi><msup><mi>k</mi><mn>3</mn></msup><msub><mi>s</mi><mi>x</mi></msub><msub><mi>s</mi><mi>y</mi></msub><msub><mi>s</mi><mi>z</mi></msub><mi>/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">V=4\pi k^3s_xs_ys_z/3</annotation></semantics></math>
+计算，忽略重叠时两个子基元的体积之和为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>V</mi><mi>/</mi><msup><mn>1.6</mn><mn>3</mn></msup><mo>≈</mo><mn>0.488</mn><mi>V</mi></mrow><annotation encoding="application/x-tex">2V/1.6^3\approx0.488V</annotation></semantics></math>。这是基于原文尺度规则的独立数学辨析；不透明度和空间覆盖也会改变。因此更准确的理解是经验性的局部细化策略。</p>
+<p>这使 3DGS 成为连续参数优化与离散拓扑修改的联合过程。这里的 density
+指基元分布的疏密，而非 NeRF
+的物理/有效体密度。推理时固定高斯集合，不再增密、剪枝或计算损失。</p>
+<h2 id="为什么渲染能达到实时而且还能用于训练">5.
+为什么渲染能达到实时，而且还能用于训练？</h2>
+<h3 id="tile-based-rasterization将同一排序用于一块像素">5.1 Tile-based
+rasterization：将同一排序用于一块像素</h3>
+<p>如果对每个像素独立查询并排序全部高斯，显式表示也未必高效。论文 §6
+与附录 C 的关键在于把工作按图像空间组织，而不是按整条射线独立处理。</p>
+<ol type="1">
+<li><strong>剔除与投影</strong>：保留 99% 置信区域与视锥相交的高斯，使用
+guard band
+排除极端投影不稳定情况，计算二维中心、协方差、方向颜色与代表深度。</li>
+<li><strong>分块与实例引用</strong>：图像分成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mo>×</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">16\times16</annotation></semantics></math>
+像素的 tile；某基元覆盖多个 tile
+时生成多个索引引用，而非复制其可学习参数。</li>
+<li><strong>一次全局基数排序</strong>：每个引用的键低 32
+位编码深度，高位编码 tile ID。一次 GPU radix sort 后，同 tile
+的引用连续排列、内部按深度有序。比较相邻键即可确定每个 tile
+的列表边界。</li>
+<li><strong>并行合成</strong>：每个 tile
+对应一个线程块，协作把高斯数据加载到共享内存，各像素线程依据相同列表计算自己的二维核响应与
+alpha，按近到远混合。像素累计不透明度接近饱和时停止，整个 tile
+饱和后退出。</li>
+</ol>
+<p><strong>一个最小的分块排序示例。</strong> 假设屏幕仅有两个相邻
+Tile（ID 0、1），三个已投影的高斯 A、B、C 的代表深度分别为
+4、2、6（任意单位，越小越近）。A 的有限候选覆盖跨越两个 Tile，B 仅覆盖
+Tile 0，C 仅覆盖 Tile
+1。于是实际参与排序的是四条引用，而不是四个独立的可学习高斯。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Illustrations/Illustration_01.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Tile-based rasterization：投影覆盖、全局排序、像素独立合成" />
+<figcaption aria-hidden="true">Tile-based
+rasterization：投影覆盖、全局排序、像素独立合成</figcaption>
+</figure>
+<p>原创示例图：三个屏幕高斯在两个 Tile
+中生成四条索引引用，经一次全局排序后由各像素独立合成（构造示例）。</p>
+<p>每条引用包含高斯索引与排序键
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">Tile ID</mtext><mo>,</mo><mtext mathvariant="normal">代表深度</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\text{Tile ID},\text{代表深度})</annotation></semantics></math>。将这个二元组理解为先比较
+Tile ID、再比较深度的逻辑键（实际编码见上面的位分配）：一次全局排序得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">(0,2):B</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">(0,4):A</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">(1,4):A</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">(1,6):C</annotation></semantics></math>，按
+Tile ID 的变化切出两个连续区间。Tile 0 遍历 B→A，Tile 1 遍历 A→C；两处 A
+均指向同一组高斯参数。</p>
+<p>图中的像素
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+同属于 Tile 0，因此都使用 B→A 作为候选顺序，但
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+更靠近 A
+的中心，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+更靠近 B 的中心。各线程分别计算
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>B</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msub><mi>a</mi><mi>A</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_B(p),a_A(p)</annotation></semantics></math>
+或
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>B</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msub><mi>a</mi><mi>A</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_B(q),a_A(q)</annotation></semantics></math>，在阈值与早停规则下使用第
+3.3 节的公式合成各自颜色。示例中的椭圆只是有限候选覆盖的示意，不代表
+CUDA
+中精确的覆盖测试，也不是对每像素有效贡献的硬边界。共享的代表深度只决定候选顺序，不是每条像素射线的精确深度排序。</p>
+<p>速度来源是候选覆盖、批量排序、共享内存、像素并行与早停的共同作用。排序只在代表深度级别进行，不保证所有像素的真实局部深度顺序都正确。较大的交错基元尤其可能引起排序错误；当基元足够小，近似通常更容易成立。运行量还取决于屏幕覆盖、实例引用数量、分辨率与有效混合深度，不宜仅用高斯总数衡量。</p>
+<h3 id="反向传播复用排序并恢复中间透射率">5.2
+反向传播：复用排序并恢复中间透射率</h3>
+<p>训练还需要从像素误差求每个贡献高斯的梯度。如果保存每个像素的所有中间状态，显存可能随深度复杂性大幅增加。论文使用前向排序列表、最终累计量以及最后有效贡献的位置，在反向阶段从远到近重新计算中间贡献。</p>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>1</mn></msub><mo>=</mo><mn>1</mn><mo>,</mo><msub><mi>T</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T_1=1,T_{i+1}=T_i(1-a_i)</annotation></semantics></math>。固定排序和当前有效贡献集合时，逆向可恢复</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub><mo>=</mo><mfrac><msub><mi>T</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mrow><mn>1</mn><mo>−</mo><msub><mi>a</mi><mi>i</mi></msub></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">T_i=\frac{T_{i+1}}{1-a_i}.</annotation></semantics></math></p>
+<p>复用第 2 节红色在前、蓝色在后的示例，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mo>=</mo><mn>0.6</mn></mrow><annotation encoding="application/x-tex">a_1=0.6</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>2</mn></msub><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">a_2=0.5</annotation></semantics></math>。前向从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>1</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T_1=1</annotation></semantics></math>
+开始：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mn>0.6</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0.4</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>T</mi><mn>3</mn></msub><mo>=</mo><mn>0.4</mn><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mn>0.5</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0.2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">T_2=1\times(1-0.6)=0.4,\qquad T_3=0.4\times(1-0.5)=0.2.</annotation></semantics></math></p>
+<p>反向从最终剩余透射率
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>3</mn></msub><mo>=</mo><mn>0.2</mn></mrow><annotation encoding="application/x-tex">T_3=0.2</annotation></semantics></math>
+出发，先恢复第二个高斯之前的透射率，再恢复第一个高斯之前的透射率：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>2</mn></msub><mo>=</mo><mfrac><mn>0.2</mn><mrow><mn>1</mn><mo>−</mo><mn>0.5</mn></mrow></mfrac><mo>=</mo><mn>0.4</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>T</mi><mn>1</mn></msub><mo>=</mo><mfrac><mn>0.4</mn><mrow><mn>1</mn><mo>−</mo><mn>0.6</mn></mrow></mfrac><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">T_2=\frac{0.2}{1-0.5}=0.4,\qquad T_1=\frac{0.4}{1-0.6}=1.</annotation></semantics></math></p>
+<p>因此不必为每个像素保存整个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>1</mn></msub><mo>,</mo><msub><mi>T</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mrow><mi>K</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">T_1,T_2,\ldots,T_{K+1}</annotation></semantics></math>
+序列，只需保留最终累计量等必要状态并逐步恢复中间透射率。反向仍需要共享的排序列表及
+Tile 区间、每像素最后有效贡献的位置，以及高斯和像素信息以重新计算
+alpha、判断有效贡献；并不是仅靠最终透射率就能恢复所有梯度。</p>
+<p>原文 §6 与附录 C 对累计 opacity 和除以 alpha
+的表述存在歧义；依照该递推，须使用剩余透射率和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msub><mi>a</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">1-a_i</annotation></semantics></math>，或者把累计不透明度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mo>−</mo><msub><mi>T</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">A_i=1-T_i</annotation></semantics></math>
+转换后计算。这是由 Eq. 3
+得到的数学解释，未将其当作已核验的源码变量命名。</p>
+<p>为了理解梯度如何产生，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mi>i</mi></msub><annotation encoding="application/x-tex">B_i</annotation></semantics></math>
+是从第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+个基元到背景的相对合成颜色，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi>K</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">B_{K+1}=b</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mi>i</mi></msub><mo>=</mo><msub><mi>a</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><msub><mi>B</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">B_i=a_i c_i+(1-a_i)B_{i+1}</annotation></semantics></math>。像素可写成前序颜色贡献加
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub><msub><mi>B</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">T_iB_i</annotation></semantics></math>，对当前基元求导（补充推导）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>∂</mi><mi>C</mi></mrow><mrow><mi>∂</mi><msub><mi>c</mi><mi>i</mi></msub></mrow></mfrac><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><msub><mi>I</mi><mn>3</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><mfrac><mrow><mi>∂</mi><mi>C</mi></mrow><mrow><mi>∂</mi><msub><mi>a</mi><mi>i</mi></msub></mrow></mfrac><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>c</mi><mi>i</mi></msub><mo>−</mo><msub><mi>B</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\frac{\partial C}{\partial c_i}=T_i a_i I_3,\qquad \frac{\partial C}{\partial a_i}=T_i(c_i-B_{i+1}).</annotation></semantics></math></p>
+<p>第一式是颜色梯度权重，第二式同时描述提高 alpha
+增加自身贡献及减少后方颜色的作用。再令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>i</mi></msub><mo>=</mo><mi>p</mi><mo>−</mo><msub><mi>u</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">e_i=p-u_i</annotation></semantics></math>，由二维核可得到未截断时
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><msub><mi>a</mi><mi>i</mi></msub><mi>/</mi><mi>∂</mi><msub><mi>o</mi><mi>i</mi></msub><mo>=</mo><msub><mi>G</mi><mrow><mn>2</mn><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\partial a_i/\partial o_i=G_{2,i}</annotation></semantics></math>（即不含
+opacity
+的二维核值）、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><msub><mi>u</mi><mi>i</mi></msub></msub><msub><mi>a</mi><mi>i</mi></msub><mo>=</mo><msub><mi>a</mi><mi>i</mi></msub><msubsup><mi>Q</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi>e</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\nabla_{u_i} a_i=a_iQ_i^{-1}e_i</annotation></semantics></math>，以及</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><msub><mi>Q</mi><mi>i</mi></msub></msub><msub><mi>a</mi><mi>i</mi></msub><mo>=</mo><mfrac><msub><mi>a</mi><mi>i</mi></msub><mn>2</mn></mfrac><msubsup><mi>Q</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi>e</mi><mi>i</mi></msub><msubsup><mi>e</mi><mi>i</mi><mi>T</mi></msubsup><msubsup><mi>Q</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">\nabla_{Q_i}a_i=\frac{a_i}{2}Q_i^{-1}e_ie_i^TQ_i^{-1}.</annotation></semantics></math></p>
+<p>因此 alpha
+梯度能沿屏幕中心与协方差传到世界位置、尺度和旋转；方向颜色还通过 SH
+获得梯度。原文附录 A Eq. 8–11
+给出协方差、尺度和四元数的链式导数，逐分量公式可见完整精读报告的 3.5.4
+节。</p>
+<p>数值稳定性同样重要：附录 C 跳过 alpha 小于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mn>255</mn></mrow><annotation encoding="application/x-tex">1/255</annotation></semantics></math>
+的更新，将其上限截断为 0.99，并在预计累计 opacity 超过 0.9999
+之前停止前向混合。这样避免逆向除零和过小的剩余透射率。所谓不限制深度复杂性，是指不人为规定只能给前
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+个高斯梯度，并不意味着没有早停或无限遍历。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_09.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 9 — 限制反向传播贡献数量导致细节退化" />
+<figcaption aria-hidden="true">Figure 9 —
+限制反向传播贡献数量导致细节退化</figcaption>
+</figure>
+<p>Figure 9 与 Table 3 验证了这一设计。左图是每像素仅让最前 10
+个贡献高斯接收梯度的配置，右图为完整方法；左侧庭院的桌面板缝、花盆底座附近与后景植被更模糊，右侧细节更清楚。限制的是反向梯度数量，不是场景只有
+10 个高斯，也不是前向仅渲染 10
+个高斯。作者并没有证明任何形式的梯度近似都无效，而是证明该特定限制对其方法不利。</p>
+<h2 id="实验到底验证了什么">6. 实验到底验证了什么？</h2>
+<h3 id="实景-nvs高质量与高帧率的联合证据">6.1 实景
+NVS：高质量与高帧率的联合证据</h3>
+<p>原文 §7 使用 Mip-NeRF360 全部 9 个场景、Tanks&amp;Temples 中 Truck 和
+Train、Deep Blending 中 DrJohnson 和 Playroom，共 13
+个实景。每八张图留出一张测试，余下训练，使用相应输入分辨率。比较的是留出视角图像的
+PSNR、SSIM、LPIPS，以及训练耗时、帧率和模型存储，不是几何真值精度。</p>
+<p>以下摘录 Table 1 的代表结果（PSNR 越高越好、SSIM 越高越好、LPIPS
+越低越好；7K/30K 为迭代数）。</p>
+<table>
+
+<thead>
+<tr>
+<th>数据集</th>
+<th>方法</th>
+<th style="text-align: right;">PSNR (dB) ↑</th>
+<th style="text-align: right;">SSIM ↑</th>
+<th style="text-align: right;">LPIPS ↓</th>
+<th>训练</th>
+<th style="text-align: right;">FPS ↑</th>
+<th style="text-align: right;">模型存储</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mip-NeRF360</td>
+<td>INGP-Big</td>
+<td style="text-align: right;">25.59</td>
+<td style="text-align: right;">0.699</td>
+<td style="text-align: right;">0.331</td>
+<td>7m30s</td>
+<td style="text-align: right;">9.43</td>
+<td style="text-align: right;">48MB</td>
+</tr>
+<tr>
+<td>Mip-NeRF360</td>
+<td>M-NeRF360</td>
+<td style="text-align: right;">27.69†</td>
+<td style="text-align: right;">0.792†</td>
+<td style="text-align: right;">0.237†</td>
+<td>48h</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">8.6MB</td>
+</tr>
+<tr>
+<td>Mip-NeRF360</td>
+<td>3DGS-7K</td>
+<td style="text-align: right;">25.60</td>
+<td style="text-align: right;">0.770</td>
+<td style="text-align: right;">0.279</td>
+<td>6m25s</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">523MB</td>
+</tr>
+<tr>
+<td>Mip-NeRF360</td>
+<td>3DGS-30K</td>
+<td style="text-align: right;">27.21</td>
+<td style="text-align: right;">0.815</td>
+<td style="text-align: right;">0.214</td>
+<td>41m33s</td>
+<td style="text-align: right;">134</td>
+<td style="text-align: right;">734MB</td>
+</tr>
+<tr>
+<td>Tanks&amp;Temples</td>
+<td>INGP-Big</td>
+<td style="text-align: right;">21.92</td>
+<td style="text-align: right;">0.745</td>
+<td style="text-align: right;">0.305</td>
+<td>6m59s</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">48MB</td>
+</tr>
+<tr>
+<td>Tanks&amp;Temples</td>
+<td>M-NeRF360</td>
+<td style="text-align: right;">22.22</td>
+<td style="text-align: right;">0.759</td>
+<td style="text-align: right;">0.257</td>
+<td>48h</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">8.6MB</td>
+</tr>
+<tr>
+<td>Tanks&amp;Temples</td>
+<td>3DGS-7K</td>
+<td style="text-align: right;">21.20</td>
+<td style="text-align: right;">0.767</td>
+<td style="text-align: right;">0.280</td>
+<td>6m55s</td>
+<td style="text-align: right;">197</td>
+<td style="text-align: right;">270MB</td>
+</tr>
+<tr>
+<td>Tanks&amp;Temples</td>
+<td>3DGS-30K</td>
+<td style="text-align: right;">23.14</td>
+<td style="text-align: right;">0.841</td>
+<td style="text-align: right;">0.183</td>
+<td>26m54s</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">411MB</td>
+</tr>
+<tr>
+<td>Deep Blending</td>
+<td>M-NeRF360</td>
+<td style="text-align: right;">29.40</td>
+<td style="text-align: right;">0.901</td>
+<td style="text-align: right;">0.245</td>
+<td>48h</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">8.6MB</td>
+</tr>
+<tr>
+<td>Deep Blending</td>
+<td>3DGS-7K</td>
+<td style="text-align: right;">27.78</td>
+<td style="text-align: right;">0.875</td>
+<td style="text-align: right;">0.317</td>
+<td>4m35s</td>
+<td style="text-align: right;">172</td>
+<td style="text-align: right;">386MB</td>
+</tr>
+<tr>
+<td>Deep Blending</td>
+<td>3DGS-30K</td>
+<td style="text-align: right;">29.41</td>
+<td style="text-align: right;">0.903</td>
+<td style="text-align: right;">0.243</td>
+<td>36m2s</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">676MB</td>
+</tr>
+</tbody>
+</table>
+<p>† 为原表从 Mip-NeRF360 论文转引的质量结果；3DGS
+作者自己复跑该数据集的基准平均 PSNR/SSIM/LPIPS 为 27.58/0.790/0.240。除
+Mip-NeRF360 外，作者报告在 NVIDIA A6000 上运行。Mip-NeRF360 的训练是四块
+A100、12 小时，表中 48h 为 48 GPU
+小时，不是同卡实际耗时；不同数据集的分辨率也不必相同。</p>
+<p><strong>主要结论是速度—质量折衷明显改善，而非所有质量指标都领先。</strong>
+30K 在三个数据集平均帧率为 134、154、137，训练约 27–42 分钟；Mip-NeRF360
+数据集平均 PSNR 略低于高质量基准，但 SSIM 和 LPIPS
+更好，另外两个数据集平均质量相当或更好。逐场景表中仍有落后的例子（如
+Kitchen/Bonsai 的 PSNR、DrJohnson
+的三项质量指标），不能用平均结果掩盖。7K 在数分钟内获得竞争性质量，但
+Tanks&amp;Temples 的 PSNR 低于两个 InstantNGP 配置。与此同时，30K
+模型的参数存储远大于 Mip-NeRF360 的
+8.6MB，这正是显式表示的成本之一。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_05.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 5 — 真实场景留出视角的定性比较" />
+<figcaption aria-hidden="true">Figure 5 —
+真实场景留出视角的定性比较</figcaption>
+</figure>
+<p>Figure 5
+展示九个场景的留出视角对比，五列从左至右为真值、3DGS（30K）、Mip-NeRF360、InstantNGP、Plenoxels。可重点看三个局部：Bicycle（第
+1 行）箭头标出的车轮附近，3DGS 较好保留细轮辐，Mip-NeRF360 和 Plenoxels
+的对应细节较弱；Garden（第 2 行）红框内远处窗框及周围植被，3DGS
+的边缘较清楚，而 InstantNGP 和 Plenoxels 出现明显模糊；Playroom（第 6
+行）绿色放大框中的玩具边缘，3DGS
+较好保留轮廓，后两种快速基线的局部边界明显模糊。这是选定视角的定性比较，不是全部十三个场景的质量排名。Figure
+6 则展示继续优化的作用：一些场景较短训练已有良好前景，30K
+对背景伪影进一步修正，另外一些视觉差异较小。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_06.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 6 — 7K 与 30K 迭代的效果比较" />
+<figcaption aria-hidden="true">Figure 6 — 7K 与 30K
+迭代的效果比较</figcaption>
+</figure>
+<h3 id="各项设计的消融证据">6.2 各项设计的消融证据</h3>
+<p>原文 Table 3 单独在 Truck、Garden、Bicycle
+上以手动降采样的高分辨率输入开展消融，减轻原预降采样图像中的随机 JPEG
+伪影。不能将其绝对 PSNR 与主实验的同名场景直接混算。以下为三场景平均
+PSNR（dB）：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th style="text-align: right;">5K</th>
+<th style="text-align: right;">30K</th>
+<th style="text-align: right;">30K 相比 Full 的差值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full</td>
+<td style="text-align: right;">23.90</td>
+<td style="text-align: right;">26.05</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Limited-BW</td>
+<td style="text-align: right;">19.16</td>
+<td style="text-align: right;">19.19</td>
+<td style="text-align: right;">−6.86</td>
+</tr>
+<tr>
+<td>Random Init</td>
+<td style="text-align: right;">19.17</td>
+<td style="text-align: right;">20.42</td>
+<td style="text-align: right;">−5.63</td>
+</tr>
+<tr>
+<td>No-Split</td>
+<td style="text-align: right;">21.50</td>
+<td style="text-align: right;">23.90</td>
+<td style="text-align: right;">−2.15</td>
+</tr>
+<tr>
+<td>No-SH</td>
+<td style="text-align: right;">23.48</td>
+<td style="text-align: right;">25.35</td>
+<td style="text-align: right;">−0.70</td>
+</tr>
+<tr>
+<td>No-Clone</td>
+<td style="text-align: right;">23.35</td>
+<td style="text-align: right;">25.91</td>
+<td style="text-align: right;">−0.14</td>
+</tr>
+<tr>
+<td>Isotropic</td>
+<td style="text-align: right;">23.56</td>
+<td style="text-align: right;">25.23</td>
+<td style="text-align: right;">−0.82</td>
+</tr>
+</tbody>
+</table>
+<p>Limited-BW 在 Truck 30K 仅 13.84 dB（Full 24.81
+dB）；这说明足够的反向传播范围对该训练很重要。No-Split
+较大的持续差距以及 Figure 8
+的后景模糊，表明细化大基元不能简单由增加迭代补偿。No-Clone
+对平均指标影响较小，却在细轮辐等结构上表现退化；Truck 的 30K 甚至有
+24.82 对 24.81 的小例外，不能认为每个场景都显著受益。关闭 SH
+或各向异性也降低该组平均质量，但不等于已经获得唯一真实几何与物理外观分解。</p>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_08.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 8 — Clone 与 Split 对不同结构的影响" />
+<figcaption aria-hidden="true">Figure 8 — Clone 与 Split
+对不同结构的影响</figcaption>
+</figure>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_10.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 10 — 各向同性与各向异性表示的对比" />
+<figcaption aria-hidden="true">Figure 10 —
+各向同性与各向异性表示的对比</figcaption>
+</figure>
+<p>Figure 10 每组三列依次为真值、Full（各向异性）和
+Isotropic（各向同性）。左组 Ficus
+中，各向异性较好保留细枝及叶片轮廓，各向同性的叶簇更易呈现团块状、边缘松散；中组车旁道路的细纹与边界在各向同性配置下更模糊、斑块化，右组轮毂细节也较不清晰。与第
+3.1
+节的协方差参数化对应，独立轴尺度和旋转可以使基元沿细长结构延伸而在横向保持较窄，球形基元则难以同时满足两种尺度需求。Ficus
+两种配置均限制最多 5000 个高斯（数量上限，不是 5000
+次迭代，也不保证最终数量相等），提供了相近容量约束下的直观证据。Table 3
+中的所有配置并未声明固定最终基元数，因此不能把其全部质量差异归结为单一形状参数。</p>
+<h3 id="是否可以不依赖-sfm以及表示是否紧凑">6.3 是否可以不依赖
+SfM？以及表示是否紧凑？</h3>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_07.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 7 — 实景中的随机初始化与 SfM 初始化" />
+<figcaption aria-hidden="true">Figure 7 — 实景中的随机初始化与 SfM
+初始化</figcaption>
+</figure>
+<p>真实场景的随机初始化是在尺度为输入相机包围盒范围三倍的立方体内均匀采样（原文
+§7.3；并未给出更细的逐轴构造规则）。该消融明显变差（30K 平均下降 5.63
+dB），尤其在背景和低覆盖区域出现漂浮伪影或缺失细节。但在有界合成 NeRF
+场景，作者从包围体积内的 100,000 个随机高斯开始，剪枝后约 6–10K
+个有意义基元，再继续增密优化，30K 约达到每场景 200–500K
+个高斯。白色背景协议下，Table 2 八场景平均 PSNR 为 33.32 dB，Point-NeRF
+为 33.30 dB（比较值转引各自论文）；作者报告 180–300 FPS。</p>
+<p>这两组现象并不矛盾：已知有限物体范围和较充分观测，与真实无界背景和不均匀视角覆盖具有不同条件。实验说明在有利条件下随机初始化可行，并不能证明真实场景无需几何起点，更没有单独控制这些条件以建立因果关系。</p>
+<p>作者另与 Zhang et al. (2022)
+的点基表示进行了特定紧凑性比较：使用对方由前景 mask
+雕刻得到的点云，优化到相近 PSNR 通常需 2–4
+分钟，使用约四分之一的点数，平均模型大小 3.8MB（对方
+9MB）。为使比较条件接近，该实验采用与对照方法类似的 SH
+设置，原文称仅使用球谐函数的“两阶”（two
+degrees）；这里保留原文含义，不据此推定源码的最高阶索引、频带数或系数存储布局。这说明各向异性基元有潜力以更少元素表达结构，但该数字只适用于这一对照条件，不是所有
+3DGS 模型的存储规模。</p>
+<h2 id="技术边界与可迁移的研究启发">7. 技术边界与可迁移的研究启发</h2>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_11.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 11 — 不同辐射场表示的失败模式" />
+<figcaption aria-hidden="true">Figure 11 —
+不同辐射场表示的失败模式</figcaption>
+</figure>
+<figure>
+<img src="/Hexo/3DGS/Figures/Figure_12.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 12 — 训练视图重叠不足时的伪影" />
+<figcaption aria-hidden="true">Figure 12 —
+训练视图重叠不足时的伪影</figcaption>
+</figure>
+<p>Figure 11 的 Train 场景中，左图为
+Mip-NeRF360，火车前部和附近前景出现漂浮物与颗粒感；右图为
+3DGS，背景山体及植被因粗大各向异性高斯呈现低细节外观。这是不同表示产生的两类失败现象，并不意味着
+3DGS 不会出现漂浮物。Figure 12 是 DrJohnson
+中与训练视图重叠较少的新视角，左图为 Mip-NeRF360、右图为
+3DGS；右侧近处墙面和家具附近均可见伪影，3DGS
+的局部外观有拉伸或斑块式模糊。这里的重叠不足意味着目标视角所见内容在训练图像中缺少共同可见的区域或足够的重复观测，因而外观与几何受到的多视角约束较弱；即使训练图像拟合良好，新视角仍可能不可靠。该个例并未给出重叠率阈值或系统性的稀疏视角性能比较。作者在
+§7.4
+明确指出：在覆盖不足的区域可能产生粗大、拉长、斑块状的高斯及模糊；guard
+band 剔除和近似深度排序可能导致视角改变时出现
+popping。大型场景训练峰值显存可超过 20GB，渲染除模型参数外还需约
+30–500MB
+的额外光栅器内存。论文未通过系统的稀疏视角对照、真实几何精度、动态场景或物理介质实验来证明这些任务上的性能。图像合成质量不应直接解释为准确的表面或物理量估计。</p>
+<p>从本文机制出发，可以进一步得到几个研究性问题（以下是独立推论和待验证假设，不是论文贡献）：</p>
+<ul>
+<li><strong>观察约束与增密</strong>：由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>C</mi><mi>/</mi><mi>∂</mi><msub><mi>a</mi><mi>i</mi></msub><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>c</mi><mi>i</mi></msub><mo>−</mo><msub><mi>B</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\partial C/\partial a_i=T_i(c_i-B_{i+1})</annotation></semantics></math>
+可知，如果前后颜色一致或遮挡严重，即使几何错误，alpha
+的图像梯度也可能很弱。仅以视空间位置梯度决定增加表示自由度，并不等于获得了真实几何信息。一个可检验的方向是增加跨视角可见性和梯度一致性的判别，在相同相机、基元预算下同时评估留出视图与几何误差。</li>
+<li><strong>方向外观与几何辨识</strong>：SH
+让表示更灵活，但缺乏角度观测时高阶系数可能与基础颜色、opacity
+或位置误差共同补偿。可控制视角数量和角度分布，比较不同频带的留出角度泛化、几何误差和训练拟合，而不是只看训练
+PSNR。</li>
+<li><strong>排序近似与效率</strong>：颜色合成对顺序敏感，但逐像素全量精确排序也有代价。可设计受控的深度交错合成场景，测量视点连续变化时的帧间跳变和耗时，再检验只在高风险区域增加局部排序是否有收益。</li>
+</ul>
+<p>这些问题需要独立文献调查和真实实验，尚未证明新颖性或有效性。</p>
+<p>总的来说，3DGS 最重要的知识不是“用高斯代替
+MLP”这一表面描述，而是将<strong>适于场景优化的表示自由度、适于图像合成的
+alpha
+数学和适于并行硬件的计算组织</strong>设计成一个统一系统。它实现了原论文所测试静态场景中令人关注的实时质量—速度折衷，同时留下对几何、物理解释、观测不足与排序连续性的进一步研究空间。</p>
+<p>完整公式（包括附录 A
+的尺度与四元数导数）、两种算法、全部逐场景数据及原文图表解释见文首的完整精读报告链接。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>3D Gaussian Splatting for Real-Time Radiance Field Rendering</div>
+      <div>https://zq111724.github.io/3DGS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hexo/NeRF/" title="NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis">
+                        <span class="hidden-mobile">NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
