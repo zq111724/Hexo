@@ -1,0 +1,1286 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2410.13862v3（2025-03-25）；缓存记录 v3（2025-03-25）；最新版未能确认。核验日期：2026-11-26。 官方资源： arXiv | PDF | Project Page | Code | Model  1. 研究问题：稀疏视图中的几何证据不足 3D Gaussian">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DepthSplat: Connecting Gaussian Splatting and Depth">
+<meta property="og:url" content="https://zq111724.github.io/Hexo/DepthSplat/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2410.13862v3（2025-03-25）；缓存记录 v3（2025-03-25）；最新版未能确认。核验日期：2026-11-26。 官方资源： arXiv | PDF | Project Page | Code | Model  1. 研究问题：稀疏视图中的几何证据不足 3D Gaussian">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/DepthSplat/Figures/Figure_01.jpg">
+<meta property="article:published_time" content="2026-11-26T14:00:01.000Z">
+<meta property="article:modified_time" content="2026-11-26T14:54:21.792Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/DepthSplat/Figures/Figure_01.jpg">
+  
+  
+  
+  <title>DepthSplat: Connecting Gaussian Splatting and Depth - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zq111724.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="DepthSplat: Connecting Gaussian Splatting and Depth"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-26 22:00" pubdate>
+          2026年11月26日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          88 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">DepthSplat: Connecting Gaussian Splatting and Depth</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <figure>
+<img src="/Hexo/DepthSplat/Figures/Figure_01.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1" />
+<figcaption aria-hidden="true">Figure 1</figcaption>
+</figure>
+<p><a href="/Hexo/DepthSplat_Full/">阅读完整精读报告</a></p>
+<!-- PAPER-METADATA BEGIN -->
+<p><strong>论文版本：</strong>
+arXiv:2410.13862v3（2025-03-25）；缓存记录
+v3（2025-03-25）；最新版未能确认。核验日期：2026-11-26。</p>
+<p><strong>官方资源：</strong> <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.13862">arXiv</a> | <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.13862v3">PDF</a> | <a
+target="_blank" rel="noopener" href="https://haofeixu.github.io/depthsplat/">Project Page</a> | <a
+target="_blank" rel="noopener" href="https://github.com/cvg/depthsplat">Code</a> | <a
+target="_blank" rel="noopener" href="https://huggingface.co/haofeixu/depthsplat">Model</a></p>
+<!-- PAPER-METADATA END -->
+<h2 id="研究问题稀疏视图中的几何证据不足">1.
+研究问题：稀疏视图中的几何证据不足</h2>
+<p>3D Gaussian
+Splatting（3DGS，三维高斯泼溅）能够快速渲染高质量图像，但经典逐场景优化需要针对新场景重新拟合一组高斯。前馈式重建试图直接从输入图像预测三维高斯，从而避免推理阶段漫长的场景优化。问题在于：当输入只有少量视图时，网络如何可靠地确定高斯在三维空间中的位置？</p>
+<p>MVSplat
+等方法通过多视图特征匹配估计深度，再利用深度定位高斯中心。在纹理明显、共视充足且外观一致时，已知相机位姿可提供有效几何约束。然而，以下情形会破坏匹配的判别能力：遮挡使某个表面只出现在一张输入图像；低纹理区域缺少可辨认对应；重复图案产生多个竞争匹配；镜面反射使同一三维点在不同方向呈现不同外观。另一方面，单目深度大模型拥有丰富的形状和语义先验，却可能缺乏跨视图统一的尺度。</p>
+<p>DepthSplat
+的基本思路是<strong>保留显式多视图匹配证据，同时引入预训练单目特征，在深度回归之前进行融合</strong>。更可靠的深度可以改善高斯中心的几何位置；反过来，可微新视图渲染可以为深度网络提供不依赖真实深度标注的预训练信号。这两个方向构成论文标题中的
+Connecting，而不是在测试阶段循环迭代深度和高斯。</p>
+<p>论文的输入是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+张图像
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>I</mi><mi>i</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>H</mi><mo>×</mo><mi>W</mi><mo>×</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">I^i\in\mathbb R^{H\times W\times3}</annotation></semantics></math>
+及对应投影矩阵
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>P</mi><mi>i</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mn>3</mn><mo>×</mo><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">P^i\in\mathbb R^{3\times4}</annotation></semantics></math>。对于深度估计任务，使用不带
+Gaussian Splatting 参数头的深度网络，输出逐视图稠密深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>D</mi><mi>i</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>H</mi><mo>×</mo><mi>W</mi></mrow></msup></mrow><annotation encoding="application/x-tex">D^i\in\mathbb R^{H\times W}</annotation></semantics></math>。对于新视图合成（Novel
+View
+Synthesis，NVS），使用完整模型，在预测深度的基础上生成每输入像素对应的高斯参数（中心
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\mu_j</annotation></semantics></math>、不透明度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\alpha_j</annotation></semantics></math>、协方差
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Σ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\Sigma_j</annotation></semantics></math>、颜色
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>j</mi></msub><annotation encoding="application/x-tex">c_j</annotation></semantics></math>）。给定目标相机即可渲染新视图。本文不是无位姿重建；相机内外参是网络输入。
+两种任务共享深度网络的架构，但不同任务及实验并不意味着使用同一组训练权重。</p>
+<h2 id="网络总体结构">2. 网络总体结构</h2>
+<figure>
+<img src="/Hexo/DepthSplat/Figures/Figure_02.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 2 — DepthSplat 共享架构" />
+<figcaption aria-hidden="true">Figure 2 — DepthSplat
+共享架构</figcaption>
+</figure>
+<p><em>Figure 2（原文 §3，PDF p.3）：多视图匹配与单目先验在 2D U-Net
+前融合；深度监督与渲染监督对应两个训练任务。</em></p>
+<p>理解 Figure 2
+的关键是：<strong>深度网络是连接多视图几何与高斯表示的共同部分</strong>。图中既包含数据的前向计算，也包含训练时的监督关系，二者需要分开理解。</p>
+<p><strong>前向信息流（Depth → 3DGS）：</strong>
+有位姿的输入图像分别进入两个分支。多视图分支通过候选重投影和特征匹配构建
+Cost
+Volume（成本体），保留各深度候选的几何证据；单目分支为同一视图提取学习先验。两者在空间网格对齐后沿通道拼接，经
+2D U-Net 与候选加权回归得到深度。深度估计任务到此输出稠密深度；对于
+NVS，预测深度直接反投影为高斯中心，另一个参数预测头给出其他属性，再以
+3DGS 渲染目标视图。</p>
+<p><strong>训练监督与迁移（3DGS → Depth）：</strong>
+深度任务直接用真实深度监督共享深度网络；NVS
+任务则比较目标视图的渲染结果与真实图像，通过可微渲染和反投影将损失梯度传回深度网络。由此可以先利用有位姿的多视图
+RGB
+数据进行渲染预训练，再将得到的深度网络用于有深度标注的任务微调。这不是推理时从高斯再次计算深度的反向数据流。下面
+§2.1–2.3 解释深度如何获得，§3 解释深度如何决定高斯中心，§4
+再解释两类监督如何作用于网络。</p>
+<h3 id="多视图分支将几何假设转化为候选匹配证据">2.1
+多视图分支：将几何假设转化为候选匹配证据</h3>
+<p>论文 §3.1 首先通过共享轻量 ResNet
+独立提取输入图像的下采样特征。下采样倍率
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+可调节，例如两个 stride-2 卷积得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">s=4</annotation></semantics></math>，三个得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">s=8</annotation></semantics></math>。六个堆叠的
+self/cross-attention 层组成多视图 Swin
+Transformer，产生每个参考视图的多视图感知特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>F</mi><mi>i</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>H</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>W</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>C</mi></mrow></msup></mrow><annotation encoding="application/x-tex">F^i\in\mathbb R^{H/s\times W/s\times C}</annotation></semantics></math>。输入超过两张时，每个参考视图仅与相机距离最近的两个邻居交互并匹配。</p>
+<p>成本体通过 plane-sweep
+stereo（平面扫描立体匹配）构造。为什么候选深度可以转化为跨视图匹配？下面是用于解释原文操作的针孔相机补充推导。设世界到相机外参为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mi>i</mi></msub><mo>,</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(R_i,t_i)</annotation></semantics></math>，内参为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>i</mi></msub><annotation encoding="application/x-tex">K_i</annotation></semantics></math>，参考像素的齐次坐标为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>p</mi><mo accent="true">̃</mo></mover><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo>,</mo><mn>1</mn><msup><mo stretchy="false" form="postfix">)</mo><mi mathvariant="sans-serif">𝖳</mi></msup></mrow><annotation encoding="application/x-tex">\tilde p=(u,v,1)^\mathsf T</annotation></semantics></math>，假设候选
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mi>m</mi></msub><annotation encoding="application/x-tex">d_m</annotation></semantics></math>
+是相机 z 深度。该候选决定世界坐标：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>w</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mi>m</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mi>R</mi><mi>i</mi><mi mathvariant="sans-serif">𝖳</mi></msubsup><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mi>m</mi></msub><msubsup><mi>K</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mover><mi>p</mi><mo accent="true">̃</mo></mover><mo>−</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">X_w(d_m)=R_i^\mathsf T(d_mK_i^{-1}\tilde p-t_i).</annotation></semantics></math></p>
+<p>将该点投影到邻居视图 j：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>q</mi><mo accent="true">̃</mo></mover><mo>′</mo></msup><mo>=</mo><msub><mi>K</mi><mi>j</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mi>j</mi></msub><msub><mi>X</mi><mi>w</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mi>m</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>t</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>q</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msubsup><mover><mi>q</mi><mo accent="true">̃</mo></mover><mi>x</mi><mo>′</mo></msubsup><msubsup><mover><mi>q</mi><mo accent="true">̃</mo></mover><mi>z</mi><mo>′</mo></msubsup></mfrac><mo>,</mo><mfrac><msubsup><mover><mi>q</mi><mo accent="true">̃</mo></mover><mi>y</mi><mo>′</mo></msubsup><msubsup><mover><mi>q</mi><mo accent="true">̃</mo></mover><mi>z</mi><mo>′</mo></msubsup></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\tilde q&#39;=K_j(R_jX_w(d_m)+t_j),\qquad q=\left(\frac{\tilde q&#39;_x}{\tilde q&#39;_z},\frac{\tilde q&#39;_y}{\tilde q&#39;_z}\right).</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+为邻居图像中对应的二维位置，要求投影在相机前方且位置有效；若点在邻居中被遮挡，几何投影仍可计算，但不再对应同一可见表面。特征图上的坐标需与下采样网格一致。上式采用
+z 深度约定；若采用单位射线距离，反投影形式需要相应调整。</p>
+<p>作者从近远深度范围均匀采样
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+个候选
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mi>m</mi></msub><annotation encoding="application/x-tex">d_m</annotation></semantics></math>，将邻居特征按候选重投影到参考视图。设重投影特征为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>F</mi><msub><mi>d</mi><mi>m</mi></msub><mrow><mi>j</mi><mo>→</mo><mi>i</mi></mrow></msubsup><annotation encoding="application/x-tex">F^{j\to i}_{d_m}</annotation></semantics></math>，逐像素匹配相关性可以写为：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>S</mi><mi>m</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><msup><mi>F</mi><mi>i</mi></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msubsup><mi>F</mi><msub><mi>d</mi><mi>m</mi></msub><mrow><mi>j</mi><mo>→</mo><mi>i</mi></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">⟩</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">S^{i,j}_m(p)=\langle F^i(p),F^{j\to i}_{d_m}(p)\rangle.</annotation></semantics></math></p>
+<p>点积沿特征通道计算，因此每个像素、每个候选得到一个标量。双视图使用唯一邻居；多于两个输入时，选择最近两个邻居，平均它们的相关值，沿候选维堆叠形成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>C</mi><mi>i</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>H</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>W</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>D</mi></mrow></msup></mrow><annotation encoding="application/x-tex">C^i\in\mathbb R^{H/s\times W/s\times D}</annotation></semantics></math>。每张输入图像都作为参考视图执行该过程。论文未明确给出此处候选数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>、具体相关性归一化和越界处理，不从其他工作推定。</p>
+<p>成本体保留的是候选证据，而非已经确定的深度。在重复纹理、遮挡或低纹理区域，相关性可能多峰、平坦或错误集中，这就是单目分支发挥作用的地方。</p>
+<h3 id="单目分支融合的是特征而非深度图">2.2
+单目分支：融合的是特征而非深度图</h3>
+<p>DepthSplat 使用 Depth Anything V2 预训练的 ViT 骨干（§3.2）。ViT 的
+patch size 为 14，得到约原图 1/14
+的空间特征图。对每张输入独立提取单目特征，再通过双线性插值对齐到成本体分辨率，得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>F</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">o</mi></mrow><mi>i</mi></msubsup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>H</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>W</mi><mi>/</mi><mi>s</mi><mo>×</mo><msub><mi>C</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">o</mi></mrow></msub></mrow></msup></mrow><annotation encoding="application/x-tex">F^i_{\mathrm{mono}}\in\mathbb R^{H/s\times W/s\times C_{\mathrm{mono}}}</annotation></semantics></math>。</p>
+<p>作者在通道维拼接：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>U</mi><mi>i</mi></msup><mo>=</mo><msub><mrow><mi mathvariant="normal">Concat</mi><mo>&#8289;</mo></mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">h</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msup><mi>C</mi><mi>i</mi></msup><mo>,</mo><msubsup><mi>F</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">o</mi></mrow><mi>i</mi></msubsup><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>H</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>W</mi><mi>/</mi><mi>s</mi><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mi>D</mi><mo>+</mo><msub><mi>C</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">o</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">U^i=\operatorname{Concat}_{\mathrm{ch}}(C^i,F^i_{\mathrm{mono}})\in\mathbb R^{H/s\times W/s\times(D+C_{\mathrm{mono}})}.</annotation></semantics></math></p>
+<p>这一步不要求单目网络直接输出绝对尺度正确的深度图，也不是先估计多视图深度再用单目预测修正。多视图成本体提供几何候选的匹配信息，单目特征提供图像结构和学习先验。两类信息由同一个
+2D U-Net
+联合回归，因此在成本体存在多个候选时，单目上下文可以改变候选的相对权重，而不是只能修改一个已经压缩成点估计的错误粗深度。这里的互补是网络学习得到的，论文没有显式设计置信度门控公式。</p>
+<h3 id="深度回归与层级匹配">2.3 深度回归与层级匹配</h3>
+<p>2D U-Net 输出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>W</mi><mi>/</mi><mi>s</mi><mo>×</mo><mi>D</mi></mrow><annotation encoding="application/x-tex">H/s\times W/s\times D</annotation></semantics></math>
+的候选 logits
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>L</mi><mi>m</mi><mi>i</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L^i_m(p)</annotation></semantics></math>，在候选维进行
+softmax，随后加权求和：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>w</mi><mi>m</mi><mi>i</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mrow><mi mathvariant="normal">exp</mi><mo>&#8289;</mo></mrow><msubsup><mi>L</mi><mi>m</mi><mi>i</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>D</mi></munderover><mrow><mi mathvariant="normal">exp</mi><mo>&#8289;</mo></mrow><msubsup><mi>L</mi><mi>n</mi><mi>i</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msup><mover><mi>d</mi><mo accent="true">̂</mo></mover><mi>i</mi></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><mi>D</mi></munderover><msubsup><mi>w</mi><mi>m</mi><mi>i</mi></msubsup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>d</mi><mi>m</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">w^i_m(p)=\frac{\exp L^i_m(p)}{\sum_{n=1}^D\exp L^i_n(p)},\qquad\hat d^i(p)=\sum_{m=1}^Dw^i_m(p)d_m.</annotation></semantics></math></p>
+<p>该操作比硬选最大值更易进行梯度训练，也能输出候选之间的连续估计。它不能保证多峰分布的均值对应真实表面，更不能把
+softmax 直接解释为校准后的深度置信度。</p>
+<p>单尺度基本结构在一个特征分辨率上完成成本体构建、特征融合与深度回归，再上采样至原图分辨率。双尺度层级匹配（§3.3）则在此基础上增加一级细化：首先在低分辨率进行全深度范围搜索，然后将粗深度上采样
+2
+倍，在更高分辨率特征上只搜索粗估计附近的较小深度范围。再次构造成本体并融合单目特征，最终通过
+DPT（Dense Prediction Transformer）头上采样为完整分辨率深度。实际采用
+1/8→1/4 或 1/4→1/2
+两种尺度配置。粗级负责较大范围几何搜索，细级改善空间细节；局部细搜索避免重新进行完整高分辨率全域搜索。但若粗预测严重错误，局部范围仍可能遗漏真实解，这属于合理推断，而非论文给出的独立消融结论。</p>
+<h2 id="深度如何进入-3d-gaussian-splatting">3. 深度如何进入 3D Gaussian
+Splatting？</h2>
+<p>预测深度在该架构中具有直接几何意义。对于每个输入图像像素，依据相机参数反投影，其世界坐标就是对应的高斯中心：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><msubsup><mi>R</mi><mi>i</mi><mi mathvariant="sans-serif">𝖳</mi></msubsup><mo stretchy="false" form="prefix">(</mo><msup><mover><mi>d</mi><mo accent="true">̂</mo></mover><mi>i</mi></msup><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><msubsup><mi>K</mi><mi>i</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mover><mi>p</mi><mo accent="true">̃</mo></mover><mo>−</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mu=R_i^\mathsf T(\hat d^i(p)K_i^{-1}\tilde p-t_i).</annotation></semantics></math></p>
+<p>另一个 DPT 头使用拼接后的图像、深度和特征信息，预测高斯不透明度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\alpha_j</annotation></semantics></math>、协方差
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Σ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\Sigma_j</annotation></semantics></math>
+和颜色
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>j</mi></msub><annotation encoding="application/x-tex">c_j</annotation></semantics></math>（§3.4）。中心位置不由该头独立回归，而由深度确定。多个输入视图的像素对齐高斯共同形成三维表示。论文没有给出颜色是否采用某阶球谐或协方差的完整参数化，不能自行填入实现细节。</p>
+<p>给定目标相机，3DGS
+将高斯投影至图像平面并合成颜色。作为背景知识，可用简化的透明度合成式理解渲染过程：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>I</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>T</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>a</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>c</mi><mi>k</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>T</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∏</mo><mrow><mi>j</mi><mo>&lt;</mo><mi>k</mi></mrow></munder><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>a</mi><mi>j</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\hat I(p)=\sum_k T_k(p)a_k(p)c_k,\qquad T_k(p)=\prod_{j&lt;k}(1-a_j(p)).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_k(p)</annotation></semantics></math>
+表示排序后第 k
+个投影基元在该像素的有效透明度，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>k</mi></msub><annotation encoding="application/x-tex">T_k</annotation></semantics></math>
+是前面基元产生的透过率。这不是本文新提出的渲染方程，而是原文引用高斯泼溅操作的示意解释。深度误差将沿输入相机射线移动中心，在新视角造成错误视差、遮挡和合成位置。例如，当椅子在另一输入视图不可见时，仅依靠匹配预测的深度可能错误，从而使椅子在目标视角发生错位。</p>
+<figure>
+<img src="/Hexo/DepthSplat/Figures/Figure_04.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 4 — 单目特征影响几何与新视图渲染" />
+<figcaption aria-hidden="true">Figure 4 —
+单目特征影响几何与新视图渲染</figcaption>
+</figure>
+<p><em>Figure 4（原文 §4.2，PDF
+p.6）：去掉单目特征后，部分不能匹配的像素产生错误深度，进而影响
+RealEstate10K 的新视图渲染。</em></p>
+<h2 id="训练与双向任务迁移两类监督如何作用于共享深度网络">4.
+训练与双向任务迁移：两类监督如何作用于共享深度网络？</h2>
+<h3 id="直接深度监督">4.1 直接深度监督</h3>
+<p>仅训练深度网络时，不使用 Gaussian Splatting 参数头。原文 Eq. (1)
+比较预测与真值<strong>逆深度</strong>（令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>,</mo><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\mathbf D_{\mathrm{pred}},\mathbf D_{\mathrm{gt}}</annotation></semantics></math>
+表示逆深度图）及其空间梯度：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi></mrow></msub><mo>=</mo><mi>α</mi><mo stretchy="false" form="prefix">|</mo><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>−</mo><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mi>+</mi><mi>β</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>∂</mi><mi>x</mi></msub><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>−</mo><msub><mi>∂</mi><mi>x</mi></msub><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mi>+</mi><mi>β</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>∂</mi><mi>y</mi></msub><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>−</mo><msub><mi>∂</mi><mi>y</mi></msub><msub><mi mathvariant="bold-italic">𝑫</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">L_{\mathrm{depth}}=\alpha|\mathbf D_{\mathrm{pred}}-\mathbf D_{\mathrm{gt}}|+\beta|\partial_x\mathbf D_{\mathrm{pred}}-\partial_x\mathbf D_{\mathrm{gt}}|+\beta|\partial_y\mathbf D_{\mathrm{pred}}-\partial_y\mathbf D_{\mathrm{gt}}|.</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mi>x</mi></msub><mo>,</mo><msub><mi>∂</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">\partial_x,\partial_y</annotation></semantics></math>
+是水平和垂直空间梯度，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mi>β</mi><mo>=</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">\alpha=\beta=20</annotation></semantics></math>。第一项约束逆深度值，后两项约束预测与
+GT 的局部变化一致性，并不是直接将预测深度平滑掉。对正深度 z，逆深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">1/z</annotation></semantics></math>
+的一阶变化为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>δ</mi><mi>z</mi><mi>/</mi><msup><mi>z</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">-\delta z/z^2</annotation></semantics></math>，因此同样的绝对深度误差在近处具有较大逆深度误差。此式按
+PDF 数学含义规范排版；原文末尾多一个右括号，未改变损失含义。</p>
+<h3 id="新视图渲染监督">4.2 新视图渲染监督</h3>
+<p>完整模型利用 Eq. (2) 训练：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">s</mi></mrow></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><mi>M</mi></munderover><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">MSE</mi><mo stretchy="false" form="prefix">(</mo><msubsup><mi>I</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow><mi>m</mi></msubsup><mo>,</mo><msubsup><mi>I</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow><mi>m</mi></msubsup><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>λ</mi><mi mathvariant="normal">LPIPS</mi><mo stretchy="false" form="prefix">(</mo><msubsup><mi>I</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow><mi>m</mi></msubsup><mo>,</mo><msubsup><mi>I</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow><mi>m</mi></msubsup><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">L_{\mathrm{gs}}=\sum_{m=1}^M\left(\operatorname{MSE}(I^m_{\mathrm{render}},I^m_{\mathrm{gt}})+\lambda\operatorname{LPIPS}(I^m_{\mathrm{render}},I^m_{\mathrm{gt}})\right).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+为一次前向渲染的目标视图数，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.05</mn></mrow><annotation encoding="application/x-tex">\lambda=0.05</annotation></semantics></math>。MSE
+衡量像素颜色误差，LPIPS
+衡量感知特征距离。目标图像用于监督，而不是推理阶段额外输入。</p>
+<p>中心反投影使渲染误差能够向深度网络传递梯度。用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>d</mi></msub><annotation encoding="application/x-tex">\theta_d</annotation></semantics></math>
+表示深度模型权重，链式法则中包含路径：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>∂</mi><msub><mi>L</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">s</mi></mrow></msub></mrow><mrow><mi>∂</mi><msub><mi>θ</mi><mi>d</mi></msub></mrow></mfrac><mo>⊃</mo><munder><mo>∑</mo><mi>j</mi></munder><mfrac><mrow><mi>∂</mi><msub><mi>L</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">s</mi></mrow></msub></mrow><mrow><mi>∂</mi><msub><mi>μ</mi><mi>j</mi></msub></mrow></mfrac><mfrac><mrow><mi>∂</mi><msub><mi>μ</mi><mi>j</mi></msub></mrow><mrow><mi>∂</mi><msub><mover><mi>d</mi><mo accent="true">̂</mo></mover><mi>j</mi></msub></mrow></mfrac><mfrac><mrow><mi>∂</mi><msub><mover><mi>d</mi><mo accent="true">̂</mo></mover><mi>j</mi></msub></mrow><mrow><mi>∂</mi><msub><mi>θ</mi><mi>d</mi></msub></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">\frac{\partial L_{\mathrm{gs}}}{\partial\theta_d}\supset\sum_j\frac{\partial L_{\mathrm{gs}}}{\partial\mu_j}\frac{\partial\mu_j}{\partial\hat d_j}\frac{\partial\hat d_j}{\partial\theta_d}.</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><msub><mi>μ</mi><mi>j</mi></msub><mi>/</mi><mi>∂</mi><msub><mover><mi>d</mi><mo accent="true">̂</mo></mover><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">\partial\mu_j/\partial\hat d_j</annotation></semantics></math>
+对应上节反投影的射线方向，其他属性头还可能通过深度及共享特征回传梯度。这一解释说明为何没有真实深度标签的多视图
+RGB
+数据也能训练深度网络。必须注意：颜色、协方差、不透明度等参数也会影响渲染结果，因此低光度误差不等价于真实几何唯一或准确。</p>
+<p>论文 §4.3 将上述渲染目标用于预训练：先以有位姿的 RealEstate10K
+图像训练完整模型，仅使用渲染损失，再取深度网络，在 TartanAir 和 VKITTI2
+上使用真值深度微调。这是<strong>先预训练、再迁移微调</strong>，而非默认将两种损失相加训练。推理时使用训练好的网络和有位姿输入，不再对每个场景进行高斯优化。训练使用
+AdamW、cosine 学习率调度，单目预训练骨干学习率
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>6</mn></mrow></msup></mrow><annotation encoding="application/x-tex">2\times10^{-6}</annotation></semantics></math>，其余层
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">2\times10^{-4}</annotation></semantics></math>；单目骨干不是冻结的。</p>
+<h2 id="实验双任务互益是否得到验证">5.
+实验：双任务互益是否得到验证？</h2>
+<p>回到前面的技术逻辑，论文需要分别验证三个主张：两类信息在深度回归前融合是否有效（Table
+2–3）；更强的深度架构或更好的深度权重能否改善高斯重建（Table 1、Table
+A.1）；渲染监督能否反过来改善深度估计（Table
+4）。这些消融和迁移对照比完整模型之间的比较更接近对相应设计的直接检验，但仍不能把所有收益归结为单一因素。最后，Table
+5–8
+及高分辨率实验考察整个模型在不同任务、数据集和输入条件下的表现，属于整体性能与适用范围的证据，而非对每个模块的独立因果验证。</p>
+<h3 id="两个分支确实互补但不是所有融合指标都最优">5.1
+两个分支确实互补，但不是所有融合指标都最优</h3>
+<p>下表摘自原文 Table 2。深度在 TartanAir 上评估，3DGS 在 RealEstate10K
+上评估。Abs
+Rel（相对绝对误差）越小越好，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>（阈值内正确像素比例）越大越好；PSNR、SSIM
+越大，LPIPS 越小越好。</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th style="text-align: right;">Abs Rel ↓</th>
+<th style="text-align: right;">δ1 ↑</th>
+<th style="text-align: right;">PSNR ↑</th>
+<th style="text-align: right;">SSIM ↑</th>
+<th style="text-align: right;">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full</td>
+<td style="text-align: right;">8.46</td>
+<td style="text-align: right;">93.02</td>
+<td style="text-align: right;">26.84</td>
+<td style="text-align: right;">0.878</td>
+<td style="text-align: right;">0.122</td>
+</tr>
+<tr>
+<td>w/o mono feature</td>
+<td style="text-align: right;">12.25</td>
+<td style="text-align: right;">88.00</td>
+<td style="text-align: right;">26.04</td>
+<td style="text-align: right;">0.864</td>
+<td style="text-align: right;">0.134</td>
+</tr>
+<tr>
+<td>w/o cost volume</td>
+<td style="text-align: right;">11.34</td>
+<td style="text-align: right;">90.02</td>
+<td style="text-align: right;">23.24</td>
+<td style="text-align: right;">0.766</td>
+<td style="text-align: right;">0.184</td>
+</tr>
+</tbody>
+</table>
+<p>去掉单目特征使 Abs Rel 增加 3.79，去掉成本体使 PSNR 下降 3.60
+dB。两类信息对两个任务的作用并非完全相同：前者对于困难匹配区域的深度很有价值，后者对于尺度和跨视图几何一致性尤其重要。Table
+2 的骨干对照也有值得注意的例外：Depth Anything V1 深度指标 8.38/93.23
+略好于 V2 的 8.46/93.02，但 V2
+的渲染指标更好。不能将两个任务的指标直接等同。</p>
+<figure>
+<img src="/Hexo/DepthSplat/Figures/Figure_03.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 3 — ScanNet 中低纹理与反射区域的深度消融" />
+<figcaption aria-hidden="true">Figure 3 — ScanNet
+中低纹理与反射区域的深度消融</figcaption>
+</figure>
+<p><em>Figure 3（原文 §4.2，PDF
+p.6）：单目特征改善低纹理墙面、反射冰箱等困难情形。该图是 ScanNet
+的定性例子，不是上表 TartanAir 的逐像素量化结果。</em></p>
+<p>Table 3 进一步比较了单目 ViT 特征直接构造成本体（Abs Rel 11.26，δ1
+90.84）、显式尺度对齐后融合深度图（9.13，90.21）、注意力融合（8.40，92.95）和本文的简单拼接（8.46，93.02）。拼接和注意力表现接近，且各优一项，作者选择更简单的拼接。这个结果支持双分支和早期融合的设计，并不是证明拼接在全部指标或耗时上必然优于其他方法。</p>
+<h3 id="更好的深度架构与权重有助于新视图合成">5.2
+更好的深度架构与权重有助于新视图合成</h3>
+<p>Table 1 比较不同 ViT 规模与一/两尺度匹配。论文将三种主要配置命名为
+Small（ViT-S、单尺度，38 M 参数）、Base（ViT-B、双尺度，120 M 参数）和
+Large（ViT-L、双尺度，354 M 参数）。以 ViT-S
+为例，从单尺度到双尺度，TartanAir Abs Rel 由 8.46 降至
+7.01，RealEstate10K PSNR 由 26.84 提升至 27.12 dB。作者在单张 A100、两张
+256×256 输入图像条件下测得对应推理时间 0.050 s 与 0.062 s。ViT-L 双尺度
+Large 模型达到 Abs Rel 5.57、PSNR 27.47 dB，参数 354 M、时间 0.079
+s。扩大网络或引入层级匹配存在质量—成本权衡。</p>
+<p>Appendix A Table A.1 从权重初始化提供另一个方向的证据：仅用 Depth
+Anything V2 初始化单目特征、再用 UniMatch 初始化多视图特征、在 TartanAir
+预训练完整深度模型，三者用于后续 NVS 训练时的 PSNR 分别为
+26.59、26.76、26.81
+dB。更好的深度初始化有助于渲染，但表中未报告重复训练方差，不能独立认定小幅增益的统计显著性。</p>
+<h3 id="渲染预训练能否改善深度">5.3 渲染预训练能否改善深度？</h3>
+<p>原文 Table 4 比较相同深度架构、不同权重的四组条件。预训练使用
+RealEstate10K 的渲染目标，微调使用混合 TartanAir/VKITTI2 的 GT
+depth。TartanAir 为域内测试，ScanNet、KITTI 为零样本测试。依据 Table 4
+题注，第一组对应随机初始化；第三组不经过 GS
+预训练，从随机初始化开始进行有深度真值监督的训练；第二、四组均引入 GS
+渲染预训练，区别在于是否再进行深度监督微调。原文未明确说明具体子模块的随机初始化范围及权重继承细节。下表保留原表的
+Abs Rel 与 δ1：</p>
+<table>
+
+<thead>
+<tr>
+<th>GS 预训练</th>
+<th>GT 微调</th>
+<th style="text-align: right;">TartanAir Abs Rel ↓ / δ1 ↑</th>
+<th style="text-align: right;">ScanNet Abs Rel ↓ / δ1 ↑</th>
+<th style="text-align: right;">KITTI Abs Rel ↓ / δ1 ↑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>否</td>
+<td>否</td>
+<td style="text-align: right;">76.22 / 3.43</td>
+<td style="text-align: right;">39.97 / 22.56</td>
+<td style="text-align: right;">90.69 / 0.00</td>
+</tr>
+<tr>
+<td>是</td>
+<td>否</td>
+<td style="text-align: right;">29.53 / 53.16</td>
+<td style="text-align: right;">21.51 / 76.09</td>
+<td style="text-align: right;">56.83 / 46.26</td>
+</tr>
+<tr>
+<td>否</td>
+<td>是</td>
+<td style="text-align: right;">10.86 / 90.55</td>
+<td style="text-align: right;">6.70 / 96.14</td>
+<td style="text-align: right;">11.56 / 87.27</td>
+</tr>
+<tr>
+<td>是</td>
+<td>是</td>
+<td style="text-align: right;">10.20 / 91.10</td>
+<td style="text-align: right;">6.60 / 96.27</td>
+<td style="text-align: right;">10.68 / 89.92</td>
+</tr>
+</tbody>
+</table>
+<p>第 1→2 行表明仅使用渲染监督已可学习有用深度；第 3→4
+行说明在相同深度微调条件下，渲染预训练仍带来额外收益。KITTI
+改善较明显，ScanNet
+在该协议下改善较小。只进行渲染预训练仍明显不如进一步使用深度真值微调。作者推测预训练提供正则化，但没有通过独立实验识别该机制。</p>
+<figure>
+<img src="/Hexo/DepthSplat/Figures/Figure_B01.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure B.1 — 渲染预训练与深度预测" />
+<figcaption aria-hidden="true">Figure B.1 —
+渲染预训练与深度预测</figcaption>
+</figure>
+<p><em>Figure B.1（Appendix B.1，PDF
+p.13）：预训练前后深度和误差的定性对照，低纹理区域的改善支持其学习价值。</em></p>
+<h3 id="基准性能与更多视图的扩展">5.4 基准性能与更多视图的扩展</h3>
+<p>Table 5 在 ScanNet 双视图深度基准中使用 Base（ViT-B、两尺度），未使用
+GS 预训练的 Abs Rel/RMSE/RMSElog 为 4.5/0.125/0.061；使用 RE10K 和 DL3DV
+混合 GS 预训练后为 3.8/0.114/0.055。该协议不同于 Table 4
+的零样本测试。RealEstate10K 双视图 NVS（Table 6）中，DepthSplat 的
+PSNR/SSIM/LPIPS 为 27.47/0.889/0.114，MVSplat 为
+26.39/0.869/0.128，TranSplat 为
+26.69/0.875/0.125。完整模型对比支持本文的性能，但不是单独融合机制的因果实验。</p>
+<p>在更复杂的 DL3DV 数据集上，作者使用 RE10K 预训练模型在 DL3DV
+训练场景微调，微调时将输入视图数量随机采样为 2–6，测试时分别使用 2、4、6
+张输入图像（256×448，Table 7）：</p>
+<table>
+
+<thead>
+<tr>
+<th style="text-align: right;">输入视图数</th>
+<th style="text-align: right;">MVSplat PSNR ↑</th>
+<th style="text-align: right;">DepthSplat PSNR ↑</th>
+<th style="text-align: right;">MVSplat 时间 (s)</th>
+<th style="text-align: right;">DepthSplat 时间 (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">17.54</td>
+<td style="text-align: right;">19.31</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: right;">0.083</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21.63</td>
+<td style="text-align: right;">23.12</td>
+<td style="text-align: right;">0.146</td>
+<td style="text-align: right;">0.107</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">22.93</td>
+<td style="text-align: right;">24.19</td>
+<td style="text-align: right;">0.263</td>
+<td style="text-align: right;">0.132</td>
+</tr>
+</tbody>
+</table>
+<p>两视图时 DepthSplat
+的质量优势更明显，但并不更快；四/六视图时速度优势逐渐体现。局部最近邻策略将参考—邻居匹配的配对数从全对的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N(N-1)</annotation></semantics></math>
+降至最多
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>N</mi></mrow><annotation encoding="application/x-tex">2N</annotation></semantics></math>（只讨论配对数，而非全模型复杂度），降低更多视图的匹配开销。
+可变输入数量的训练协议让模型在训练中接触不同数量的视图，而局部匹配策略主要降低随视图数增加的计算开销，两者作用不同。上述结果是完整模型在指定训练与测试条件下的表现，不能完全归因于局部最近邻策略，也不能据此断言模型可泛化到任意输入视图数量。</p>
+<figure>
+<img src="/Hexo/DepthSplat/Figures/Figure_06.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 6 — DL3DV 重复纹理区域比较" />
+<figcaption aria-hidden="true">Figure 6 — DL3DV
+重复纹理区域比较</figcaption>
+</figure>
+<p><em>Figure 6（原文 §4.4，PDF
+p.8）：重复图案可能使纯匹配方法获得错误深度，导致渲染扭曲。</em></p>
+<p>跨数据集泛化（Table 8）是另一个实验，直接使用 RE10K
+训练模型测试目标数据而不在目标域微调。DL3DV 上 PSNR 由 MVSplat 的 24.14
+提升到 DepthSplat 的 27.66 dB；ACID 上由 28.15 提升到 28.37
+dB。不能直接与 Table 7 的 DL3DV
+数字比较来判断微调收益，两者协议不同。</p>
+<p>Appendix B.4–C 展示 512×960 高分辨率 6/12
+视图结果。为控制成本，作者采用 ViT-S 单尺度模型，先以 RE10K 256×448
+两视图训练 150K 次、总 batch 256，再在 448×768 RE10K+DL3DV 数据上训练
+200K 次、总 batch 64，输入数随机
+4–10。在论文报告的高分辨率实验条件下，MVSplat 使用 6 或 12 张 512×960
+输入图像时出现显存不足。作者指出两项效率设计：DepthSplat
+的初始匹配特征分辨率为原图的 1/8，而 MVSplat 为 1/4；DepthSplat
+使用局部跨视图注意力，而 MVSplat 使用成对全局注意力。作者报告从 12 张
+512×960 图像前馈重建耗时 0.6
+s。高分辨率附录主要是定性结果，不应解释为统一协议下完整的精度或显存比较。
+这一观察仅适用于论文所报告的实验条件，不能推广为所有硬件、实现和配置下的普遍性能优势。</p>
+<figure>
+<img src="/Hexo/DepthSplat/Figures/Figure_B04.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure B.4 — 六输入视图的高分辨率合成" />
+<figcaption aria-hidden="true">Figure B.4 —
+六输入视图的高分辨率合成</figcaption>
+</figure>
+<p><em>Figure B.4（Appendix B.4，PDF p.14）：512×960
+六输入的新视图输出，图中无相应 GT 定量对照。</em></p>
+<h2 id="局限与研究启发">6. 局限与研究启发</h2>
+<p>原文 §5 明确指出，DepthSplat
+依赖已知相机位姿，极稀疏观测时这可能难以获得；像素对齐高斯的数量随输入视图数增加，仍需改进几何表示及多视图可扩展性。</p>
+<p>从研究角度看，论文揭示了值得继续追问的问题：当多视图成本体和单目先验冲突时，能否判断哪一个更可信？候选
+softmax
+的集中程度不一定对应真实误差，重复纹理可能产生错误高置信度；应在控制纹理、遮挡和视角变化的场景上用真实几何评价可靠性，而不是仅看渲染
+PSNR。另一个问题是渲染预训练的几何收益究竟来自多目标的几何约束，还是训练数据、外观网络及初始化的综合作用。可微路径说明信号如何进入深度，但并不证明渲染目标唯一确定真实几何。这些是基于本文机制的独立研究问题，而非作者已经验证的结论。</p>
+<p>总之，DepthSplat
+的价值在于将两种互补信息在深度回归前结合，借助反投影使几何与前馈高斯表示直接关联，并以可微渲染建立另一方向的训练信号。在有位姿的稀疏多视图条件下，它提供了有实验依据的联合推断路径，同时保留了几何可辨识性和观测可靠性等重要开放问题。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>DepthSplat: Connecting Gaussian Splatting and Depth</div>
+      <div>https://zq111724.github.io/Hexo/DepthSplat/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Hexo/AnySplat/" title="AnySplat：无标定多视角的前馈式三维高斯重建">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AnySplat：无标定多视角的前馈式三维高斯重建</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hexo/MVSplat/" title="MVSplat：从稀疏多视角图像高效预测三维高斯">
+                        <span class="hidden-mobile">MVSplat：从稀疏多视角图像高效预测三维高斯</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
