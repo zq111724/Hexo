@@ -1,0 +1,1572 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2511.10647v1（2025-11-13）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code  1. 研究问题与核心技术逻辑 三维视觉中，深度估计、相机位姿估计、点云重建和新视角合成常被设计成不同任务。它们并非相互独立：给定相机与深">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Depth Anything 3：从任意视图恢复视觉空间">
+<meta property="og:url" content="https://zq111724.github.io/Hexo/DA3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2511.10647v1（2025-11-13）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code  1. 研究问题与核心技术逻辑 三维视觉中，深度估计、相机位姿估计、点云重建和新视角合成常被设计成不同任务。它们并非相互独立：给定相机与深">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/DA3/Figures/Figure_01.jpg">
+<meta property="article:published_time" content="2026-11-26T19:53:59.000Z">
+<meta property="article:modified_time" content="2026-11-26T21:48:01.250Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/DA3/Figures/Figure_01.jpg">
+  
+  
+  
+  <title>Depth Anything 3：从任意视图恢复视觉空间 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zq111724.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Depth Anything 3：从任意视图恢复视觉空间"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-27 03:53" pubdate>
+          2026年11月27日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          123 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Depth Anything 3：从任意视图恢复视觉空间</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <figure>
+<img src="/Hexo/DA3/Figures/Figure_01.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1" />
+<figcaption aria-hidden="true">Figure 1</figcaption>
+</figure>
+<p><a href="/Hexo/DA3_Full/">阅读完整精读报告</a></p>
+<!-- PAPER-METADATA BEGIN -->
+<p><strong>论文版本：</strong>
+arXiv:2511.10647v1（2025-11-13）；核验时为最新版（2026-11-27）。</p>
+<p><strong>官方资源：</strong> <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2511.10647">arXiv</a> | <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2511.10647v1">PDF</a> | <a
+target="_blank" rel="noopener" href="https://depth-anything-3.github.io/">Project Page</a> | <a
+target="_blank" rel="noopener" href="https://github.com/ByteDance-Seed/Depth-Anything-3">Code</a></p>
+<!-- PAPER-METADATA END -->
+<h2 id="研究问题与核心技术逻辑">1. 研究问题与核心技术逻辑</h2>
+<p>三维视觉中，深度估计、相机位姿估计、点云重建和新视角合成常被设计成不同任务。它们并非相互独立：给定相机与深度，就能够反投影出三维点；多视角点云是否对齐，又取决于深度与相机估计是否彼此一致。Depth
+Anything
+3（DA3）关注的是如何用一个可接受不同数量图像的几何基础模型（geometry
+foundation model），统一这些推断任务的基础表示。</p>
+<p>设输入为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+张图像，可选已知相机参数。主模型输出每张图像的深度图与射线图，以及一个轻量相机头给出的相机参数。由此可以获得可见表面点图并融合场景几何，也能进一步为前馈式
+3D Gaussian
+Splatting（3DGS）提供几何基础。单图时主要依赖学习到的深度先验；多图时还可以利用跨视角的几何对应。这里的“任意视图”指模型能够接收不同数量的图像及可选位姿，不意味着任意图像组合都能恢复完整或唯一的真实场景。</p>
+<p>作者的核心设计是解决三个彼此关联的困难：</p>
+<table>
+
+<thead>
+<tr>
+<th>困难</th>
+<th>设计选择</th>
+<th>技术作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>多种几何预测目标相互依赖，独立回归可能不一致</td>
+<td>Depth-Ray 表示</td>
+<td>以深度选择表面、射线表达相机几何，直接组合三维点</td>
+</tr>
+<tr>
+<td>多视图模型复杂的专用结构不利于充分复用单图预训练</td>
+<td>单个标准 DINOv2 Transformer，按需跨图注意力</td>
+<td>保留已有视觉特征能力，通过 token 重排引入其他视角信息</td>
+</tr>
+<tr>
+<td>真实深度监督稀疏、噪声与缺失会损害细节</td>
+<td>合成数据训练的相对深度教师、与真实标签对齐</td>
+<td>用真实有效深度锚定尺度，同时提供密集的局部结构监督</td>
+</tr>
+</tbody>
+</table>
+<p>这三项机制形成完整链条：Depth-Ray 确定需要预测的几何量，Transformer
+负责从不同观测推断这些量，Dual-DPT
+将共同视觉特征解码为两个空间对齐的输出，教师与联合损失提供训练约束。额外的
+Gaussian head
+再将预测几何用于渲染。它们分别回答表示、推断、监督和应用的问题，而不是四个彼此独立的功能。</p>
+<h2 id="depth-ray从像素深度到统一三维空间">2.
+Depth-Ray：从像素深度到统一三维空间</h2>
+<h3 id="为什么深度和射线已经足以描述几何">2.1
+为什么深度和射线已经足以描述几何？</h3>
+<p>设像素齐次坐标为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝒑</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo>,</mo><mn>1</mn><msup><mo stretchy="false" form="postfix">)</mo><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf p=(u,v,1)^T</annotation></semantics></math>，相机内参为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝑲</mi><annotation encoding="application/x-tex">\mathbf K</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝑹</mi><annotation encoding="application/x-tex">\mathbf R</annotation></semantics></math>
+为相机到世界坐标的旋转，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝒕</mi><annotation encoding="application/x-tex">\mathbf t</annotation></semantics></math>
+是世界坐标下的相机中心。按照论文 §3.1 的反投影关系：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">𝑿</mi><mi>c</mi></msub><mo>=</mo><mi>D</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><msup><mi mathvariant="bold-italic">𝑲</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi mathvariant="bold-italic">𝒑</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathbf X_c=D(u,v)\mathbf K^{-1}\mathbf p,</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝒅</mi><mo>=</mo><mi mathvariant="bold-italic">𝑹</mi><msup><mi mathvariant="bold-italic">𝑲</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi mathvariant="bold-italic">𝒑</mi><mo>,</mo><mspace width="2.0em"></mspace><mi mathvariant="bold-italic">𝑷</mi><mo>=</mo><mi mathvariant="bold-italic">𝒕</mi><mo>+</mo><mi>D</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mi mathvariant="bold-italic">𝒅</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf d=\mathbf R\mathbf K^{-1}\mathbf p,\qquad \mathbf P=\mathbf t+D(u,v)\mathbf d.</annotation></semantics></math></p>
+<p>深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+决定沿射线的表面位置，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝒅</mi><annotation encoding="application/x-tex">\mathbf d</annotation></semantics></math>
+决定射线方向，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝒕</mi><annotation encoding="application/x-tex">\mathbf t</annotation></semantics></math>
+决定射线起点。射线图（ray map）每像素六维
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑴</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi mathvariant="bold-italic">𝒕</mi><mo>,</mo><mi mathvariant="bold-italic">𝒅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathbf M=(\mathbf t,\mathbf d)</annotation></semantics></math>，深度图每像素一维。按论文
+§3.1 的数学定义，对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+张图像，全分辨率深度图与射线图分别为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">N\times H\times W</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi><mo>×</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">N\times H\times W\times6</annotation></semantics></math>；在同一像素坐标上组合即可得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">N\times H\times W\times3</annotation></semantics></math>
+的世界坐标点图。这是表示层的尺寸约定，并非网络原始输出的尺寸：Figure
+2（PDF p.5）将 Ray 标为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mfrac><mi>H</mi><mn>2</mn></mfrac><mo>×</mo><mfrac><mi>W</mi><mn>2</mn></mfrac><mo>×</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">N\times\frac H2\times\frac W2\times6</annotation></semantics></math>，具体区别见
+§3.2。</p>
+<p>注意论文的方向向量并非单位向量。对于标准针孔模型，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold-italic">𝑲</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi mathvariant="bold-italic">𝒑</mi></mrow><annotation encoding="application/x-tex">\mathbf K^{-1}\mathbf p</annotation></semantics></math>
+的第三分量为
+1，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+是相机轴向深度，而不是欧氏射线长度。若将方向单位化为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="bold-italic">𝒅</mi><mo accent="true">‾</mo></mover><mo>=</mo><mi mathvariant="bold-italic">𝒅</mi><mi>/</mi><mo stretchy="false" form="postfix">∥</mo><mi mathvariant="bold-italic">𝒅</mi><mo stretchy="false" form="postfix">∥</mo></mrow><annotation encoding="application/x-tex">\bar{\mathbf d}=\mathbf d/\|\mathbf d\|</annotation></semantics></math>，必须同时将深度改为距离
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo>=</mo><mi>D</mi><mo stretchy="false" form="postfix">∥</mo><mi mathvariant="bold-italic">𝒅</mi><mo stretchy="false" form="postfix">∥</mo></mrow><annotation encoding="application/x-tex">\ell=D\|\mathbf d\|</annotation></semantics></math>，才能保持
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑷</mi><mo>=</mo><mi mathvariant="bold-italic">𝒕</mi><mo>+</mo><mi>ℓ</mi><mover><mi mathvariant="bold-italic">𝒅</mi><mo accent="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\mathbf P=\mathbf t+\ell\bar{\mathbf d}</annotation></semantics></math>。例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝒅</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0.6</mn><mo>,</mo><mn>0.8</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathbf d=(0.6,0.8,1)</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">D=2</annotation></semantics></math>
+时，位移为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1.2</mn><mo>,</mo><mn>1.6</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1.2,1.6,2)</annotation></semantics></math>，距离为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><msqrt><mn>2</mn></msqrt></mrow><annotation encoding="application/x-tex">2\sqrt2</annotation></semantics></math>。这是理解射线表示与深度定义必须配套的关键。</p>
+<p>相对直接回归独立的点图，作者希望将局部表面深度与相机几何因子分离，让三维点由明确的几何关系导出。Point
+Map
+直接描述可见表面坐标，却不显式分离表面深度和成像射线，也不自动保证跨图对应一致；Depth
++ Camera
+在正确相机参数下同样可以反投影，但要求网络准确回归全图共享的相机参数。例如直接回归旋转矩阵需满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold-italic">𝑹</mi><mi>T</mi></msup><mi mathvariant="bold-italic">𝑹</mi><mo>=</mo><mi mathvariant="bold-italic">𝑰</mi></mrow><annotation encoding="application/x-tex">\mathbf R^T\mathbf R=\mathbf I</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">det</mi><mo>&#8289;</mo></mrow><mi mathvariant="bold-italic">𝑹</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\det\mathbf R=1</annotation></semantics></math>（合法旋转的约束）；四元数等参数化也能表达旋转，并非不可学习。Depth
++ Ray
+改为在稠密像素网格上学习起点与方向，不必直接回归正交矩阵，并使深度和相机几何在空间位置上对应。代价是独立预测的射线未必组成合法的中心投影相机。Table
+6 比较的是这些学习目标组合（含
+depth+pcd+cam），而非数学表示能力的唯一性证明。理想情况下，真实同一表面点在不同图像中反投影至同一世界位置，即可融合。补充一阶误差分析：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mi mathvariant="bold-italic">𝑷</mi><mo>≈</mo><mi>δ</mi><mi mathvariant="bold-italic">𝒕</mi><mo>+</mo><mi mathvariant="bold-italic">𝒅</mi><mspace width="0.167em"></mspace><mi>δ</mi><mi>D</mi><mo>+</mo><mi>D</mi><mspace width="0.167em"></mspace><mi>δ</mi><mi mathvariant="bold-italic">𝒅</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\delta\mathbf P\approx\delta\mathbf t+\mathbf d\,\delta D+D\,\delta\mathbf d.</annotation></semantics></math></p>
+<p>这说明远处结构特别容易受到射线方向误差影响。单图深度边缘清晰并不足以保证三维几何一致，仍要考虑相机和方向估计。</p>
+<h3 id="从稠密射线图恢复相机">2.2 从稠密射线图恢复相机</h3>
+<p>理想中心投影中，一幅图像的所有射线具有同一原点，方向由相机内外参确定。论文
+Eq. (1) 将预测的射线起点求平均：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">𝒕</mi><mi>c</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mi>H</mi><mi>W</mi></mrow></mfrac><munder><mo>∑</mo><mrow><mi>h</mi><mo>,</mo><mi>w</mi></mrow></munder><mi mathvariant="bold-italic">𝑴</mi><mo stretchy="false" form="prefix">(</mo><mi>h</mi><mo>,</mo><mi>w</mi><mo>,</mo><mo>:</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf t_c=\frac{1}{HW}\sum_{h,w}\mathbf M(h,w,:3).</annotation></semantics></math></p>
+<p>方向部分则通过射线之间的投影关系求解。论文 Eq. (2) 对矩阵
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝑯</mi><annotation encoding="application/x-tex">\mathbf H</annotation></semantics></math>
+写出如下方向拟合目标：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold-italic">𝑯</mi><mo>*</mo></msup><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>&#8289;</mo></mrow><munder><mi mathvariant="normal">min</mi><mrow><mo stretchy="false" form="postfix">∥</mo><mi mathvariant="bold-italic">𝑯</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mn>1</mn></mrow></munder><munder><mo>∑</mo><mrow><mi>h</mi><mo>,</mo><mi>w</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi mathvariant="bold-italic">𝑯</mi><msub><mi mathvariant="bold-italic">𝒑</mi><mrow><mi>h</mi><mo>,</mo><mi>w</mi></mrow></msub><mo>×</mo><mi mathvariant="bold-italic">𝑴</mi><mo stretchy="false" form="prefix">(</mo><mi>h</mi><mo>,</mo><mi>w</mi><mo>,</mo><mn>3</mn><mo>:</mo><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">∥</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf H^*=\arg\min_{\|\mathbf H\|=1}\sum_{h,w}\|\mathbf H\mathbf p_{h,w}\times\mathbf M(h,w,3:)\|.</annotation></semantics></math></p>
+<p>叉积为零表示两个方向平行，因此可以把每个像素变成线性约束。若预测方向为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="bold-italic">𝒎</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf m_i</annotation></semantics></math>，则无噪声时
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi mathvariant="bold-italic">𝒎</mi><mi>i</mi></msub><msub><mo stretchy="false" form="postfix">]</mo><mo>×</mo></msub><mi mathvariant="bold-italic">𝑯</mi><msub><mi mathvariant="bold-italic">𝒑</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">[\mathbf m_i]_\times\mathbf H\mathbf p_i=0</annotation></semantics></math>。堆叠所有对应得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑨</mi><mrow><mi mathvariant="normal">vec</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi mathvariant="bold-italic">𝑯</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathbf A\operatorname{vec}(\mathbf H)=0</annotation></semantics></math>，标准
+DLT（直接线性变换）以最小奇异值对应的右奇异向量求解平方最小二乘；之后借助矩阵分解提取相机参数。</p>
+<p>这里有两处需要区别原文与标准推导：第一，原文 Eq. (2)
+写的是各叉积范数之和，通常的 DLT
+则最小化平方和，在存在噪声时二者并非严格等价。第二，若沿用上节
+camera-to-world 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝑹</mi><annotation encoding="application/x-tex">\mathbf R</annotation></semantics></math>
+定义，像素到世界射线的映射应与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑹</mi><msup><mi mathvariant="bold-italic">𝑲</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbf R\mathbf K^{-1}</annotation></semantics></math>
+成比例，而其逆映射与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑲</mi><msup><mi mathvariant="bold-italic">𝑹</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf K\mathbf R^T</annotation></semantics></math>
+成比例，后者可自然用 RQ 分解提取内参与旋转。原文写
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑯</mi><mo>=</mo><mi mathvariant="bold-italic">𝑲</mi><mi mathvariant="bold-italic">𝑹</mi></mrow><annotation encoding="application/x-tex">\mathbf H=\mathbf K\mathbf R</annotation></semantics></math>，未充分说明与前文的变换方向如何对应。这里保留原文记号疑点，不将某种实现推断写成作者已验证的算法。</p>
+<p>由于逐像素求解有额外计算开销，实际网络另设相机头，从每图的相机 token
+预测九维参数（3 维平移、4 维旋转四元数、2 维视场角）。这也是为什么论文称
+Depth-Ray
+足以表达主要几何信息，却仍保留相机预测头。稠密预测不一定严格满足刚性针孔相机，因此两种相机恢复路径也不必在噪声下完全相同。</p>
+<h3 id="表示充分性与观测可辨识性">2.3 表示充分性与观测可辨识性</h3>
+<p>Depth-Ray
+在给定正确预测时足以表达可见几何，但不能消除单目或稀疏观测的固有歧义。例如，在统一世界尺度变换下，同时将
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝒕</mi><annotation encoding="application/x-tex">\mathbf t</annotation></semantics></math>
+乘以同一正数，得到的三维点按比例缩放，却可保持透视投影不变。主模型的尺度规范与度量深度模型需要分别理解。遮挡面、无共视区域以及退化相机轨迹也不能仅通过改变输出表示得到真实答案。</p>
+<h2 id="单个-transformer-如何实现多视图推断">3. 单个 Transformer
+如何实现多视图推断？</h2>
+<figure>
+<img src="/Hexo/DA3/Figures/Figure_02.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 2 — DA3 整体网络结构" />
+<figcaption aria-hidden="true">Figure 2 — DA3 整体网络结构</figcaption>
+</figure>
+<p>沿 Figure 2 的实线阅读前向信息流：RGB 图像经 patch embedding 得到图像
+token；已知相机时将相机参数编码成 camera token，未知时用可学习
+token。两类 token 一起进入单个 Transformer；输出的图像 token 送入
+Dual-DPT 产生深度和射线，再按对应空间位置组合成点图。输出的 camera token
+则进入轻量相机头
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mi>c</mi></msub><annotation encoding="application/x-tex">D_c</annotation></semantics></math>，直接产生相机参数，而非将点图再送入该头。图中的
+Teacher Model
+和各损失连接属于训练监督：教师生成的深度标签经对齐后参与监督（§4.3），主
+DA3 在推理时不需要额外运行教师。下文分别展开注意力与解码机制。</p>
+<h3 id="输入自适应跨视图注意力">3.1 输入自适应跨视图注意力</h3>
+<p>DA3 使用标准预训练 DINOv2 ViT。每张图像先转为 patch
+token，随后加入一个 camera token。相机已知时，轻量 MLP
+将视场角、旋转四元数和相机平移编码为 token；未知时使用共享的可学习
+token。它们与图像 token
+一起参与所有注意力层。因此相机条件并非直接替换预测结果，而是作为推断所使用的信息。</p>
+<p>设批量大小为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>，视图数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>，每图
+token 数量（含相机 token）为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>，特征维为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>。输入逻辑形状为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>B</mi><mo>,</mo><mi>N</mi><mo>,</mo><mi>T</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[B,N,T,C]</annotation></semantics></math>。图内注意力将其整理为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>B</mi><mi>N</mi><mo>,</mo><mi>T</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[BN,T,C]</annotation></semantics></math>，每个
+query 只能访问同图 token；跨图注意力将其整理为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>B</mi><mo>,</mo><mi>N</mi><mi>T</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[B,NT,C]</annotation></semantics></math>，每个
+query 可以读取同组其他视图 token。随后将输出还原为原来的图像与 token
+布局。</p>
+<p>以标准单头注意力作为说明：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo>=</mo><mi>X</mi><msub><mi>W</mi><mi>Q</mi></msub><mo>,</mo><mspace width="1.0em"></mspace><mi>K</mi><mo>=</mo><mi>X</mi><msub><mi>W</mi><mi>K</mi></msub><mo>,</mo><mspace width="1.0em"></mspace><mi>V</mi><mo>=</mo><mi>X</mi><msub><mi>W</mi><mi>V</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">Q=XW_Q,\quad K=XW_K,\quad V=XW_V,</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>=</mo><mrow><mi mathvariant="normal">softmax</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>V</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">Y=\operatorname{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V.</annotation></semantics></math></p>
+<p>投影权重的形状由特征维决定，而不依赖序列长度，因此不需要另建一套专用
+Transformer
+权重。改变的是交互范围：跨图注意力可以传递对应结构、遮挡与相机运动线索，但并不是显式的极线匹配算法，仍依赖训练获得正确的跨图推断能力。</p>
+<p>全图交互比图内交互更昂贵。仅计密集 attention score，前者约为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>B</mi><msup><mi>N</mi><mn>2</mn></msup><msup><mi>T</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(BN^2T^2)</annotation></semantics></math>，后者约为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mi>N</mi><msup><mi>T</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(BNT^2)</annotation></semantics></math>。论文选择前段逐图处理，后段交替图内/跨图注意力，前后块数量比例
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mi>s</mi></msub><mo>:</mo><msub><mi>L</mi><mi>g</mi></msub><mo>=</mo><mn>2</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">L_s:L_g=2:1</annotation></semantics></math>。这样既能保留预训练视觉特征的工作方式，又能在后段交换几何信息。当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">N=1</annotation></semantics></math>
+时，两种布局的注意力域相同，主干自然兼容单图。</p>
+<h3 id="dual-dpt共享空间重组分别预测深度和射线">3.2
+Dual-DPT：共享空间重组，分别预测深度和射线</h3>
+<figure>
+<img src="/Hexo/DA3/Figures/Figure_03.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3 — Dual-DPT 解码头" />
+<figcaption aria-hidden="true">Figure 3 — Dual-DPT 解码头</figcaption>
+</figure>
+<p>DPT（Dense Prediction Transformer）将多层视觉 token
+恢复为空间特征，再融合不同尺度信息，输出高分辨率的像素级预测。DA3 的
+Dual-DPT 不为两个任务分别建立完全独立的重组网络，而是共享
+reassembly（重组模块），随后保留各自的 fusion（融合模块）和输出层。</p>
+<p>这使深度和射线从相同的空间布局出发，减少独立解码器对像素位置的不同解释，同时允许深度分支专注局部表面结构、射线分支专注相机相关的方向与原点。需要注意，Figure
+2 标注的 Depth 为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">N\times H\times W</annotation></semantics></math>，Ray
+为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mfrac><mi>H</mi><mn>2</mn></mfrac><mo>×</mo><mfrac><mi>W</mi><mn>2</mn></mfrac><mo>×</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">N\times\frac H2\times\frac W2\times6</annotation></semantics></math>，Points
+为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">N\times H\times W\times3</annotation></semantics></math>。因而实际组合不能直接将不同网格上的数组逐元素相乘，必须先建立深度与射线的空间对应，使每个待反投影的深度值使用其对应位置的射线。论文
+§3.1–3.2
+未充分说明半分辨率射线如何与全分辨率深度对应，具体重采样或转换实现尚未核实。然而，共享特征不是硬几何约束：如果两个输出预测错误，仍会出现不一致的点云。共享的收益需要通过监督和消融验证。</p>
+<h2 id="训练如何兼顾相机深度和密集几何细节">4.
+训练：如何兼顾相机、深度和密集几何细节？</h2>
+<h3 id="主模型的联合监督">4.1 主模型的联合监督</h3>
+<p>主模型首先对几何标签进行共同尺度规范。设有效反投影点的范数均值为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>，当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">s&gt;0</annotation></semantics></math>
+时，同时将点、深度和相机平移除以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>，而保持旋转、内参与射线方向不变，即可维持
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑷</mi><mi>/</mi><mi>s</mi><mo>=</mo><mi mathvariant="bold-italic">𝒕</mi><mi>/</mi><mi>s</mi><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>D</mi><mi>/</mi><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mi mathvariant="bold-italic">𝒅</mi></mrow><annotation encoding="application/x-tex">\mathbf P/s=\mathbf t/s+(D/s)\mathbf d</annotation></semantics></math>。这帮助不同尺度场景参与训练，但不提供真实米制尺度。</p>
+<p>论文 §3.3 的总损失包括深度、射线、点图、相机和深度梯度：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">ℒ</mi><mo>=</mo><msub><mi mathvariant="script">ℒ</mi><mi>D</mi></msub><mo stretchy="false" form="prefix">(</mo><mover><mi>D</mi><mo accent="true">̂</mo></mover><mo>,</mo><mi>D</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mi>M</mi></msub><mo stretchy="false" form="prefix">(</mo><mover><mi>R</mi><mo accent="true">̂</mo></mover><mo>,</mo><mi>M</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mi>P</mi></msub><mo stretchy="false" form="prefix">(</mo><mover><mi>D</mi><mo accent="true">̂</mo></mover><mo>⊙</mo><mi>d</mi><mo>+</mo><mi>t</mi><mo>,</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>β</mi><msub><mi mathvariant="script">ℒ</mi><mi>C</mi></msub><mo stretchy="false" form="prefix">(</mo><mover><mi>c</mi><mo accent="true">̂</mo></mover><mo>,</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>α</mi><msub><mi mathvariant="script">ℒ</mi><mrow><mi>g</mi><mi>r</mi><mi>a</mi><mi>d</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mover><mi>D</mi><mo accent="true">̂</mo></mover><mo>,</mo><mi>D</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal L=\mathcal L_D(\hat D,D)+\mathcal L_M(\hat R,M)+\mathcal L_P(\hat D\odot d+t,P)+\beta\mathcal L_C(\hat c,v)+\alpha\mathcal L_{grad}(\hat D,D).</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>R</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat R</annotation></semantics></math>
+指预测射线图（不是旋转矩阵），<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+为射线标签，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+为点图，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>c</mi><mo accent="true">̂</mo></mover><mo>,</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">\hat c,v</annotation></semantics></math>
+为相机预测及标签，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mi>β</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\alpha=\beta=1</annotation></semantics></math>。点项中的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>,</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">d,t</annotation></semantics></math>
+原文未明确标注预测值或 GT；如果采用预测射线，组合点损失会通过
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>P</mi><mi>/</mi><mi>∂</mi><mi>D</mi><mo>=</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">\partial P/\partial D=d</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>P</mi><mi>/</mi><mi>∂</mi><mi>d</mi><mo>=</mo><mi>D</mi><mi>I</mi></mrow><annotation encoding="application/x-tex">\partial P/\partial d=DI</annotation></semantics></math>
+同时约束两个分支。若用 GT
+射线，则不会对射线预测产生该梯度，不能在未核实实现时断定具体路径。</p>
+<p>以深度损失为例，其有效像素置信加权形式为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℒ</mi><mi>D</mi></msub><mo>=</mo><mfrac><mn>1</mn><msub><mi>Z</mi><mi mathvariant="normal">Ω</mi></msub></mfrac><munder><mo>∑</mo><mrow><mi>p</mi><mo>∈</mo><mi mathvariant="normal">Ω</mi></mrow></munder><msub><mi>m</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>c</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mover><mi>D</mi><mo accent="true">̂</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mi>D</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>−</mi><msub><mi>λ</mi><mi>c</mi></msub><mi mathvariant="normal">log</mi><msub><mi>c</mi><mi>p</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal L_D=\frac{1}{Z_\Omega}\sum_{p\in\Omega}m_p\left(c_p|\hat D_p-D_p|-\lambda_c\log c_p\right),</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>m</mi><mi>p</mi></msub><annotation encoding="application/x-tex">m_p</annotation></semantics></math>
+为有效掩膜、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>p</mi></msub><annotation encoding="application/x-tex">c_p</annotation></semantics></math>
+为深度置信度、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Z</mi><mi mathvariant="normal">Ω</mi></msub><annotation encoding="application/x-tex">Z_\Omega</annotation></semantics></math>
+为归一化因子。第一项使低置信像素的残差影响变小，第二项防止所有置信度简单趋于零。若假定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c&gt;0</annotation></semantics></math>
+无上界、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>=</mo><mo stretchy="false" form="prefix">|</mo><mover><mi>D</mi><mo accent="true">̂</mo></mover><mo>−</mo><mi>D</mi><mo stretchy="false" form="prefix">|</mo><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">e=|\hat D-D|&gt;0</annotation></semantics></math>，对单点目标求导有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>−</mo><msub><mi>λ</mi><mi>c</mi></msub><mi>/</mi><mi>c</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">e-\lambda_c/c=0</annotation></semantics></math>，得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>c</mi><mo>*</mo></msup><mo>=</mo><msub><mi>λ</mi><mi>c</mi></msub><mi>/</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">c^*=\lambda_c/e</annotation></semantics></math>。这是解释性推导，实际
+confidence
+参数域未由本文完整说明，不能把它当作已经校准的真实误差概率。</p>
+<p>深度梯度损失（Eq. 3）为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℒ</mi><mrow><mi>g</mi><mi>r</mi><mi>a</mi><mi>d</mi></mrow></msub><mo>=</mo><mo stretchy="false" form="postfix">∥</mo><msub><mi>∇</mi><mi>x</mi></msub><mover><mi>D</mi><mo accent="true">̂</mo></mover><mo>−</mo><msub><mi>∇</mi><mi>x</mi></msub><mi>D</mi><msub><mo stretchy="false" form="postfix">∥</mo><mn>1</mn></msub><mi>+</mi><mo stretchy="false" form="postfix">∥</mo><msub><mi>∇</mi><mi>y</mi></msub><mover><mi>D</mi><mo accent="true">̂</mo></mover><mo>−</mo><msub><mi>∇</mi><mi>y</mi></msub><mi>D</mi><msub><mo stretchy="false" form="postfix">∥</mo><mn>1</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal L_{grad}=\|\nabla_x\hat D-\nabla_xD\|_1+\|\nabla_y\hat D-\nabla_yD\|_1.</annotation></semantics></math></p>
+<p>它要求预测深度边缘与监督一致，不是简单地平滑所有梯度。主模型先使用真实深度标签训练，在
+120k 步后切换到教师生成且已对齐的深度标签，总训练 200k 步；相机条件以
+0.2 的概率激活。训练使用不同图像分辨率和视图数量，动态调整 batch 以控制
+token 数量。由此可见，模型只以 Depth-Ray
+作为主要表示，不代表训练只使用两种损失。</p>
+<h3 id="为什么需要合成数据训练的教师">4.2
+为什么需要合成数据训练的教师？</h3>
+<figure>
+<img src="/Hexo/DA3/Figures/Figure_04.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 4 — 真实几何标签的缺测与噪声" />
+<figcaption aria-hidden="true">Figure 4 —
+真实几何标签的缺测与噪声</figcaption>
+</figure>
+<p>真实多视角数据的深度往往来自 SfM/MVS
+或传感器：弱纹理、遮挡、细结构及采集限制会产生缺失和噪声。直接用这些标签进行逐像素监督，容易缺少边缘和局部细节的可靠信号。论文先用密集的合成深度训练独立单图教师，再将其迁移到真实数据。教师仍采用
+DINOv2 与 DPT，但训练目标使用相对深度而非 DA2 的相对 disparity，并引入
+exponential depth
+以提高近处敏感性；本文没有给出具体指数映射，不应自行补成某个函数。</p>
+<p>合成数据也并非天然正确。附录展示了错误天空背景、RGB–depth
+空间错位、透明材质、深度裁切和无效海面标签等问题。作者对这些样本进行筛除或深度截断。这里的数据清理是教师监督的前提，而不是模型已经解决透明、反射或复杂介质重建的证据。</p>
+<p>教师损失除了梯度与基于 ROE alignment
+的全局—局部深度目标外，还有距离加权法向监督。设局部三角面的未归一化法向为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>，其模长等于三角形面积的两倍，可能随跨越深度断层的邻接向量增大。论文
+Eq. (4)–(6) 给出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mn>4</mn></munderover><mo stretchy="false" form="postfix">∥</mo><msub><mi>n</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>−</mi><mo stretchy="false" form="postfix">∥</mo><msub><mi>n</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">∥</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>n</mi><mi>m</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mn>4</mn></munderover><msub><mi>w</mi><mi>i</mi></msub><mfrac><msub><mi>n</mi><mi>i</mi></msub><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>n</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">∥</mo></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">w_i=\sum_{j=0}^{4}\|n_j\|-\|n_i\|,\qquad n_m=\sum_{i=0}^{4}w_i\frac{n_i}{\|n_i\|},</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℒ</mi><mi>N</mi></msub><mo>=</mo><mi mathvariant="script">ℰ</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>n</mi><mo accent="true">̂</mo></mover><mi>m</mi></msub><mo>,</mo><msub><mi>n</mi><mi>m</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mn>4</mn></munderover><mi mathvariant="script">ℰ</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>n</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>,</mo><msub><mi>n</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal L_N=\mathcal E(\hat n_m,n_m)+\sum_{i=0}^{4}\mathcal E(\hat n_i,n_i),</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">ℰ</mi><annotation encoding="application/x-tex">\mathcal E</annotation></semantics></math>
+为法向间角误差。大模长法向获得相对更低权重，既监督局部聚合方向，也监督各法向；权重并不是精确的距离度量，模长还取决于夹角。原文描述四个邻点，而公式求和从
+0 到 4，具体索引构造需进一步核实。教师最终目标（Eq. 7）为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℒ</mi><mi>T</mi></msub><mo>=</mo><mn>0.5</mn><msub><mi mathvariant="script">ℒ</mi><mrow><mi>g</mi><mi>r</mi><mi>a</mi><mi>d</mi></mrow></msub><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mrow><mi>g</mi><mi>l</mi></mrow></msub><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mi>N</mi></msub><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mrow><mi>s</mi><mi>k</mi><mi>y</mi></mrow></msub><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mrow><mi>o</mi><mi>b</mi><mi>j</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal L_T=0.5\mathcal L_{grad}+\mathcal L_{gl}+\mathcal L_N+\mathcal L_{sky}+\mathcal L_{obj}.</annotation></semantics></math></p>
+<p>其中全局—局部项
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">ℒ</mi><mrow><mi>g</mi><mi>l</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal L_{gl}</annotation></semantics></math>
+使用 ROE 对齐，本文未展开其内部公式；天空与物体掩膜损失为
+MSE，用于处理没有可靠深度标签的区域。</p>
+<p>Table 9（PDF p.19）直接检验的是教师自身的训练设计：ViT-L、batch size
+64，五个数据集的平均指标。数据从 V2 扩展至
+V3、再加入多分辨率训练时，AbsRel 从 0.087 降至
+0.079、0.072，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>
+从 0.919 升至 0.929、0.938；数据规模与组成并未独立控制。几何目标采用
+Depth 时 AbsRel/SqRel 为 0.089/0.637，优于 Disparity（0.095/1.033）和
+Pointmap（0.096/0.693），但 Disparity 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>
+为 0.919，略高于 Depth 的 0.918。SqRel 是以真值归一的平方误差均值。</p>
+<p>完整教师损失的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>/AbsRel/SqRel
+为 0.919/0.087/0.596，优于 MAE-Loss 的
+0.918/0.089/0.637；相比去掉距离加权法向项的 0.918/0.087/0.600，AbsRel
+持平，另两项仅小幅改善。因此完整损失有支持，但不能将较大收益单独归因于法向监督。这三个消融组应各自比较；Table
+7(e) 和 Table 11 分别考察教师标签对主几何模型和 metric
+模型的作用，不是对教师自身损失的重复消融。</p>
+<h3 id="把教师的相对深度对齐到真实场景">4.3
+把教师的相对深度对齐到真实场景</h3>
+<p>教师擅长预测相对结构，但其输出尺度和零点并不天然符合多视图测量。因此作者在每图的有效真实深度上拟合尺度和平移（Eq.
+8）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mover><mi>s</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>b</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>&#8289;</mo></mrow><munder><mi mathvariant="normal">min</mi><mrow><mi>s</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>b</mi></mrow></munder><munder><mo>∑</mo><mrow><mi>p</mi><mo>∈</mo><mi mathvariant="normal">Ω</mi></mrow></munder><msub><mi>m</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>s</mi><msub><mover><mi>D</mi><mo accent="true">̃</mo></mover><mi>p</mi></msub><mo>+</mo><mi>b</mi><mo>−</mo><msub><mi>D</mi><mi>p</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">(\hat s,\hat b)=\arg\min_{s&gt;0,b}\sum_{p\in\Omega}m_p(s\tilde D_p+b-D_p)^2,</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>D</mi><mrow><mi>T</mi><mo>→</mo><mi>M</mi></mrow></msup><mo>=</mo><mover><mi>s</mi><mo accent="true">̂</mo></mover><mover><mi>D</mi><mo accent="true">̃</mo></mover><mo>+</mo><mover><mi>b</mi><mo accent="true">̂</mo></mover><mi>.</mi></mrow><annotation encoding="application/x-tex">D^{T\to M}=\hat s\tilde D+\hat b.</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>D</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde D</annotation></semantics></math>
+是教师预测，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+是原测量；为区分相机平移，将原文标量 shift
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+写为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>。作者使用
+RANSAC
+进行鲁棒拟合，以残差相对中位数的平均绝对偏差确定内点阈值。对于固定内点集，将教师值记为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>i</mi></msub><annotation encoding="application/x-tex">x_i</annotation></semantics></math>、真值记为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>，普通最小二乘的无约束解为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mfrac><mrow><munder><mo>∑</mo><mi>i</mi></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mover><mi>y</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><mrow><munder><mo>∑</mo><mi>i</mi></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>b</mi><mo>=</mo><mover><mi>y</mi><mo accent="true">‾</mo></mover><mo>−</mo><mi>s</mi><mover><mi>x</mi><mo accent="true">‾</mo></mover><mi>.</mi></mrow><annotation encoding="application/x-tex">s=\frac{\sum_i(x_i-\bar x)(y_i-\bar y)}{\sum_i(x_i-\bar x)^2},\qquad b=\bar y-s\bar x.</annotation></semantics></math></p>
+<p>当分母非零且解为正时，这给出了所需的仿射对齐。它保留教师的相对深度顺序和结构，同时借助真实测量校准整体尺度。但是，如果有效锚点集中在相似深度，尺度估计会不稳定；如果教师存在局部非线性形变，全局
+scale-shift
+也无法修复。未测量区域的伪标签是先验而非独立真值，更清晰的深度不必然对应更小的绝对误差。</p>
+<figure>
+<img src="/Hexo/DA3/Figures/Figure_08.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 8 — 教师监督对深度细节的影响" />
+<figcaption aria-hidden="true">Figure 8 —
+教师监督对深度细节的影响</figcaption>
+</figure>
+<h3 id="不同模型的训练目标不能混为一谈">4.4
+不同模型的训练目标不能混为一谈</h3>
+<ul>
+<li>主 DA3 联合估计多视角几何和相机，也兼容单图输入。</li>
+<li>单目学生在无标签真实图像上使用教师的相对深度伪标签训练，专注单目深度。</li>
+<li>DA3-metric 专注度量深度，额外采用 canonical focal 规范。若实际焦距为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>，原文令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>f</mi><mi>c</mi></msup><mo>=</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">f^c=300</annotation></semantics></math>，将训练深度变换为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>D</mi><mi>c</mi></msup><mo>=</mo><mi>D</mi><msup><mi>f</mi><mi>c</mi></msup><mi>/</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">D^c=D f^c/f</annotation></semantics></math>。按此标签定义，有焦距时逆变换为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>=</mo><msup><mi>D</mi><mi>c</mi></msup><mi>f</mi><mi>/</mi><msup><mi>f</mi><mi>c</mi></msup></mrow><annotation encoding="application/x-tex">D=D^c f/f^c</annotation></semantics></math>。该模型以对齐教师标签与真实度量标签混合监督（20%
+使用原 GT）。</li>
+</ul>
+<p>后两种专门训练模型并不是主 DA3
+自动改变输出单位。焦距归一化亦不能在数学上消除单目真实尺度的所有歧义，仍需度量训练标签与学习先验。</p>
+<h2 id="从几何基础模型到前馈-3dgs">5. 从几何基础模型到前馈 3DGS</h2>
+<h3 id="pose-conditioned-gaussian-模型">5.1 Pose-conditioned Gaussian
+模型</h3>
+<p>在已知相机设置下，DA3 将额外 GS-DPT 连接至几何主干，逐像素预测
+Gaussian 的
+opacity、旋转四元数、尺度和颜色。中心并非作为完全独立的自由三维坐标回归，而由预测深度及相机反投影获得。以常见
+Gaussian 表达为背景，若旋转矩阵
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>q</mi></msub><annotation encoding="application/x-tex">R_q</annotation></semantics></math>
+对应四元数、尺度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>x</mi></msub><mo>,</mo><msub><mi>s</mi><mi>y</mi></msub><mo>,</mo><msub><mi>s</mi><mi>z</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(s_x,s_y,s_z)</annotation></semantics></math>，协方差为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi><mo>=</mo><msub><mi>R</mi><mi>q</mi></msub><mrow><mi mathvariant="normal">diag</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>s</mi><mi>x</mi><mn>2</mn></msubsup><mo>,</mo><msubsup><mi>s</mi><mi>y</mi><mn>2</mn></msubsup><mo>,</mo><msubsup><mi>s</mi><mi>z</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo><msubsup><mi>R</mi><mi>q</mi><mi>T</mi></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">\Sigma=R_q\operatorname{diag}(s_x^2,s_y^2,s_z^2)R_q^T.</annotation></semantics></math></p>
+<p>目标相机投影并栅格化这些 Gaussian，按深度进行透明度合成（3DGS
+通用机制）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>T</mi><mi>k</mi></msub><msub><mi>α</mi><mi>k</mi></msub><msub><mi>c</mi><mi>k</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>T</mi><mi>k</mi></msub><mo>=</mo><munder><mo>∏</mo><mrow><mi>j</mi><mo>&lt;</mo><mi>k</mi></mrow></munder><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">C=\sum_k T_k\alpha_k c_k,\qquad T_k=\prod_{j&lt;k}(1-\alpha_j).</annotation></semantics></math></p>
+<p>训练使用目标视角颜色
+MSE、LPIPS，以及源视角的尺度平移不变深度损失。几何监督降低仅靠颜色拟合而使
+Gaussian
+中心漂离表面的风险。测试时由网络从输入图像前馈预测，不需要对每个新场景重新进行传统
+3DGS 的逐场景优化。</p>
+<h3 id="pose-adaptive-扩展">5.2 Pose-adaptive 扩展</h3>
+<p>论文另介绍可接受已知或未知相机的 pose-adaptive
+版本：局部相机坐标下预测 Gaussian，已知位姿时利用 Umeyama
+缩放对齐预测深度/局部 Gaussian，未知时采用预测相机；通过额外深度 offset
+提供渲染自由度，用球谐函数（SH）表示视角相关颜色。训练时冻结预训练几何主干，只训练
+GS-DPT。</p>
+<p>这一扩展能兼容不同输入条件，但不能把后续已知位姿 NVS
+表格的分数直接归给未知位姿版本。深度 offset
+和视角相关外观也说明：高斯能渲染合理图像，不必严格对应真实物理表面。</p>
+<h2 id="实验哪些设计得到了支持">6. 实验：哪些设计得到了支持？</h2>
+<h3 id="位姿与几何重建">6.1 位姿与几何重建</h3>
+<p>作者在 HiRoom、ETH3D、DTU、7Scenes 和 ScanNet++
+上同时评价相机及几何。每个场景最多使用 100
+张图像，超限时固定种子采样。相机评价先计算图像对的相对旋转与平移方向角误差，在每个角度阈值下统计相应的准确率
+RRA（Relative Rotation Accuracy）与 RTA（Relative Translation
+Accuracy）。论文 §6.2 取每个阈值处两条准确率曲线的较小值构成
+accuracy–threshold 曲线，再积分得到 AUC；Auc3 比 Auc30
+更关注小角度误差。几何评价使用同一组输入：以 evo
+将预测相机位姿对齐到真值坐标系，并通过 RANSAC
+随机抽取位姿子集拟合变换，以平移误差小于整体位姿偏差中位数为内点标准，选取内点最多的候选变换。按该变换对齐后，再使用预测深度进行
+TSDF（截断符号距离场）融合，评价最终几何；TSDF
+将多视图深度观测整合到统一体素场，结果同时受位姿、深度与融合过程影响。DTU
+按 §6.3 使用专门的前景去除和默认深度融合策略。除 DTU 使用毫米单位的
+Chamfer
+Distance（CD，越低越好）外，其余使用阈值距离内精度与召回的调和平均
+F1（越高越好）。因此指标并不是未经外部对齐的绝对尺度误差。</p>
+<p>下表摘自 Table 2 与 Table 3 的无真值位姿设置，分别列出
+VGGT、DA3-Giant 的严格位姿精度及几何结果：</p>
+<table>
+<thead>
+<tr>
+<th>数据集</th>
+<th style="text-align: right;">VGGT Auc3 ↑</th>
+<th style="text-align: right;">DA3 Auc3 ↑</th>
+<th style="text-align: right;">VGGT 几何</th>
+<th style="text-align: right;">DA3 几何</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HiRoom</td>
+<td style="text-align: right;">49.1</td>
+<td style="text-align: right;">80.3</td>
+<td style="text-align: right;">56.7 F1</td>
+<td style="text-align: right;">85.1 F1</td>
+</tr>
+<tr>
+<td>ETH3D</td>
+<td style="text-align: right;">26.3</td>
+<td style="text-align: right;">48.4</td>
+<td style="text-align: right;">57.2 F1</td>
+<td style="text-align: right;">79.0 F1</td>
+</tr>
+<tr>
+<td>DTU</td>
+<td style="text-align: right;">79.2</td>
+<td style="text-align: right;">94.1</td>
+<td style="text-align: right;">2.05 CD</td>
+<td style="text-align: right;">1.85 CD</td>
+</tr>
+<tr>
+<td>7Scenes</td>
+<td style="text-align: right;">23.9</td>
+<td style="text-align: right;">28.5</td>
+<td style="text-align: right;">47.9 F1</td>
+<td style="text-align: right;">53.5 F1</td>
+</tr>
+<tr>
+<td>ScanNet++</td>
+<td style="text-align: right;">62.6</td>
+<td style="text-align: right;">85.0</td>
+<td style="text-align: right;">66.4 F1</td>
+<td style="text-align: right;">77.0 F1</td>
+</tr>
+</tbody>
+</table>
+<p>五域 Auc3 和无位姿几何指标均优于 VGGT。尤其 HiRoom 与 ETH3D，F1
+的提升分别为 28.4 和 21.8 点。不过宽松位姿阈值并非全部领先：DTU Auc30 为
+99.4，而 VGGT 为 99.8。提供真值位姿的几何实验同样存在例外，例如 DTU 的
+Giant CD 为 1.85 mm，VGGT 为 1.44 mm、DA3-Large 为 1.23 mm；7Scenes 的
+Pi3 F1 57.5 高于 Giant
+56.5。模型规模和相机条件并不保证每个指标单调提高。</p>
+<p>论文数值还有一处值得注意：本地 PDF 摘要写相对 VGGT 位姿、几何提升
+35.7% 与 23.6%，在线 arXiv 摘要为 44.3% 与
+25.1%。根据上述五域分别计算相对 Auc3 增益后等权平均约 44.3%，几何（DTU
+按 CD 减少方向）约 25.1%，后者亦与 PDF p.15
+正文一致。不同聚合口径可能产生不同数值；本文保留这一差异，不将某个数值集合默认为另一版本的结果。</p>
+<figure>
+<img src="/Hexo/DA3/Figures/Figure_06.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 6 — 多视角点云质量对比" />
+<figcaption aria-hidden="true">Figure 6 —
+多视角点云质量对比</figcaption>
+</figure>
+<p>定性点云展示较规则的结构和更少的离散噪声，与上述几何结果相呼应。但更平滑的点云也可能丢失真实细节，因此不能仅从视觉观感推断真实精度。</p>
+<h3 id="表示与架构消融">6.2 表示与架构消融</h3>
+<p>Table 6 使用 ViT-L、10 个视图、相同 batch 和训练步数，不提供相机条件
+token。没有直接点图预测的模型通过深度与射线或相机参数获得几何；有 pcd
+分支的模型直接预测点图。以下选择两个有区分度的数据集：</p>
+<table>
+<thead>
+<tr>
+<th>预测目标</th>
+<th style="text-align: right;">HiRoom Auc3 ↑</th>
+<th style="text-align: right;">HiRoom F1 ↑</th>
+<th style="text-align: right;">DTU Auc3 ↑</th>
+<th style="text-align: right;">DTU CD ↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>depth+pcd+cam</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">12.8</td>
+<td style="text-align: right;">42.3</td>
+<td style="text-align: right;">4.918</td>
+</tr>
+<tr>
+<td>depth+cam</td>
+<td style="text-align: right;">10.8</td>
+<td style="text-align: right;">16.5</td>
+<td style="text-align: right;">23.3</td>
+<td style="text-align: right;">5.316</td>
+</tr>
+<tr>
+<td>depth+ray</td>
+<td style="text-align: right;">48.7</td>
+<td style="text-align: right;">60.3</td>
+<td style="text-align: right;">46.5</td>
+<td style="text-align: right;">3.919</td>
+</tr>
+<tr>
+<td>depth+ray+cam</td>
+<td style="text-align: right;">37.2</td>
+<td style="text-align: right;">45.4</td>
+<td style="text-align: right;">56.3</td>
+<td style="text-align: right;">3.066</td>
+</tr>
+</tbody>
+</table>
+<p>Depth-Ray
+在原表五域的严格位姿与几何指标上均优于前两种组合，支持这一表示在学习中的实用价值。加入相机头后，HiRoom
+下降、DTU
+改善，说明辅助目标不是完全无益。表示的数学冗余与优化中的监督收益是两回事；这项消融也不是信息论意义上的唯一最优证明。</p>
+<p>Table 7 进一步比较相近规模的架构以及解码器和监督：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th style="text-align: right;">HiRoom Auc3 ↑</th>
+<th style="text-align: right;">HiRoom F1 ↑</th>
+<th style="text-align: right;">7Scenes F1 ↑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proposed</td>
+<td style="text-align: right;">39.2</td>
+<td style="text-align: right;">47.0</td>
+<td style="text-align: right;">47.6</td>
+</tr>
+<tr>
+<td>VGGT-style</td>
+<td style="text-align: right;">3.72</td>
+<td style="text-align: right;">14.5</td>
+<td style="text-align: right;">21.4</td>
+</tr>
+<tr>
+<td>Full alternating</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">29.3</td>
+<td style="text-align: right;">48.6</td>
+</tr>
+<tr>
+<td>不使用 Dual-DPT</td>
+<td style="text-align: right;">5.59</td>
+<td style="text-align: right;">11.5</td>
+<td style="text-align: right;">49.4</td>
+</tr>
+<tr>
+<td>不使用教师</td>
+<td style="text-align: right;">11.2</td>
+<td style="text-align: right;">16.0</td>
+<td style="text-align: right;">40.3</td>
+</tr>
+</tbody>
+</table>
+<p>VGGT-style 是论文构造的同规模架构对照，不是 Table 2 的正式 VGGT
+模型。结果支持完整预训练、部分交替注意力及共享解码设计的组合；但全交替和独立
+DPT 在 7Scenes 的 F1 更高，教师在 ETH3D 的 F1 与 DTU
+的部分指标也存在反例。作者将架构收益关联到预训练复用，这并非独立控制预训练因素的因果证明。</p>
+<p>同一张表还在真值位姿融合条件下比较是否输入相机：HiRoom F1 从 65.8
+提升至 73.8，DTU CD 从 3.65 降至 2.14 mm，而 7Scenes F1 从 58.4 降至
+46.0。因此相机条件整体有益，但不能概括为所有指标改善。</p>
+<h3 id="单图能力与教师的细节收益">6.3 单图能力与教师的细节收益</h3>
+<p>Table 4 比较主模型单图输入与 DA2：DA3 在 KITTI、ETH3D、DIODE 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>
+优于 DA2，在 NYU 与 SINTEL 略低，平均排名 2.20 优于
+2.60。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>
+衡量预测与真值之比及其倒数均小于 1.25
+的有效像素比例，不能直接反映边缘或绝对尺度。专门单目学生的 Table 10
+则在五个数据集全部优于 DA2，例如 ETH3D 从 86.5 提升到
+98.8。这表明统一主模型保有相当的单图能力，专门蒸馏进一步改善单图表现，但两个模型的训练目标和数据不同。</p>
+<figure>
+<img src="/Hexo/DA3/Figures/Figure_10.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 10 — 教师对度量深度清晰度的影响" />
+<figcaption aria-hidden="true">Figure 10 —
+教师对度量深度清晰度的影响</figcaption>
+</figure>
+<p>专门的 DA3-metric 最终模型在 Table 11（PDF
+p.21）的五个数据集对照中，ETH3D 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>（0.917）和
+AbsRel（0.104）均为最优；UniDepthv2 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>
+为 0.863，Metric3D v2 的 AbsRel 为 0.138，分别是该表的次优值。SUN-RGBD
+的 AbsRel 为最优的 0.105，但
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>（0.973）低于
+UniDepthv2（0.977）；DIODE 的两项指标均次优（0.838、0.128）。NYUv2 和
+KITTI 则并非最优，例如 UniDepthv1 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\delta_1</annotation></semantics></math>
+分别为 0.980、0.978，DA3-metric 为
+0.963、0.953。这说明其度量能力在不同数据域有明显差异。</p>
+<p>更值得注意的是同一张表底部的度量深度教师消融（Table
+11），它与上述最终模型间的比较属于不同实验：</p>
+<table>
+
+<thead>
+<tr>
+<th>数据集</th>
+<th style="text-align: right;">无教师 δ1 ↑</th>
+<th style="text-align: right;">有教师 δ1 ↑</th>
+<th style="text-align: right;">无教师 AbsRel ↓</th>
+<th style="text-align: right;">有教师 AbsRel ↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NYUv2</td>
+<td style="text-align: right;">0.969</td>
+<td style="text-align: right;">0.966</td>
+<td style="text-align: right;">0.066</td>
+<td style="text-align: right;">0.073</td>
+</tr>
+<tr>
+<td>KITTI</td>
+<td style="text-align: right;">0.965</td>
+<td style="text-align: right;">0.947</td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: right;">0.086</td>
+</tr>
+<tr>
+<td>DIODE</td>
+<td style="text-align: right;">0.816</td>
+<td style="text-align: right;">0.824</td>
+<td style="text-align: right;">0.134</td>
+<td style="text-align: right;">0.132</td>
+</tr>
+</tbody>
+</table>
+<p>AbsRel 为有效像素绝对相对误差的平均值。Figure 10
+显示教师通常令物体边缘更清晰，但表中度量指标并未全面提升。这恰好体现了教师局部结构先验与真实度量校准的不同作用。最终
+metric
+模型和消融模型训练分辨率也有所不同，不宜用最终模型行减去无教师行作为严格单变量比较。</p>
+<h3 id="前馈新视角合成">6.4 前馈新视角合成</h3>
+<figure>
+<img src="/Hexo/DA3/Figures/Figure_11.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 11 — 已知位姿的新视角合成对比" />
+<figcaption aria-hidden="true">Figure 11 —
+已知位姿的新视角合成对比</figcaption>
+</figure>
+<p>Table 5 的比较使用给定 COLMAP 相机位姿、12 张 context views、270×480
+分辨率；每个场景从 300 多张图像中每隔 8
+张选取目标视角。在剩余视图中，以相机平移与旋转距离进行最远点采样（farthest
+point sampling），选取 12
+张输入，使视角在所采用的位姿距离下尽量分散（§6.1）。模型在 DL3DV
+训练集训练，DL3DV 测试场景与训练互斥（按作者报告），Tanks and
+Temples、MegaDepth 为域外评估。比较模型包括已有前馈 Gaussian
+方法与替换几何主干的方案。按 §7.5，作者重新训练全部前馈 3DGS
+对照，使训练也采用最远点采样的 12 张输入，加入深度损失及 Flash
+Attention、FSDP 等工程优化；使用 8 张 A100、batch size 1、200k
+步，pixelSplat 因极线注意力较慢只训练 100k
+步。这些不是直接复用各方法原始论文的测试数值。</p>
+<table>
+<thead>
+<tr>
+<th>数据集</th>
+<th style="text-align: right;">VGGT PSNR</th>
+<th style="text-align: right;">DA3 PSNR</th>
+<th style="text-align: right;">DA3 SSIM ↑</th>
+<th style="text-align: right;">DA3 LPIPS ↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DL3DV</td>
+<td style="text-align: right;">20.96</td>
+<td style="text-align: right;">21.33</td>
+<td style="text-align: right;">0.711</td>
+<td style="text-align: right;">0.241</td>
+</tr>
+<tr>
+<td>Tanks and Temples</td>
+<td style="text-align: right;">17.18</td>
+<td style="text-align: right;">18.10</td>
+<td style="text-align: right;">0.578</td>
+<td style="text-align: right;">0.311</td>
+</tr>
+<tr>
+<td>MegaDepth</td>
+<td style="text-align: right;">16.45</td>
+<td style="text-align: right;">17.89</td>
+<td style="text-align: right;">0.561</td>
+<td style="text-align: right;">0.351</td>
+</tr>
+</tbody>
+</table>
+<p>PSNR（dB）衡量图像误差，SSIM 衡量结构相似性，LPIPS
+衡量感知特征距离。DA3
+在三个数据集九项指标上领先原表其他方法。结果支持采用几何基础模型作为
+Gaussian
+属性预测主干的竞争力，但没有隔离模型容量、预训练和几何能力各自的贡献。更重要的是，这个实验没有验证未知相机条件下具有同等优势；最远点采样得到的特定输入组合也不能代表任意
+12 张图像或其他稀疏程度的表现。RGB 指标也不能替代几何测量。</p>
+<h3 id="效率与可扩展性">6.5 效率与可扩展性</h3>
+<p>Table 8 在 A100 80 GB 上测试 504×336 图像，32 张场景的平均每图速度为
+VGGT 34.1 FPS、DA3-Giant 37.6 FPS、DA3-Large 78.37 FPS。Giant
+最大图数测试区间为 900–1000，VGGT 为
+400–500；这些是特定硬件和实现的测试结果，不是任意输入的理论上限。跨图
+attention 的序列仍随视图数增长，显存与计算成本不可忽略。Table 8 的 Giant
+三个组件参数量相加为 1.198B，与 Table 2–3 的 1.10B
+不一致，故不据此给出精确参数节省比例。</p>
+<h2 id="局限与研究启发">7. 局限与研究启发</h2>
+<p>DA3
+的关键贡献不是凭空创造新的针孔几何，而是将已有的反投影关系用于预测目标设计，通过标准预训练
+Transformer
+实现不同图数的几何推断，并利用教师对齐弥补异质标签的不足。实验说明这条组合路线具有较强实用价值，同时保留了几个重要边界：</p>
+<ol type="1">
+<li><strong>观测与先验。</strong>
+单图、低视差、遮挡或无共视区域仍可能缺少独立几何证据。Figure 9 展示
+1、2、13
+图的案例，但它们不是固定场景的视图数消融，不能从中量化图数收益。</li>
+<li><strong>相机与尺度。</strong> 共享输出不保证每条 ray
+都来自同一个合法相机；主模型的尺度归一化、几何评价的相似对齐与专门
+metric 模型的目标不能混淆。</li>
+<li><strong>教师可靠性。</strong>
+仿射对齐可校准整体比例和平移，不能纠正局部形变或系统性缺测。清晰度提升不必然等价于绝对深度准确。</li>
+<li><strong>渲染与几何。</strong> Gaussian 的位置偏移、opacity
+与视角相关颜色都允许外观拟合和表面位置之间出现偏差；已知位姿 NVS
+的成功不证明未知位姿或真实完整几何恢复。</li>
+<li><strong>泛化与动态。</strong>
+论文没有提供所有输入数量、退化成像、动态环境和复杂介质下的系统专项验证；作者在结论中也将动态空间推理等留给未来工作。</li>
+</ol>
+<p>从独立研究视角，更值得继续考察的是可靠性，而不仅是增加模型容量。固定图数而改变有效共视与视差，可以检验模型何时依赖观测、何时主要依赖先验；固定教师输出而改变深度锚点的空间覆盖，可以检验伪标签对齐何时稳定；固定外观容量而干预
+Gaussian
+中心，可以检验几何误差在不同目标视点距离下如何影响渲染。这些是由本文机制和实验边界引出的可验证假设，并非论文已完成的实验，也不代表已确认研究空白。</p>
+<p>总之，DA3
+的价值在于把深度、相机与可见三维结构组织成一个统一的几何推断接口，再以这一接口连接单目估计、多视角重建及前馈渲染。理解其设计优势，需要同时理解表示、监督和观测条件，而不能只关注最终
+benchmark 数字。</p>
+<p><a href="/Hexo/DA3_Full/">阅读完整精读报告及学习与研究笔记</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Depth Anything 3：从任意视图恢复视觉空间</div>
+      <div>https://zq111724.github.io/Hexo/DA3/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Hexo/FrameCrafter/" title="FrameCrafter: Novel View Synthesis as Video Completion">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">FrameCrafter: Novel View Synthesis as Video Completion</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hexo/VGGT/" title="VGGT: Visual Geometry Grounded Transformer">
+                        <span class="hidden-mobile">VGGT: Visual Geometry Grounded Transformer</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

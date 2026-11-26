@@ -1,0 +1,1370 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2603.14965v2（2026-06-30）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Code | Model  1. 研究问题：如何让生成式 NVS 遵守三维几何？ GeoNVS 面向新视角合成（Novel View Synthesis, NVS）：给定 P">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GeoNVS: Geometry Grounded Video Diffusion for Novel View Synthesis">
+<meta property="og:url" content="https://zq111724.github.io/Hexo/GeoNVS/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2603.14965v2（2026-06-30）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Code | Model  1. 研究问题：如何让生成式 NVS 遵守三维几何？ GeoNVS 面向新视角合成（Novel View Synthesis, NVS）：给定 P">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/GeoNVS/Figures/Figure_01.jpg">
+<meta property="article:published_time" content="2026-11-26T21:19:57.000Z">
+<meta property="article:modified_time" content="2026-11-26T21:48:26.797Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/GeoNVS/Figures/Figure_01.jpg">
+  
+  
+  
+  <title>GeoNVS: Geometry Grounded Video Diffusion for Novel View Synthesis - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zq111724.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="GeoNVS: Geometry Grounded Video Diffusion for Novel View Synthesis"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-27 05:19" pubdate>
+          2026年11月27日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          93 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">GeoNVS: Geometry Grounded Video Diffusion for Novel View Synthesis</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_01.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1" />
+<figcaption aria-hidden="true">Figure 1</figcaption>
+</figure>
+<p><a href="/Hexo/GeoNVS_Full/">阅读完整精读报告</a></p>
+<!-- PAPER-METADATA BEGIN -->
+<p><strong>论文版本：</strong>
+arXiv:2603.14965v2（2026-06-30）；核验时为最新版（2026-11-27）。</p>
+<p><strong>官方资源：</strong> <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2603.14965">arXiv</a> | <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2603.14965v2">PDF</a> | <a
+target="_blank" rel="noopener" href="https://github.com/MinJunKang/GeoNVS">Code</a> | <a
+target="_blank" rel="noopener" href="https://huggingface.co/HugMinjun/GeoNVS">Model</a></p>
+<!-- PAPER-METADATA END -->
+<h2 id="研究问题如何让生成式-nvs-遵守三维几何">1. 研究问题：如何让生成式
+NVS 遵守三维几何？</h2>
+<p>GeoNVS 面向新视角合成（Novel View Synthesis, NVS）：给定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+张参考图像 <span class="math inline">$\mathbf I_{\rm
+ref}$</span>、参考相机和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+个指定目标相机，生成相应目标图像 <span class="math inline">$\mathbf
+I_{\rm
+tgt}$</span>。论文研究单视图与稀疏多视图、不同视角重叠程度及长轨迹生成。输出是图像序列，而非唯一的三维场景模型。</p>
+<p>稀疏观测的困难不只是缺少像素：一条参考射线可对应多个深度，遮挡后的表面更没有直接观测。前馈三维重建模型（如
+VGGT、DepthSplat）能提供显式空间结构，却可能存在缺失几何、错误表面和不可靠颜色；视频扩散模型能借助学习到的先验补全纹理与未知区域，却可能在相机移动时改变物体位置、形状和尺度。两者的可靠性具有互补性，但将不可靠的重建结果直接作为强约束也会传播错误。</p>
+<h3 id="核心技术逻辑">1.1 核心技术逻辑</h3>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_02.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 2 — 输入级引导与特征级引导" />
+<figcaption aria-hidden="true">Figure 2 —
+输入级引导与特征级引导</figcaption>
+</figure>
+<p>Figure 2 对比三条路径：(a)
+纯扩散基线从噪声潜变量出发，仅凭参考图与相机条件生成；(b)
+输入级引导先渲染三维重建结果，再把渲染图交给生成器修复；(c) GeoNVS
+保留噪声潜变量初始化，将高斯几何用于扩散内部的特征调制。图中的物体位置与外观差异展示了三种路径可能产生的结果，而非对所有场景的保证。如果在扩散推理开始时使用渲染
+RGB
+的潜变量，低噪声初始化会保留较多重建颜色误差，高噪声初始化又会削弱几何引导。原文附录
+C.1 的扫描实验显示了这种权衡；这并非输入级方法必然失效的定理。</p>
+<p>GeoNVS
+的关键选择是<strong>分离空间支撑与动态特征</strong>：高斯的几何和透明度决定信息如何跨相机传递，颜色则不必来自前置高斯的
+RGB 预测。Gaussian Splat Feature
+Adapter（GS-Adapter）在视频扩散模型每次去噪时读取参考视角的内部特征，将这些特征提升到同一组三维高斯，再从目标相机重渲染；随后补偿特征混合损失，并根据目标生成特征决定注入多少几何信息。</p>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_03.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 3 — GS-Adapter 与视频扩散骨干的整体架构" />
+<figcaption aria-hidden="true">Figure 3 — GS-Adapter
+与视频扩散骨干的整体架构</figcaption>
+</figure>
+<p>从 Figure 3 可沿三条不同的关系理解系统：</p>
+<ul>
+<li><strong>结构准备（去噪前）</strong>：从参考图和相机建立三维高斯先验，得到共同的空间支撑。</li>
+<li><strong>模型信息流（每个去噪步）</strong>：编码器多尺度特征 →
+统一参考/目标特征 → 参考特征提升 → 高斯特征渲染 → 参考/目标特征精炼 →
+目标特征自适应融合 → 解码器跳连。结构固定，特征随去噪步变化。</li>
+<li><strong>训练监督</strong>：参考重渲染特征与原参考特征对齐，目标生成仍由扩散潜空间损失监督。并不是用真实目标特征作为测试输入，也不是直接以真实三维几何监督门控。</li>
+</ul>
+<p>后续三个设计分别处理跨视角信息传递、传递本身的信息损失，以及错误几何的选择性注入。这正是该方法与“先重建
+RGB，再做视频修复”的实质区别。</p>
+<h2 id="三维高斯作为跨视角特征载体">2. 三维高斯作为跨视角特征载体</h2>
+<h3 id="几何先验与尺度对齐">2.1 几何先验与尺度对齐</h3>
+<p>原文 §3.1 将不同来源的几何先验统一成高斯集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">𝒢</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>i</mi></msub><mo>,</mo><msub><mi>r</mi><mi>i</mi></msub><mo>,</mo><msub><mi>s</mi><mi>i</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>,</mo><msub><mi>c</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup></mrow><annotation encoding="application/x-tex">\mathcal G=\{(\mu_i,r_i,s_i,\sigma_i,c_i)\}_{i=1}^N</annotation></semantics></math>，其中中心、旋转、尺度、opacity
+描述结构与投影贡献，颜色参数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>i</mi></msub><annotation encoding="application/x-tex">c_i</annotation></semantics></math>
+不直接作为 GS-Adapter 的生成条件。MVSplat、DepthSplat
+等可预测高斯；VGGT、Pi3 等先预测点云与相机，再用点云初始化高斯并通过
+InstantSplat
+流程构造先验。后者包含前置拟合，不等同于整个系统完全无优化。</p>
+<p>点云与指定相机的尺度需要一致。原文 Eq. (1)
+用对应相机中心求统一尺度：</p>
+<p><span class="math display">$$s^*=\arg\min_s\|\mathbf C^{\rm
+gt}-s\mathbf C^{\rm pred}\|_2^2.\tag{1}$$</span></p>
+<p>这里 <span class="math inline">$\mathbf C^{\rm gt}$</span>
+是目标坐标框架中提供的对应相机中心，<span class="math inline">$\mathbf
+C^{\rm pred}$</span> 是预测中心。补充推导：将平方展开并对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+求导，若预测中心向量非零，则无约束闭式解为</p>
+<p><span class="math display">$$s^*=\frac{\langle\mathbf C^{\rm
+pred},\mathbf C^{\rm gt}\rangle}{\|\mathbf C^{\rm
+pred}\|_2^2}.$$</span></p>
+<p>该式只解决已对齐坐标框架中的尺度，不是一般 Sim(3)
+配准；全零预测中心时尺度不可辨识，正尺度约束的异常情况也需额外处理。尺度错误会改变相机移动相对于物体尺寸的比例，进而改变投影与遮挡。</p>
+<h3 id="从-rgb-渲染到特征渲染">2.2 从 RGB 渲染到特征渲染</h3>
+<p>对视角
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+的像素
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>，将参与渲染的高斯沿深度从近到远排序。设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\alpha_i(d,p)</annotation></semantics></math>
+是第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+个高斯的投影 opacity，原文 Eq. (2) 为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>c</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>α</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><munder><mo>∏</mo><mrow><mi>j</mi><mo>&lt;</mo><mi>i</mi></mrow></munder><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mi>j</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">C(d,p)=\sum_i c_i(d)w_i(d,p),\qquad w_i(d,p)=\alpha_i(d,p)\prod_{j&lt;i}(1-\alpha_j(d,p)).\tag{2}</annotation></semantics></math></p>
+<p>乘积表示前方高斯后剩余的透射量。因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math>
+不仅取决于自身覆盖，也取决于遮挡。举例：两个高斯的 alpha 分别为
+0.6、0.5，则可见贡献为 0.6、0.2，剩余透射为
+0.2。换序会改变各高斯的贡献。</p>
+<p>如果将 RGB 替换为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+维高斯特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="bold-italic">𝒇</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf f_i</annotation></semantics></math>，保持同一套投影权重，就得到原文
+Eq. (3)：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝑭</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi mathvariant="bold-italic">𝒇</mi><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf F(d,p)=\sum_i\mathbf f_iw_i(d,p).\tag{3}</annotation></semantics></math></p>
+<p>这里大写
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+作为特征维数时与 Eq. (2) 的颜色函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">C(d,p)</annotation></semantics></math>
+不同。高斯只需要定义空间对应和可见性，不需要相信前置模型给出的颜色。需要注意：RGB
+的 alpha
+合成是渲染模型，而潜空间特征服从同样的线性混合并不是物理定律。</p>
+<h3 id="reference-feature-lifting由二维特征建立三维特征场">2.3 Reference
+Feature Lifting：由二维特征建立三维特征场</h3>
+<p>在去噪时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，参考视角具有
+<span class="math inline">$\mathbf F^t_{\rm ref}\in\mathbb R^{P\times
+h/n\times w/n\times
+C}$</span>；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>,</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">h,w</annotation></semantics></math>
+为图像空间大小，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+为特征下采样倍数。对固定高斯
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>，设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">ℐ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal I_i</annotation></semantics></math>
+是所有参考视角中它有贡献的像素集合。原文 Eq. (4)（为简洁省略
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>）先计算加权平均，再做
+L2 单位化：</p>
+<p><span class="math display">$$\mathbf f_i=\frac{\sum_{(d,p)\in\mathcal
+I_i}w_i(d,p)\mathbf F_{\rm ref}(d,p)}{\sum_{(d',p')\in\mathcal
+I_i}w_i(d',p')},\qquad \hat{\mathbf f}_i=\frac{\mathbf f_i}{\|\mathbf
+f_i\|_2}.\tag{4}$$</span></p>
+<p>理解该式的关键是<strong>两种权重的求和方向不同</strong>：Eq. (2)
+固定一个像素，遍历其高斯；Eq. (4)
+固定一个高斯，遍历所有参考图中对它有贡献的像素。这是软分配，不是把像素特征只赋给贡献最大的高斯。</p>
+<p>例如两个参考像素对同一高斯的权重为 0.8、0.2，二维简化特征为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,0)</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,1)</annotation></semantics></math>，得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0.8</mn><mo>,</mo><mn>0.2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.8,0.2)</annotation></semantics></math>，单位化后约为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0.970</mn><mo>,</mo><mn>0.243</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.970,0.243)</annotation></semantics></math>。之后根据目标相机重新计算渲染权重，用
+Eq. (3) 得到 <span class="math inline">$\mathbf G_{\rm
+tar}^t$</span>；同时在参考相机上重渲染得到 <span
+class="math inline">$\mathbf G_{\rm
+ref}^t$</span>，供后续监督。目标渲染权重不必与参考权重相同。 附录 C.2
+将每条射线的参与高斯数量限制为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>16</mn><mo>,</mo><mn>32</mn><mo>,</mo><mn>64</mn><mo>,</mo><mn>128</mn><mo>,</mo><mn>255</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k\in\{1,16,32,64,128,255\}</annotation></semantics></math>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+为仅保留最大权重高斯的 hard
+assignment，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>255</mn></mrow><annotation encoding="application/x-tex">k=255</annotation></semantics></math>
+为实验中的完整 soft assignment。从曲线端点近似读取，DL3DV-10 的 PSNR
+约由 18.07 升至 18.11 dB，Mip-NeRF 360 约由 16.47 升至 16.57
+dB，增益分别约为 0.04 和 0.10
+dB。结果为软分配提供直接但幅度较小的证据，不能据此宣称严格单调或统计显著性。</p>
+<p>该操作无须在每个去噪步迭代拟合新的特征场。补充数学解释：当总权重
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">S_i&gt;0</annotation></semantics></math>，Eq.
+(4) 中未单位化的均值恰是逐高斯加权最小二乘 <span
+class="math inline">$\min_z\sum_{d,p} w_i(d,p)\|z-F_{\rm
+ref}(d,p)\|^2$</span> 的解；对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+求导得到 <span class="math inline">$2S_i z-2\sum w_i F_{\rm
+ref}=0$</span>。单位化是其后的额外操作。无参考支持的高斯以及零范数的具体数值保护，原文没有明确给出。</p>
+<h3 id="为什么即使几何正确传递也可能损失细节">2.4
+为什么即使几何正确，传递也可能损失细节？</h3>
+<p>这是精炼模块存在的根本原因。作为独立数学解释，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>M</mi><mo>×</mo><mi>N</mi></mrow></msup></mrow><annotation encoding="application/x-tex">A\in\mathbb R^{M\times N}</annotation></semantics></math>
+是参考像素的渲染权重矩阵，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>L</mi><mo>×</mo><mi>N</mi></mrow></msup></mrow><annotation encoding="application/x-tex">B\in\mathbb R^{L\times N}</annotation></semantics></math>
+是目标权重矩阵，<span class="math inline">$X_{\rm ref}\in\mathbb
+R^{M\times C}$</span> 是参考特征。若忽略 Eq. (4) 的 L2
+单位化，且每个使用的高斯权重列和非零，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>=</mo><mrow><mi mathvariant="normal">diag</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>A</mi><mi>T</mi></msup><mn mathvariant="bold">𝟏</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">D=\operatorname{diag}(A^T\mathbf 1)</annotation></semantics></math>，则</p>
+<p><span class="math display">$$Z_{\rm tar}=BD^{-1}A^TX_{\rm
+ref}.$$</span></p>
+<p>该式不是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+的逆或一般伪逆。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>A</mi><mi>T</mi></msup><mi mathvariant="normal">Δ</mi><mi>X</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">A^T\Delta X=0</annotation></semantics></math>，参考特征的变化
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>X</mi></mrow><annotation encoding="application/x-tex">\Delta X</annotation></semantics></math>
+经过此映射后不可区分。即便几何完全准确，多个不同像素仍可能混合到同一个高斯，随后单位化还会消除幅值信息。精炼网络能利用学习先验补偿这种损失，却不能从不可逆操作中保证恢复所有真实细节。</p>
+<h2 id="feature-refinement-与-adaptive-fusion">3. Feature Refinement 与
+Adaptive Fusion</h2>
+<h3 id="利用高斯位置编码补偿特征混合">3.1
+利用高斯位置编码补偿特征混合</h3>
+<p>重渲染特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="bold-italic">𝑮</mi><annotation encoding="application/x-tex">\mathbf G</annotation></semantics></math>
+的空间结构可能清楚，但局部纹理和高频特征已经被平均。原文 §3.2 用
+Gaussian Splat Positional
+Encoding（GS-PE）提供额外结构线索。对每个像素选贡献最大的高斯
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>i</mi><mo>*</mo></msup><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>&#8289;</mo></mrow><msub><mrow><mi mathvariant="normal">max</mi><mo>&#8289;</mo></mrow><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">i^*=\arg\max_i w_i(d,p)</annotation></semantics></math>，取其场景包围盒归一化中心
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mover><mi>x</mi><mo accent="true">̃</mo></mover><mo>,</mo><mover><mi>y</mi><mo accent="true">̃</mo></mover><mo>,</mo><mover><mi>z</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\tilde x,\tilde y,\tilde z)</annotation></semantics></math>
+和对应权重
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>w</mi><mo>*</mo></msup><annotation encoding="application/x-tex">w^*</annotation></semantics></math>：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold-italic">𝑮</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi mathvariant="bold-italic">𝑮</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mo stretchy="false" form="prefix">[</mo><mi>γ</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>x</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">∥</mo><mi>γ</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>y</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">∥</mo><mi>γ</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>z</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">∥</mo><mi>γ</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>w</mi><mo>*</mo></msup><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf G&#39;(d,p)=\mathbf G(d,p)+[\gamma(\tilde x)\|\gamma(\tilde y)\|\gamma(\tilde z)\|\gamma(w^*)].\tag{5}</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo stretchy="false" form="postfix">∥</mo><annotation encoding="application/x-tex">\|</annotation></semantics></math>
+表示拼接，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">[</mo><mrow><mi mathvariant="normal">sin</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>ω</mi><mi>k</mi></msub><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mrow><mi mathvariant="normal">cos</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>ω</mi><mi>k</mi></msub><mi>v</mi><mo stretchy="false" form="postfix">)</mo><msubsup><mo stretchy="false" form="postfix">]</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mrow><msup><mi>D</mi><mo>′</mo></msup><mi>/</mi><mn>2</mn><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">\gamma(v)=[\sin(\omega_k v),\cos(\omega_k v)]_{k=0}^{D&#39;/2-1}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ω</mi><mi>k</mi></msub><mo>=</mo><msubsup><mi>ω</mi><mn>0</mn><mrow><mi>−</mi><mn>2</mn><mi>k</mi><mi>/</mi><msup><mi>D</mi><mo>′</mo></msup></mrow></msubsup></mrow><annotation encoding="application/x-tex">\omega_k=\omega_0^{-2k/D&#39;}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>D</mi><mo>′</mo></msup><mo>=</mo><mi>C</mi><mi>/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">D&#39;=C/4</annotation></semantics></math>。当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">C=64</annotation></semantics></math>
+时，每个变量编码 16 维，四组刚好构成 64 维并与渲染特征相加。原文未给
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ω</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\omega_0</annotation></semantics></math>
+的具体值。</p>
+<p>这里选择最大权重高斯只用于位置编码，与 Eq. (4)
+的多高斯软分配不同；它也不是已知每个目标像素的真实三维位置。</p>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_15.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 15 — RefineNet 结构" />
+<figcaption aria-hidden="true">Figure 15 — RefineNet 结构</figcaption>
+</figure>
+<p>共享轻量 ResNet（RefineNet）将
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="bold-italic">𝑮</mi><mo>′</mo></msup><annotation encoding="application/x-tex">\mathbf G&#39;</annotation></semantics></math>
+映射为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi mathvariant="bold-italic">𝑮</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\mathbf G}</annotation></semantics></math>。训练时利用参考分支原本已存在的扩散特征作为监督，约束经过
+lifting、渲染、精炼之后的特征方向与原始方向一致：</p>
+<p><span class="math display">$$\mathcal L_{\rm
+feat}=\left\|1-\frac{\hat{\mathbf G}_{\rm ref}\cdot\mathbf F_{\rm
+ref}}{\|\hat{\mathbf G}_{\rm ref}\|_2\|\mathbf F_{\rm
+ref}\|_2}\right\|_2.\tag{6}$$</span></p>
+<p>对一对非零特征向量，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mrow><mi mathvariant="normal">cos</mi><mo>&#8289;</mo></mrow><mi>θ</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy="false" form="postfix">∥</mo><mi>u</mi><mo>−</mo><mi>v</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">1-\cos\theta=\frac12\|u-v\|_2^2</annotation></semantics></math>，其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">u,v</annotation></semantics></math>
+是单位向量。这意味着损失鼓励方向一致而非绝对幅值相同；外层范数的具体跨像素归约未在原文展开。目标分支使用同一个精炼网络，因此参考重建监督可以训练对目标重渲染有用的校正机制，但不可见区域没有同等直接的参考约束。</p>
+<h3 id="为什么还需要自适应融合">3.2 为什么还需要自适应融合？</h3>
+<p>即使精炼恢复了一些特征，高斯先验本身仍可能错误。直接将几何特征与扩散模型目标特征拼接（Naïve
+Fusion）得到：</p>
+<p><span class="math display">$$\hat{\mathbf F}_{\rm
+tar}=\operatorname{MLPs}(\mathbf F_{\rm tar}\oplus\hat{\mathbf G}_{\rm
+tar}).\tag{7}$$</span></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>⊕</mi><annotation encoding="application/x-tex">\oplus</annotation></semantics></math>
+表示通道拼接，输入 2C 维、输出 C 维。该 MLP
+能学习忽略几何，但没有显式的原始生成特征直通路径。</p>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_04.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 4 — Naïve Fusion 与 Adaptive Fusion" />
+<figcaption aria-hidden="true">Figure 4 — Naïve Fusion 与 Adaptive
+Fusion</figcaption>
+</figure>
+<p>Adaptive Fusion 则将目标生成特征作为 query，精炼高斯特征作为
+key/value，通过 cross-attention
+读取与当前生成状态相关的结构信息，再用两者共同预测每像素残差门控：</p>
+<p><span class="math display">$$\mathbf F_{\rm
+tar}^A=\operatorname{CrossAttn}(\mathbf F_{\rm tar},\hat{\mathbf G}_{\rm
+tar}),\qquad \mathbf W_{\rm tar}=\tanh(\operatorname{MLP}(\mathbf F_{\rm
+tar}\oplus\mathbf F_{\rm tar}^A)).\tag{8}$$</span></p>
+<p>标准交叉注意力可理解为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">softmax</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>Q</mi><mi>a</mi></msub><msubsup><mi>K</mi><mi>a</mi><mi>T</mi></msubsup><mi>/</mi><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt><mo stretchy="false" form="postfix">)</mo><msub><mi>V</mi><mi>a</mi></msub></mrow><annotation encoding="application/x-tex">\operatorname{softmax}(Q_aK_a^T/\sqrt{d_k})V_a</annotation></semantics></math>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>a</mi></msub><annotation encoding="application/x-tex">Q_a</annotation></semantics></math>
+来自目标生成特征，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>a</mi></msub><mo>,</mo><msub><mi>V</mi><mi>a</mi></msub></mrow><annotation encoding="application/x-tex">K_a,V_a</annotation></semantics></math>
+来自精炼的高斯特征；这是教学解释，原文未指定注意力头数及 token
+分组细节。门控 MLP 输出单通道权重并广播至 C 个特征通道：</p>
+<p><span class="math display">$$\hat{\mathbf F}_{\rm tar}=\mathbf F_{\rm
+tar}+\mathbf W_{\rm tar}\cdot\mathbf F_{\rm tar}^A.\tag{9}$$</span></p>
+<p><strong>门控不是概率，也不是两类特征的凸组合。</strong> Tanh
+的输出范围为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[-1,1]</annotation></semantics></math>。当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">W=0</annotation></semantics></math>
+时保留原生成特征；正值加入修正，负值减去该方向的修正。实际注入幅度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mover><mi>F</mi><mo accent="true">̂</mo></mover><mo>−</mo><mi>F</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mo stretchy="false" form="prefix">|</mo><mi>W</mi><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="postfix">∥</mo><msup><mi>F</mi><mi>A</mi></msup><mo stretchy="false" form="postfix">∥</mo></mrow><annotation encoding="application/x-tex">\|\hat F-F\|=|W|\|F^A\|</annotation></semantics></math>，因此单看
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>W</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|W|</annotation></semantics></math>
+甚至不能完整确定注入幅度。</p>
+<p>原文在三个反光场景观察到绝对门控值与几何不确定性的 Pearson
+相关系数约为
+−0.30。这支持高不确定区域倾向减小门控的解释，却不是置信概率校准，也不能证明所有错误几何都会被抑制。</p>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_05.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 5 — 去噪过程中的特征变化" />
+<figcaption aria-hidden="true">Figure 5 —
+去噪过程中的特征变化</figcaption>
+</figure>
+<p>Figure 5
+展示了不同去噪阶段下的目标生成、结构渲染、精炼和融合特征。其意义在于动态地传递当前去噪步的参考特征：早期生成特征较无序时结构支撑仍可提供空间线索，后期则继续融合逐渐细化的内容。这是中间特征的定性可视化，而非逐通道保真度测量。</p>
+<h2 id="如何嵌入视频扩散模型以及如何训练">4.
+如何嵌入视频扩散模型，以及如何训练？</h2>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_14.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 14 — 多尺度特征聚合与解码器集成" />
+<figcaption aria-hidden="true">Figure 14 —
+多尺度特征聚合与解码器集成</figcaption>
+</figure>
+<p>原文 §3.3 在编码器提取不同尺度的特征，以 DPT
+式层级融合统一空间分辨率和通道（先映射到 320 通道，最终聚合为 64
+通道）。将
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo>+</mo><mi>Q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(P+Q)</annotation></semantics></math>
+个视角拆为参考和目标，执行前述
+GS-Adapter，再将修正后的目标特征降采样回各解码器尺度并通过跳连加入。这样几何信息不仅作用于扩散输入，而是在去噪过程内部持续更新。</p>
+<p>训练新引入的多尺度模块、GS-Adapter，以及冻结骨干注意力层的 LoRA
+参数；原始扩散骨干权重保持冻结。联合目标（原文 Eq. 10）为</p>
+<p><span class="math display">$$\mathcal L=\mathcal L_{\rm
+latent}+0.05\mathcal L_{\rm feat}.\tag{10}$$</span></p>
+<p>前者是原文引用的潜空间对齐损失，本文未展开具体扩散参数化；后者为参考特征的自一致监督。0.05
+是损失系数，不等于特征损失固定贡献 5% 的梯度。</p>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_16.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 16 — 训练数据的构造" />
+<figcaption aria-hidden="true">Figure 16 — 训练数据的构造</figcaption>
+</figure>
+<p>训练数据来自 DL3DV，约 150K 个 21
+帧片段；数据构造的参考/目标数量组合为 1/20、3/18、6/15、9/12、12/9。原文
+§4.2 明确区分两种骨干：SEVA-based GeoNVS
+支持可变数量的参考与目标视图，而 CameraCtrl-based GeoNVS
+受原骨干限制仅支持单参考视图。因此上述组合是数据构造协议，不能直接视为两个骨干各自的完整训练采样设置；原文未进一步说明
+CameraCtrl
+的具体采样细节。通过相机图、聚类、视觉难度分组和视锥重叠过滤选择片段（附录
+E，Algorithm 1）。一个重要条件是：<strong>训练时 VGGT
+点云初始化允许使用目标视图；随后高斯拟合只使用参考视图；测试时先验由参考图构造。</strong>
+因此训练与测试的几何先验质量可能存在差异，不能将训练条件误写为测试泄漏，也不能忽略该分布差异。</p>
+<p>SEVA 与 CameraCtrl 分别训练，分辨率为 384×384 与
+320×576，初始学习率分别为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-5}</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup><annotation encoding="application/x-tex">10^{-4}</annotation></semantics></math>，LoRA
+rank/alpha 分别为 16/16 与 4/4。原文报告 8 张 A6000、总 batch size 8、约
+80 小时训练。推理时（Figure
+2–3、§3.2–3.3），给定参考图像、参考相机及目标相机，先构建与相机坐标尺度一致的三维高斯先验；目标潜变量从噪声初始化，而不是从高斯
+RGB 渲染图初始化。每个去噪步由 GS-Adapter
+按前述流程把参考特征经高斯传递至目标视角，调制解码器跳连特征，参与骨干的去噪更新；最终将去噪后的目标潜变量解码为目标图像。Set
+NVS 按任意顺序生成一组目标视图；Trajectory NVS
+将目标视图组织为平滑相机轨迹，并沿用 SEVA 的 two-pass
+sampling（§4.3）。使用已训练适配器时可替换兼容的三维高斯先验，无须为每种先验额外训练；但替换扩散骨干需要对应训练，不意味着同一适配器权重可以直接迁移到任意网络。</p>
+<h2 id="实验证据收益来自哪里边界在哪里">5.
+实验证据：收益来自哪里，边界在哪里？</h2>
+<h3 id="不同重叠程度与长轨迹">5.1 不同重叠程度与长轨迹</h3>
+<p>以下均为原文指定测试协议下结果，与主要生成基线 SEVA 对照（Table
+1–2、11–12）。小视角与大视角分别指高重叠和低重叠参考/目标集合，原文用
+CLIP 距离阈值 0.11
+划分，并非固定几何角度。小视角组合方法按数据集选择最佳先验，大视角使用
+DepthSplat；单参考小视角协议还扫描相机归一化的单位长度。</p>
+<table>
+<thead>
+<tr>
+<th>设置</th>
+<th>方法</th>
+<th style="text-align: right;">PSNR ↑ (dB)</th>
+<th style="text-align: right;">SSIM ↑</th>
+<th style="text-align: right;">LPIPS ↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小视角（18 个设置）</td>
+<td>SEVA</td>
+<td style="text-align: right;">17.15</td>
+<td style="text-align: right;">0.560</td>
+<td style="text-align: right;">0.293</td>
+</tr>
+<tr>
+<td>小视角</td>
+<td>GeoNVS</td>
+<td style="text-align: right;">19.09</td>
+<td style="text-align: right;">0.622</td>
+<td style="text-align: right;">0.253</td>
+</tr>
+<tr>
+<td>大视角（7 个设置）</td>
+<td>SEVA</td>
+<td style="text-align: right;">12.64</td>
+<td style="text-align: right;">0.393</td>
+<td style="text-align: right;">0.510</td>
+</tr>
+<tr>
+<td>大视角</td>
+<td>GeoNVS</td>
+<td style="text-align: right;">14.20</td>
+<td style="text-align: right;">0.430</td>
+<td style="text-align: right;">0.466</td>
+</tr>
+</tbody>
+</table>
+<p>小视角平均 PSNR 提高 1.94 dB，大视角提高 1.56 dB。原文给出的 11.3%
+对应小视角 PSNR 数值的相对比例，不等价于均方误差下降 11.3%。Table 3
+还显示长轨迹 DL3DV 的 3/6/9 参考设置中，PSNR 分别从 14.11/15.65/16.73
+提高到 16.03/17.99/19.32 dB。</p>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_17.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 17 — 小视角合成对比" />
+<figcaption aria-hidden="true">Figure 17 — 小视角合成对比</figcaption>
+</figure>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_21.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 21 — 大视角合成对比" />
+<figcaption aria-hidden="true">Figure 21 — 大视角合成对比</figcaption>
+</figure>
+<p>两图左侧分别为单张参考图与相机位置示意，右侧比较不同方法在目标视角的合成结果及
+GT。Figure 17 的走廊示例中，GeoNVS 相比 SEVA
+减少了明显的亮度和颜色失真；Figure 21 的室内设备示例中，GeoNVS
+相比存在大面积空洞的 DepthSplat 渲染补全了可见外观，但设备细节仍与 GT
+有差异。这些选例说明几何引导与生成补全的互补性，并非真实遮挡结构得到恢复的证明。</p>
+<p>这些结果支持在指定测试协议下增强生成基线的观点，但不代表所有指标和场景均领先。Tanks
+and Temples（T&amp;T）若干高重叠设置中纯 VGGT 渲染更准；Table 12 的
+DL3DV 单参考 SSIM 也存在 GeoNVS 低于 SEVA
+的例外。不同方法的输入数量限制和缺失表项使部分跨方法均值不可直接等同比较。</p>
+<h3 id="几何一致性是否真的改善">5.2 几何一致性是否真的改善？</h3>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_09.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 9 — 由合成视图估计的几何结构" />
+<figcaption aria-hidden="true">Figure 9 —
+由合成视图估计的几何结构</figcaption>
+</figure>
+<p>Figure 9 将从 SEVA、GeoNVS 生成序列估计的点云及相机轨迹，与从 GT
+新视图序列估计的 Oracle 对照；三参考与九参考两个示例中，GeoNVS
+的轨迹形态及点云更接近 Oracle。这些是生成序列的后验几何估计，不是
+GS-Adapter 内部高斯先验本身的可视化。</p>
+<p>原文 §4.4 利用 ViPE 对生成序列和 GT 序列估计相机及点云，以平移误差
+T、旋转误差 R、Chamfer Distance（CD）衡量间接几何一致性。Table 3b 的
+RE10K（三参考）中，T 从 1.62 降至 0.76 cm，R 从 5.84 降至 4.83°，CD 从
+1.35 降至 0.19（原表数值尺度）。Table 4
+在三个数据集上，利用参考点云投影得到共视/非共视掩码，非共视区域 PSNR
+在三个所测数据集上较 SEVA 提高 1.06–2.08 dB，其中 DL3DV 提高 2.08
+dB。</p>
+<p>这些指标有三项限制：ViPE
+重建属于估计代理，而非独立测量的真实三维点云；GT
+序列估计失败的样本会被过滤；非共视掩码也源于参考几何估计。Figure 25
+甚至存在单条轨迹 CD 从 0.167 增至 0.329
+的反例。因此结果支持总体几何一致性改善，不证明不可见区域的真实三维结构被唯一恢复。</p>
+<h3 id="精炼门控和训练各自贡献">5.3 精炼、门控和训练各自贡献</h3>
+<p>Table 7 在固定 VGGT 先验的条件下比较不同配置（PSNR，dB）：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th style="text-align: right;">Mip360</th>
+<th style="text-align: right;">DL3DV</th>
+<th style="text-align: right;">T&amp;T</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEVA</td>
+<td style="text-align: right;">15.38</td>
+<td style="text-align: right;">15.84</td>
+<td style="text-align: right;">18.85</td>
+</tr>
+<tr>
+<td>仅 LoRA 微调</td>
+<td style="text-align: right;">15.55</td>
+<td style="text-align: right;">17.35</td>
+<td style="text-align: right;">21.41</td>
+</tr>
+<tr>
+<td>完整模型去除 RefineNet</td>
+<td style="text-align: right;">16.23</td>
+<td style="text-align: right;">17.71</td>
+<td style="text-align: right;">21.91</td>
+</tr>
+<tr>
+<td>完整 GeoNVS</td>
+<td style="text-align: right;">16.57</td>
+<td style="text-align: right;">18.11</td>
+<td style="text-align: right;">22.24</td>
+</tr>
+</tbody>
+</table>
+<p>LoRA 本身已有不可忽略的数值贡献，尤其在 DL3DV 与
+T&amp;T，因此不能把相对原始 SEVA 的全部提升归给 GS-Adapter。 Table 7
+还在固定 VGGT 先验、DL3DV 六参考及 Naïve Fusion 的条件下分别检验 GS-PE
+与特征一致性损失：Encoder 1/2/3 配置同时使用两者时 PSNR 为 17.95
+dB，去除 GS-PE 或去除特征一致性损失时分别为 17.80、17.88
+dB。在两者均保留时，Encoder 1、Encoder 1/2、Encoder 1/2/3 的 PSNR 分别为
+17.49、17.53、17.95 dB，支持多尺度特征互补。这些配置均采用 Naïve
+Fusion，不能与完整 Adaptive Fusion 的 18.11 dB 混为一谈。去除 RefineNet
+后三个数据集均下降，支持其补偿作用；附录 C.3 进一步在 540 个 DL3DV
+场景的受控 VAE latent 优化实验中，报告 3/6/9 参考时精炼带来
+0.24/1.03/1.37 dB
+的增益。这个实验针对特征传递的信息损失，而不是整个生成网络的完整消融。</p>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_13.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 13 — 受控潜空间重建中的特征精炼效果" />
+<figcaption aria-hidden="true">Figure 13 —
+受控潜空间重建中的特征精炼效果</figcaption>
+</figure>
+<p>Table 5 对比相同 SEVA 骨干、三参考条件下的先验替换。DTU 上 SEVA 为
+17.03 dB，Naïve Fusion + Pi3 反降至 14.83 dB，Adaptive Fusion + Pi3 则为
+19.02 dB；Adaptive Fusion 使用四种先验时 DTU 的 PSNR 处于 19.02–19.18
+dB。这是自适应融合比直接拼接更能适应不同几何质量的重要证据，但仍非门控绝对可靠的保证。</p>
+<p>Table 6 使用单参考的 CameraCtrl 与 Naïve Fusion，DepthSplat
+组合的平均 PSNR 为 12.80 dB，而原 CameraCtrl 为 11.14
+dB，支持对另一种骨干的适配能力；该结果并未验证 CameraCtrl 上的 Adaptive
+Fusion。另一个重要反例是 Table 7 中 T&amp;T 的输入级方法 PSNR 为 23.05
+dB，高于完整模型的 22.24
+dB。几何渲染质量较好时，输入级条件仍可能更有利。</p>
+<h3 id="效率与无给定位姿的扩展">5.4 效率与无给定位姿的扩展</h3>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_08.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 8 — 高斯剪枝的速度、显存和质量权衡" />
+<figcaption aria-hidden="true">Figure 8 —
+高斯剪枝的速度、显存和质量权衡</figcaption>
+</figure>
+<p>在 10 个 DL3DV 场景中，Figure 8 左图显示体素剪枝率达到 96.2%
+时，运行时间从 4.19 降至 1.89 s/frame；右图报告峰值显存从 18.03 降至
+12.93 GB。两幅子图剪枝率横轴范围不同，不能将该显存端点直接归于 96.2%
+剪枝率。两图所示 GeoNVS PSNR 均保持在 18.108 dB（图示精度）。约 2.22
+倍的加速是 GeoNVS 剪枝前后对比；SEVA 本身为 1.34 s/frame、12.81
+GB。论文未逐阶段拆解完整前置几何构造开销，因此该数值不是无条件的端到端速度保证，也不能据此认为所有场景均可高比例剪枝而无损。</p>
+<p>Table 8 的 pose-free 设置使用 ViPE
+估计参考相机并配合尺度对齐，而非不需要任何相机参数。例如 DL3DV 六参考的
+PSNR 从 GT 相机的 17.99 dB 变为估计相机的 17.87
+dB。它说明模型在两个所测基准上可利用估计位姿，但并不消除相机误差和尺度歧义。</p>
+<h2 id="局限及值得进一步研究的机制">6. 局限及值得进一步研究的机制</h2>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_10.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 10 — 纹理细节模糊的失败案例" />
+<figcaption aria-hidden="true">Figure 10 —
+纹理细节模糊的失败案例</figcaption>
+</figure>
+<figure>
+<img src="/Hexo/GeoNVS/Figures/Figure_28.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 28 — 薄结构和遮挡区域的失败案例" />
+<figcaption aria-hidden="true">Figure 28 —
+薄结构和遮挡区域的失败案例</figcaption>
+</figure>
+<p>从原文 §H
+及失败案例看，空间支撑错误、薄结构缺失、遮挡和不可逆特征混合仍会影响结果；生成外观合理不意味着几何真实。先验替换已在四种模型中测试，跨骨干适配仅在两种模型的独立训练设置中验证；训练与测试点云质量也不完全相同。原文提出未来探索不确定性感知的高斯和补全先验，但尚未实施。</p>
+<p>独立研究启发是：几何信息路由本身可以成为研究对象，而不只把扩散模型视为纹理修复器。可在真实几何固定的条件下分别扰动相机、几何和观测外观，检验
+feature lifting
+的信息损失究竟来自空间错配还是传递算子；再检验门控幅值与实际注入范数能否区分这些误差原因。在特殊成像域中，同一结构在不同观测距离下的特征可能发生系统性变化，直接跨视角平均是否可靠亦需要受控验证。这些均为从本文机制衍生的研究假设，不是
+GeoNVS 已验证的结论。</p>
+<p>综上，GeoNVS
+的价值并不是证明扩散生成能够无条件恢复真实三维，而是展示了一个可复用的技术思想：<strong>让显式三维结构承担动态特征的跨视角传递，再由学习到的精炼及有符号残差调节机制处理几何与特征的不完美。</strong>
+理解其作用需要同时关注空间对应、信息损失、训练监督及几何可靠性，而非只看生成图像是否逼真。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>GeoNVS: Geometry Grounded Video Diffusion for Novel View Synthesis</div>
+      <div>https://zq111724.github.io/Hexo/GeoNVS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Hexo/Seva/" title="Stable Virtual Camera: Generative View Synthesis with Diffusion Models">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Stable Virtual Camera: Generative View Synthesis with Diffusion Models</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hexo/GEN3C/" title="GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control">
+                        <span class="hidden-mobile">GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

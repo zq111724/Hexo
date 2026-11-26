@@ -1,0 +1,1314 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Figure 1 — 单视图物体生成与场景重建  阅读完整精读报告  论文版本： arXiv:2411.14384v6（2026-11-18）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code | Model | Dataset | Demo 1 | Demo 2  1. 研究问题：生成的新">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DiffusionGS：将三维高斯融入扩散去噪器的单阶段图像到三维生成与重建">
+<meta property="og:url" content="https://zq111724.github.io/Hexo/DiffusionGS/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Figure 1 — 单视图物体生成与场景重建  阅读完整精读报告  论文版本： arXiv:2411.14384v6（2026-11-18）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code | Model | Dataset | Demo 1 | Demo 2  1. 研究问题：生成的新">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/DiffusionGS/Figures/Figure_01.jpg">
+<meta property="article:published_time" content="2026-11-26T22:57:56.000Z">
+<meta property="article:modified_time" content="2026-11-26T23:13:20.451Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/DiffusionGS/Figures/Figure_01.jpg">
+  
+  
+  
+  <title>DiffusionGS：将三维高斯融入扩散去噪器的单阶段图像到三维生成与重建 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zq111724.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="DiffusionGS：将三维高斯融入扩散去噪器的单阶段图像到三维生成与重建"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-27 06:57" pubdate>
+          2026年11月27日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          78 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">DiffusionGS：将三维高斯融入扩散去噪器的单阶段图像到三维生成与重建</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <figure>
+<img src="/Hexo/DiffusionGS/Figures/Figure_01.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 1 — 单视图物体生成与场景重建" />
+<figcaption aria-hidden="true">Figure 1 —
+单视图物体生成与场景重建</figcaption>
+</figure>
+<p><a href="/Hexo/DiffusionGS_Full/">阅读完整精读报告</a></p>
+<!-- PAPER-METADATA BEGIN -->
+<p><strong>论文版本：</strong>
+arXiv:2411.14384v6（2026-11-18）；核验时为最新版（2026-11-27）。</p>
+<p><strong>官方资源：</strong> <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2411.14384">arXiv</a> | <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2411.14384v6">PDF</a> | <a
+target="_blank" rel="noopener" href="https://caiyuanhao1998.github.io/project/DiffusionGS/">Project
+Page</a> | <a
+target="_blank" rel="noopener" href="https://github.com/caiyuanhao1998/Open-DiffusionGS">Code</a> | <a
+target="_blank" rel="noopener" href="https://huggingface.co/CaiYuanhao/DiffusionGS">Model</a> | <a
+target="_blank" rel="noopener" href="https://huggingface.co/datasets/CaiYuanhao/DiffusionGS">Dataset</a>
+| <a
+target="_blank" rel="noopener" href="https://huggingface.co/spaces/CaiYuanhao/DiffusionGS-Object">Demo
+1</a> | <a
+target="_blank" rel="noopener" href="https://huggingface.co/spaces/CaiYuanhao/DiffusionGS-Scene">Demo
+2</a></p>
+<!-- PAPER-METADATA END -->
+<h2 id="研究问题生成的新视图必须对应同一个三维世界">1.
+研究问题：生成的新视图必须对应同一个三维世界</h2>
+<p>DiffusionGS 研究从<strong>单张 RGB
+图像与相对相机条件</strong>出发，生成一个可用于新视图合成（Novel View
+Synthesis,
+NVS）的显式三维高斯场景。它既面向物体生成，也面向室内外场景重建。</p>
+<p>困难在于，一张图像只能观察到部分表面。两种不同深度或背面形状完全可能产生相同的条件图像；生成模型可以借助训练先验补全不可见区域，却不能凭空获得新的真实观测。</p>
+<p>现有二维扩散方法可以先生成多个目标视图，再利用这些图像拟合一个三维模型。问题是，单独看起来合理的几张图片可能对同一个遮挡后结构给出矛盾解释。例如，一个视角生成了完整窗户，另一个视角却改变了窗户的位置。事后拟合高斯只能折中解释这些冲突，产生模糊、错位或不可靠的深度。另一条已经存在的路线是使用二维渲染损失训练三维扩散模型，例如单阶段方法
+DMV3D。它不是在二维生成结束后才构建三维；但这类方法主要依赖三平面
+NeRF，受到三平面分辨率和体渲染开销的限制（原论文 §2.1、§4.1）。</p>
+<p>本文并非首次提出三维扩散或单阶段三维生成。其核心创新在于：<strong>将像素对齐的显式三维高斯融入每个扩散去噪时间步，以共享高斯集合的可微光栅化结果推进下一步扩散。</strong>
+相比先生成、后构建三维的路线，它把三维一致性约束前移到生成过程；相比已有的三平面
+NeRF
+三维扩散，它改变了三维表示及渲染方式，旨在降低渲染开销并支持更大的场景范围。</p>
+<h2 id="核心框架将-3dgs-融入去噪器">2. 核心框架：将 3DGS 融入去噪器</h2>
+<figure>
+<img src="/Hexo/DiffusionGS/Figures/Figure_04.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 4 — 场景与物体混训、单时间步去噪器" />
+<figcaption aria-hidden="true">Figure 4 —
+场景与物体混训、单时间步去噪器</figcaption>
+</figure>
+<p>Figure 4(a) 描述数据选择，(b)
+描述一次去噪的完整信息流。训练时从同一对象或场景选择一张干净条件图、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+张真实目标图（用于加噪并提供去噪监督），以及
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+张额外真实监督新视图。只有条件图和噪声视图及其相机条件进入去噪器；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+张新视图及其相机用于额外渲染监督，不是额外推理输入。</p>
+<p><strong>推理时只有一张真实条件图。</strong> 模型同时需要条件图与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+个生成目标视角的相机条件（相对位姿及相应射线信息）；目标视角的图像内容从随机噪声开始生成，而非来自额外相机拍摄。因此这是相机条件已知的单图生成与重建，不是无位姿重建。</p>
+<p>核心闭环由三个操作构成：</p>
+<ol type="1">
+<li><strong>预测三维候选。</strong>
+带噪视图、干净条件图、射线坐标和时间步共同进入
+Transformer，经高斯解码器输出一组像素对齐的 3D Gaussian
+Splatting（3DGS）参数。</li>
+<li><strong>从同一候选渲染多视图。</strong>
+不同相机渲染共享高斯集合，得到对应的干净图像预测。训练用真实多视图图像约束这一过程，无需高斯真值标签。</li>
+<li><strong>推进扩散。</strong>
+将渲染出的干净图像用于下一个时间步采样，重复直至获得最终高斯集合。推理使用
+30-step DDIM，因此 single-stage（单阶段）不是 single-step（单步）。</li>
+</ol>
+<p>从研究逻辑看，共享三维表示是生成过程的结构约束；从模型信息流看，扩散状态始终是多视图图像，而非直接加噪的高斯参数；从训练监督看，真实多视图通过可微渲染将像素与感知损失传回三维去噪器。三个关系不能混为一谈。</p>
+<h2 id="每一步如何预测并渲染三维高斯">3.
+每一步如何预测并渲染三维高斯？</h2>
+<h3 id="扩散在图像域去噪预测在三维域">3.1
+扩散在图像域，去噪预测在三维域</h3>
+<p>论文将第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+张干净目标图记为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>x</mi><mn>0</mn><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><annotation encoding="application/x-tex">x_0^{(i)}</annotation></semantics></math>，时间步为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，累计噪声调度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>α</mi><mo accent="true">‾</mo></mover><mi>t</mi></msub><annotation encoding="application/x-tex">\bar\alpha_t</annotation></semantics></math>。前向加噪的原式（Eq.
+1）为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>x</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msub><mover><mi>α</mi><mo accent="true">‾</mo></mover><mi>t</mi></msub><msubsup><mi>x</mi><mn>0</mn><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>+</mo><msqrt><mrow><mn>1</mn><mo>−</mo><msub><mover><mi>α</mi><mo accent="true">‾</mo></mover><mi>t</mi></msub></mrow></msqrt><msubsup><mi>ϵ</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>ϵ</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>∼</mo><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>I</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">x_t^{(i)}=\bar\alpha_t x_0^{(i)}+\sqrt{1-\bar\alpha_t}\epsilon_t^{(i)},\qquad \epsilon_t^{(i)}\sim\mathcal N(0,I).</annotation></semantics></math></p>
+<p>这里保留论文原式。标准 DDPM 的信号系数通常是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><msub><mover><mi>α</mi><mo accent="true">‾</mo></mover><mi>t</mi></msub></msqrt><annotation encoding="application/x-tex">\sqrt{\bar\alpha_t}</annotation></semantics></math>，而本文
+Eq. (1) 及后面的 Eq. (8) 写作
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>α</mi><mo accent="true">‾</mo></mover><mi>t</mi></msub><annotation encoding="application/x-tex">\bar\alpha_t</annotation></semantics></math>，与
+p.3 给出的 DDPM
+分布均值存在不一致。实际实现采用何种系数，不能仅凭论文确定。</p>
+<p>不同于直接预测噪声的去噪器，DiffusionGS 输出干净的三维候选（Eq.
+2）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">𝒢</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi mathvariant="script">𝒳</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>x</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mi>v</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>,</mo><mi>t</mi><mo>,</mo><mi mathvariant="script">𝒱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msubsup><mi>G</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><msubsup><mi>μ</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi mathvariant="normal">Σ</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi>α</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi>c</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>N</mi><mi>g</mi></msub></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal G_\theta(\mathcal X_t\mid x_{con},v_{con},t,\mathcal V)=\{G_t^{(k)}(\mu_t^{(k)},\Sigma_t^{(k)},\alpha_t^{(k)},c_t^{(k)})\}_{k=1}^{N_g}.</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">𝒳</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\mathcal X_t</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+张噪声图；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">x_{con}</annotation></semantics></math>
+是唯一干净条件图；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">v_{con}</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">𝒱</mi><annotation encoding="application/x-tex">\mathcal V</annotation></semantics></math>
+是对应的每像素六维相机射线坐标；每个高斯含中心
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>、协方差
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>、不透明度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+和 RGB 颜色
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>。</p>
+<h3 id="像素对齐高斯让三维候选具有固定输出形状">3.2
+像素对齐高斯：让三维候选具有固定输出形状</h3>
+<p>普通三维高斯场景的点数不固定。为了让网络能够直接回归一组高斯，本文将每张输入图像的每个像素与一个高斯候选关联，因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>g</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>H</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">N_g=(N+1)HW</annotation></semantics></math>。</p>
+<p>给定像素对应射线原点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>o</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">o^{(k)}</annotation></semantics></math>
+和方向
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>d</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">d^{(k)}</annotation></semantics></math>，网络预测沿射线的距离权重
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>w</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><annotation encoding="application/x-tex">w_t^{(k)}</annotation></semantics></math>，从而得到中心：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>μ</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msup><mi>o</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>+</mo><msubsup><mi>u</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><msup><mi>d</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">\mu_t^{(k)}=o^{(k)}+u_t^{(k)}d^{(k)},</annotation></semantics></math>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>u</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msubsup><mi>w</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><msub><mi>u</mi><mrow><mi>n</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msubsup><mi>w</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><msub><mi>u</mi><mrow><mi>f</mi><mi>a</mi><mi>r</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">u_t^{(k)}=w_t^{(k)}u_{near}+(1-w_t^{(k)})u_{far}.\tag{3}</annotation></semantics></math></p>
+<p>若方向归一化，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
+是沿射线的距离；若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>
+被限制在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>，则它在近远界之间插值。论文没有明确权重的具体激活函数。将中心限制在射线上，利用了已知相机的几何关系，而不用让网络从整个三维空间盲目回归位置。但多视图中同一表面可以对应多个候选，固定点数不是几何正确性的保证。</p>
+<p>输入端将 RGB 与六通道射线图拼接为九通道特征，再进行
+patchify、线性映射和位置嵌入。Transformer 主干由自注意力和 MLP
+等模块组成，通过跨视图 token
+交互汇聚信息；时间嵌入利用自适应层归一化（AdaLN）调节主干和解码器。解码器把
+token 还原为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>×</mo><mi>W</mi><mo>×</mo><mn>14</mn></mrow><annotation encoding="application/x-tex">H\times W\times14</annotation></semantics></math>
+的高斯参数图，并从中提取距离权重、旋转、尺度、不透明度和颜色。论文未逐一给出14通道分配，不能自行补为确定的实现细节。</p>
+<h3 id="同一三维表示提供多个干净图像预测">3.3
+同一三维表示提供多个干净图像预测</h3>
+<p>可微光栅化函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>r</mi></msub><annotation encoding="application/x-tex">F_r</annotation></semantics></math>
+以相机内外参为条件，把同一高斯集合渲染为每个视角的干净图像（Eq.
+4）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mover><mi>x</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msub><mi>F</mi><mi>r</mi></msub><mo stretchy="false" form="prefix">(</mo><msubsup><mi>M</mi><mrow><mi>e</mi><mi>x</mi><mi>t</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi>M</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msub><mi mathvariant="script">𝒢</mi><mi>θ</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\hat x_{(0,t)}^{(i)}=F_r(M_{ext}^{(i)},M_{int}^{(i)},\mathcal G_\theta).</annotation></semantics></math></p>
+<p>这里省略
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">𝒢</mi><mi>θ</mi></msub><annotation encoding="application/x-tex">\mathcal G_\theta</annotation></semantics></math>
+的输入参数，但它与 Eq. (2)
+相同。在渲染过程中，三维高斯的世界系协方差经视图变换
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+和投影雅可比
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+变换（Eq. 5）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Σ</mi><mo>′</mo></msup><mo>=</mo><mi>J</mi><mi>W</mi><mi mathvariant="normal">Σ</mi><msup><mi>W</mi><mi>T</mi></msup><msup><mi>J</mi><mi>T</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">\Sigma&#39;=JW\Sigma W^TJ^T.</annotation></semantics></math></p>
+<p>直观上，若世界系点偏移为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mi>X</mi></mrow><annotation encoding="application/x-tex">\delta X</annotation></semantics></math>，投影局部近似为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mi>y</mi><mo>≈</mo><mi>J</mi><mi>W</mi><mi>δ</mi><mi>X</mi></mrow><annotation encoding="application/x-tex">\delta y\approx JW\delta X</annotation></semantics></math>，故协方差按上式传播。取投影协方差的二维子块，可以得到屏幕空间的高斯形状；光栅化按照投影覆盖分配
+tile，并按视空间深度排序。</p>
+<p>第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(m,n)</annotation></semantics></math>
+个像素的颜色由覆盖它的有序高斯做前向 alpha 混合（Eq. 6）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mover><mi>x</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><mi mathvariant="script">𝒩</mi></mrow></munder><msubsup><mi>c</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><msubsup><mi>σ</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><munderover><mo>∏</mo><mrow><mi>l</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></munderover><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msubsup><mi>σ</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>l</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\hat x_{(0,t)}^{(i)}(m,n)=\sum_{j\in\mathcal N}c_t^{(j)}\sigma_t^{(j)}\prod_{l=1}^{j-1}(1-\sigma_t^{(l)}).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">𝒩</mi><annotation encoding="application/x-tex">\mathcal N</annotation></semantics></math>
+表示覆盖像素的有序高斯集合，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+为高斯核响应与不透明度构成的有效
+alpha，前方乘积为剩余透射率。当前点不透明时，它后面的点便无法贡献颜色。这样不同视角的可见性、遮挡和图像内容都由共同三维表示决定。</p>
+<p>训练中的去噪损失由像素 L2 与 VGG-19 感知损失组成（Eq. 7）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℒ</mi><mrow><mi>d</mi><mi>e</mi></mrow></msub><mo>=</mo><msub><mi mathvariant="script">ℒ</mi><mn>2</mn></msub><mo stretchy="false" form="prefix">(</mo><msub><mover><mi mathvariant="script">𝒳</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi mathvariant="script">𝒳</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>λ</mi><msub><mi mathvariant="script">ℒ</mi><mrow><mi>V</mi><mi>G</mi><mi>G</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mover><mi mathvariant="script">𝒳</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi mathvariant="script">𝒳</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal L_{de}=\mathcal L_2(\hat{\mathcal X}_{(0,t)},\mathcal X_0)+\lambda\mathcal L_{VGG}(\hat{\mathcal X}_{(0,t)},\mathcal X_0).</annotation></semantics></math></p>
+<p>对额外
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+个监督相机同样构造
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">ℒ</mi><mrow><mi>n</mi><mi>v</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal L_{nv}</annotation></semantics></math>。这使网络不能仅通过拟合当前噪声视角对应的图像来获得低损失，还需解释其他真实视图。由于渲染可微，图像误差可以反传至三维高斯参数和去噪器。需要注意，仅有
+RGB 监督仍可能产生能解释图像但与真实结构不同的高斯。</p>
+<h3 id="推理三维渲染与图像采样交替">3.4
+推理：三维渲染与图像采样交替</h3>
+<p>推理先给定唯一干净条件图及其相机条件，并给定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+个生成目标视角的相机条件。在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">t=T</annotation></semantics></math>
+为这些目标视角初始化
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+张标准正态噪声图；后续时间步始终以同一干净条件图为条件，更新的是这组生成视图的图像状态。将每步渲染出的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>x</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><annotation encoding="application/x-tex">\hat x_{(0,t)}</annotation></semantics></math>
+用于下一时间步，论文给出（Eq. 8 原式）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>x</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msub><mover><mi>α</mi><mo accent="true">‾</mo></mover><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msubsup><mover><mi>x</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>+</mo><msqrt><mrow><mn>1</mn><mo>−</mo><msub><mover><mi>α</mi><mo accent="true">‾</mo></mover><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></msqrt><msubsup><mi>ϵ</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">x_{t-1}^{(i)}=\bar\alpha_{t-1}\hat x_{(0,t)}^{(i)}+\sqrt{1-\bar\alpha_{t-1}}\epsilon_{t-1}^{(i)}.</annotation></semantics></math></p>
+<p>实际采样报告使用30步 DDIM 跳过部分时间步，论文没有完整列出 DDIM
+的更新参数。标准确定性 DDIM
+会从当前状态和干净预测估计噪声并用于跳步；上式本身不等同于完整的确定性
+DDIM 更新。最终在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>
+取 Eq. (2)
+的高斯集合，之后可以用常规高斯光栅化在指定的新相机下渲染，不需要额外每场景三维拟合。这里应区分扩散过程中参与更新的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+个目标视角与最终三维表示的评估视角。原论文 §4
+规定每个评估实例包含1张输入图和10张测试图，但未据此给出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+的具体配置，不能将两者等同。推理过程中生成的多视图是模型对未观测内容的推断，不是新增真实观测。</p>
+<h2 id="为什么需要场景与物体混合训练">4.
+为什么需要场景与物体混合训练？</h2>
+<p>对象级数据通常将对象归一化到有限中心区域，相机围绕对象旋转；场景级数据则包括密集背景、宽深度范围以及前进、后退和横移轨迹。作者指出，大量对象数据来自合成资产，而场景训练数据数量相对较少。直接混合可能产生伪影或不收敛。本文在共享主干之外进行以下适配。</p>
+<h3 id="控制训练视角分布">4.1 控制训练视角分布</h3>
+<p>作者对相机位置和朝向分别设置角度约束。设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+分别代表条件、噪声和额外监督新视角，位置角约束为（Eq. 9）</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>θ</mi><mrow><mi>c</mi><mi>d</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>≤</mo><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>θ</mi><mrow><mi>d</mi><mi>n</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>≤</mo><msub><mi>θ</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\theta_{cd}^{(i)}\le\theta_1,\qquad \theta_{dn}^{(i,j)}\le\theta_2.</annotation></semantics></math></p>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+表示相机前向向量，朝向约束为（Eq. 10）</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msub><mi>z</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>⋅</mo><msubsup><mi>z</mi><mrow><mi>n</mi><mi>o</mi><mi>i</mi><mi>s</mi><mi>e</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mrow><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>z</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">∥</mo><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>z</mi><mrow><mi>n</mi><mi>o</mi><mi>i</mi><mi>s</mi><mi>e</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">∥</mo></mrow></mfrac><mo>≥</mo><mrow><mi mathvariant="normal">cos</mi><mo>&#8289;</mo></mrow><msub><mi>φ</mi><mn>1</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><mfrac><mrow><msub><mi>z</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>⋅</mo><msubsup><mi>z</mi><mrow><mi>n</mi><mi>v</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mrow><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>z</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">∥</mo><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>z</mi><mrow><mi>n</mi><mi>v</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">∥</mo></mrow></mfrac><mo>≥</mo><mrow><mi mathvariant="normal">cos</mi><mo>&#8289;</mo></mrow><msub><mi>φ</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\frac{z_{con}\cdot z_{noise}^{(i)}}{\|z_{con}\|\|z_{noise}^{(i)}\|}\ge\cos\varphi_1,\qquad \frac{z_{con}\cdot z_{nv}^{(j)}}{\|z_{con}\|\|z_{nv}^{(j)}\|}\ge\cos\varphi_2.</annotation></semantics></math></p>
+<p>位置向量与朝向均从 camera-to-world
+矩阵读取，四个阈值是超参数。位置夹角在相同半径的环绕轨迹上能反映相机距离，但在一般场景中不能等同欧氏基线；朝向相近也未必有真实视野重叠。这些约束用于控制训练样本难度，而不是充分的几何重叠条件。</p>
+<h3 id="rppc将射线力矩改写为参考点坐标">4.2
+RPPC：将射线力矩改写为参考点坐标</h3>
+<figure>
+<img src="/Hexo/DiffusionGS/Figures/Figure_05.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 5 — Plücker 射线与 RPPC" />
+<figcaption aria-hidden="true">Figure 5 — Plücker 射线与
+RPPC</figcaption>
+</figure>
+<p>经典 Plücker 表示使用射线方向
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+与力矩
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mi>o</mi><mo>×</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">m=o\times d</annotation></semantics></math>。本文提出
+Reference-Point Plücker
+Coordinate（RPPC），以世界原点到射线支撑直线的垂足替换力矩（Eq.
+11）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>,</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>p</mi><mo>=</mo><mi>o</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mi>o</mi><mo>⋅</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">r=(p,d),\qquad p=o-(o\cdot d)d.</annotation></semantics></math></p>
+<p>当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>d</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\|d\|=1</annotation></semantics></math>
+时，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>⋅</mo><mi>d</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">p\cdot d=0</annotation></semantics></math>。对直线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi><mo>+</mo><mi>s</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">o+sd</annotation></semantics></math>
+最小化到世界原点的平方距离，最优
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mi>−</mi><mi>o</mi><mo>⋅</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">s=-o\cdot d</annotation></semantics></math>，从而得到该垂足。它不一定在相机前方半射线上。</p>
+<p>这个变换有一个关键性质：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mi>d</mi><mo>×</mo><mi>m</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>m</mi><mo>=</mo><mi>p</mi><mo>×</mo><mi>d</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">p=d\times m,\qquad m=p\times d.</annotation></semantics></math></p>
+<p>因此两种表示在单位方向条件下可逆，RPPC
+并没有新增独立的射线信息。区别在于参考点具有直观的位置意义，有限容量的神经网络可能更容易利用它建立相对空间关系。沿同一直线改变
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>o</mi><annotation encoding="application/x-tex">o</annotation></semantics></math>
+不改变
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>，但改变世界坐标原点通常会改变
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>。这种归纳偏置的有效性需由实验而不是信息量增加来解释。</p>
+<p>在网络中，RPPC 不仅作为输入端的像素对齐射线条件与 RGB 拼接。原论文
+p.6 还说明，参考点信息通过跳跃连接（skip connection）传递至各
+Transformer Block 和 Gaussian
+Decoder，引导高斯点云生成。这样，参考点的位置表达可以在跨视图特征处理和高斯参数预测时继续发挥作用，而不只是由输入
+token
+间接携带。这是对作者设计意图的机制解释；论文未给出各处连接的具体张量形状、融合操作或独立的深度预测分支，因此不作进一步实现假定。</p>
+<h3 id="双高斯解码器与对象预热">4.3 双高斯解码器与对象预热</h3>
+<p>混合训练中，主干共享，解码器按域选择。物体头的 near/far 为
+0.1/4.2，高斯中心裁剪到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><msup><mo stretchy="false" form="postfix">]</mo><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">[-1,1]^3</annotation></semantics></math>；场景头的
+near/far 为
+0/500。两种深度尺度对应不同参数映射，微调时仅保留目标域解码器。数值来自论文，不能未经尺度标定解释为米制距离。</p>
+<p>为鼓励对象点云集中，作者设计预热点分布损失（Eq. 12 原式）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">ℒ</mi><mrow><mi>p</mi><mi>d</mi></mrow></msub><mo>=</mo><msub><mi mathvariant="double-struck">𝔼</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mi>l</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><msubsup><mi>l</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>−</mo><msub><mi mathvariant="double-struck">𝔼</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">[</mo><msubsup><mi>l</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">]</mo></mrow><msqrt><mrow><mrow><mi mathvariant="normal">Var</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>l</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo></mrow></msqrt></mfrac><msub><mi>σ</mi><mn>0</mn></msub><mo>+</mo><msub><mi mathvariant="double-struck">𝔼</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">[</mo><mo stretchy="false" form="prefix">|</mo><msup><mi>o</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="postfix">]</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal L_{pd}=\mathbb E_k\left[l_t^{(k)}-\left(\frac{l_t^{(k)}-\mathbb E_k[l_t^{(k)}]}{\sqrt{\operatorname{Var}(l_t^{(k)})}}\sigma_0+\mathbb E_k[|o^{(k)}|]\right)\right],</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>l</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><mo stretchy="false" form="prefix">|</mo><msubsup><mi>u</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><msup><mi>d</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">l_t^{(k)}=|u_t^{(k)}d^{(k)}|</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mn>0</mn></msub><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\sigma_0=0.5</annotation></semantics></math>。这里有一处需谨慎理解的数学细节：若内外均值确实针对同一组
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>，且方差非零，则标准化项的均值恰好为零，原式化为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="double-struck">𝔼</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">[</mo><msubsup><mi>l</mi><mi>t</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">]</mo><mo>−</mo><msub><mi mathvariant="double-struck">𝔼</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">[</mo><mo stretchy="false" form="prefix">|</mo><msup><mi>o</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\mathbb E_k[l_t^{(k)}]-\mathbb E_k[|o^{(k)}|]</annotation></semantics></math>。因此不能单凭打印公式确认它实现了目标方差约束；论文未说明是否采用其他实现形式或零方差保护。本文报告的消融结果不提供反推原始代码的充分证据。</p>
+<p>整体目标为（Eq. 13）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">ℒ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi mathvariant="script">ℒ</mi><mrow><mi>d</mi><mi>e</mi></mrow></msub><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mrow><mi>n</mi><mi>v</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><msub><mn mathvariant="bold">𝟏</mn><mrow><mi>i</mi><mi>t</mi><mi>e</mi><mi>r</mi><mo>&gt;</mo><mi>i</mi><mi>t</mi><mi>e</mi><msub><mi>r</mi><mn>0</mn></msub></mrow></msub><mo>+</mo><msub><mi mathvariant="script">ℒ</mi><mrow><mi>p</mi><mi>d</mi></mrow></msub><msub><mn mathvariant="bold">𝟏</mn><mrow><mi>i</mi><mi>t</mi><mi>e</mi><mi>r</mi><mo>≤</mo><mi>i</mi><mi>t</mi><mi>e</mi><msub><mi>r</mi><mn>0</mn></msub></mrow></msub><msub><mn mathvariant="bold">𝟏</mn><mrow><mi>o</mi><mi>b</mi><mi>j</mi><mi>e</mi><mi>c</mi><mi>t</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal L=(\mathcal L_{de}+\mathcal L_{nv})\mathbf1_{iter&gt;iter_0}+\mathcal L_{pd}\mathbf1_{iter\le iter_0}\mathbf1_{object}.</annotation></semantics></math></p>
+<p>按原式，在预热阶段对象样本使用点分布损失，之后使用两类图像监督；预热阶段的场景样本字面损失为零，实际采样或处理机制未明确说明。上述疑点是对论文数学表达的独立分析，不代表已经确认代码错误。</p>
+<h2 id="实验共享三维约束是否有效">5. 实验：共享三维约束是否有效？</h2>
+<p>训练对象数据包含 Objaverse 730K 和 MVImgNet 220K 样本，场景数据来自
+RealEstate10K 和 DL3DV10K。模型先使用32张 A100 混训40K迭代，再使用64张
+A100
+分别微调对象与场景，训练分辨率由256×256提升到512×512。评估时每实例使用1张输入图及10张测试图。约6秒的推理速度并不代表训练成本低。</p>
+<h3 id="对象与场景的主结果">5.1 对象与场景的主结果</h3>
+<figure>
+<img src="/Hexo/DiffusionGS/Figures/Figure_06.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 6 — 物体生成定性对比" />
+<figcaption aria-hidden="true">Figure 6 — 物体生成定性对比</figcaption>
+</figure>
+<figure>
+<img src="/Hexo/DiffusionGS/Figures/Figure_07.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 7 — 场景重建定性对比" />
+<figcaption aria-hidden="true">Figure 7 — 场景重建定性对比</figcaption>
+</figure>
+<p>论文 Table 1(c–e) 的主要比较（各数据集选取其表中较强的基线）：</p>
+<table>
+
+<thead>
+<tr>
+<th>数据集</th>
+<th>方法</th>
+<th style="text-align: right;">PSNR ↑</th>
+<th style="text-align: right;">SSIM ↑</th>
+<th style="text-align: right;">LPIPS ↓</th>
+<th style="text-align: right;">FID ↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ABO</td>
+<td>DMV3D</td>
+<td style="text-align: right;">23.69</td>
+<td style="text-align: right;">0.8634</td>
+<td style="text-align: right;">0.1131</td>
+<td style="text-align: right;">32.28</td>
+</tr>
+<tr>
+<td>ABO</td>
+<td>DiffusionGS</td>
+<td style="text-align: right;"><strong>25.89</strong></td>
+<td style="text-align: right;"><strong>0.8880</strong></td>
+<td style="text-align: right;"><strong>0.0965</strong></td>
+<td style="text-align: right;"><strong>9.03</strong></td>
+</tr>
+<tr>
+<td>GSO</td>
+<td>DMV3D</td>
+<td style="text-align: right;">20.82</td>
+<td style="text-align: right;">0.8347</td>
+<td style="text-align: right;">0.1289</td>
+<td style="text-align: right;">33.48</td>
+</tr>
+<tr>
+<td>GSO</td>
+<td>DiffusionGS</td>
+<td style="text-align: right;"><strong>22.07</strong></td>
+<td style="text-align: right;"><strong>0.8545</strong></td>
+<td style="text-align: right;"><strong>0.1115</strong></td>
+<td style="text-align: right;"><strong>11.52</strong></td>
+</tr>
+<tr>
+<td>RealEstate10K</td>
+<td>Flash3D</td>
+<td style="text-align: right;">20.29</td>
+<td style="text-align: right;">0.6483</td>
+<td style="text-align: right;">0.3610</td>
+<td style="text-align: right;">35.03</td>
+</tr>
+<tr>
+<td>RealEstate10K</td>
+<td>DiffusionGS</td>
+<td style="text-align: right;"><strong>21.63</strong></td>
+<td style="text-align: right;"><strong>0.6787</strong></td>
+<td style="text-align: right;"><strong>0.2743</strong></td>
+<td style="text-align: right;"><strong>15.87</strong></td>
+</tr>
+</tbody>
+</table>
+<p>相对 DMV3D，ABO 上 PSNR 增加2.20 dB、FID下降23.25；GSO 对应增加1.25
+dB、下降21.96。场景上相对 Flash3D 增加1.34 dB、下降19.16。Figure 6
+展示细节和大视角输入的定性表现，Figure 7
+对照真实参考视图并显示遮挡区的生成效果。作者说明前馈场景方法使用相同场景数据训练，但未给出全部计算预算对齐细节。</p>
+<p>256×256对象生成的用户研究邀请25人对14个对象进行1–6分评分，本文4.88为表中最高，推理5.8秒，较
+DMV3D 的31.4秒与12345++的60秒分别快约5.4倍和10.3倍。LGM
+仅4.1秒，因此不是所有比较方法中最快。偏好与RGB指标均不能代替真实几何误差。</p>
+<h3 id="对比先生成后拟合路线">5.2 对比先生成、后拟合路线</h3>
+<figure>
+<img src="/Hexo/DiffusionGS/Figures/Figure_08.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 8 — PhotoNVS 后拟合与 DiffusionGS、RPPC 消融" />
+<figcaption aria-hidden="true">Figure 8 — PhotoNVS 后拟合与
+DiffusionGS、RPPC 消融</figcaption>
+</figure>
+<p>Table 1(b) 对 PhotoNVS 的二维新视图生成加事后3DGS拟合进行比较：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th style="text-align: right;">生成耗时</th>
+<th style="text-align: right;">后拟合耗时</th>
+<th style="text-align: right;">PSNR ↑</th>
+<th style="text-align: right;">FID ↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PhotoNVS + 后拟合</td>
+<td style="text-align: right;">61 s</td>
+<td style="text-align: right;">2417 s</td>
+<td style="text-align: right;">15.31</td>
+<td style="text-align: right;">28.30</td>
+</tr>
+<tr>
+<td>DiffusionGS</td>
+<td style="text-align: right;">6 s</td>
+<td style="text-align: right;">0 s</td>
+<td style="text-align: right;">21.63</td>
+<td style="text-align: right;">15.87</td>
+</tr>
+</tbody>
+</table>
+<p>本文不需要独立后拟合阶段，PSNR提高6.32 dB、FID降低12.43。Figure 8(b)
+的窗、房间内容在生成新视图中存在不一致，后拟合的深度图也不稳定；(c)
+的共享GS展示更合理的相对结构。该比较支持将三维构建整合进扩散去噪过程的系统级设计主张：在所比较的
+RealEstate10K
+协议下，不仅省去独立后拟合，还改善了新视图质量。但它不是只改变三维约束位置、其他全部条件不变的严格控制实验。</p>
+<p>Figure 8(c–d) 则比较本文使用与不使用 RPPC
+的结果，而非再次比较两条系统路线。使用 RPPC
+后，窗户、地面等结构及其相对深度呈现更规整的效果，深度图中的地面区域相较
+(d) 更连贯。这为 RPPC
+有助于模型利用射线位置表达、改善场景结构的主张提供定性证据；图中没有真实深度参考，不能据此量化几何精度或证明深度恢复正确。</p>
+<h3 id="消融从无时间步控制到完整模型">5.3
+消融：从无时间步控制到完整模型</h3>
+<table>
+<thead>
+<tr>
+<th>GSO 累加设置（Table 2）</th>
+<th style="text-align: right;">PSNR ↑</th>
+<th style="text-align: right;">FID ↓</th>
+<th style="text-align: right;">PSNR 增量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无时间步控制的基线</td>
+<td style="text-align: right;">17.63</td>
+<td style="text-align: right;">118.31</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>+ 扩散框架</td>
+<td style="text-align: right;">20.57</td>
+<td style="text-align: right;">47.86</td>
+<td style="text-align: right;">+2.94</td>
+</tr>
+<tr>
+<td>+ 点分布损失</td>
+<td style="text-align: right;">20.94</td>
+<td style="text-align: right;">28.41</td>
+<td style="text-align: right;">+0.37</td>
+</tr>
+<tr>
+<td>+ 混合训练</td>
+<td style="text-align: right;">21.73</td>
+<td style="text-align: right;">17.79</td>
+<td style="text-align: right;">+0.79</td>
+</tr>
+<tr>
+<td>+ RPPC</td>
+<td style="text-align: right;">22.07</td>
+<td style="text-align: right;">11.52</td>
+<td style="text-align: right;">+0.34</td>
+</tr>
+</tbody>
+</table>
+<p>原论文 §4.2
+的基线是去掉时间步控制的去噪器，仅用物体级数据训练，采用单视图输入，监督视图数量与
+DiffusionGS 相同。随后依次引入扩散框架、点分布损失、暂不使用 RPPC
+的场景—物体混合训练，以及
+RPPC。最大单次增益来自扩散框架，支持在该基线之上引入迭代生成机制；点分布损失的增益支持其训练设计的实用性，但不能证明
+Eq. (12)
+实现了目标方差约束。其余模块在当前累加条件下进一步提升指标。这并非全因子消融，不能把每个增量当成顺序无关的独立贡献，也不能将该表解读为对真实几何精度的直接验证。</p>
+<figure>
+<img src="/Hexo/DiffusionGS/Figures/Figure_09.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 9 — 混合训练与不同随机种子的生成样本" />
+<figcaption aria-hidden="true">Figure 9 —
+混合训练与不同随机种子的生成样本</figcaption>
+</figure>
+<p>Figure 9(a)
+以相同训练迭代数比较混训与非混训，混训后的杯背纹理、房屋结构更清晰。RealEstate10K
+上混训带来0.61 dB PSNR提升与10.53 FID下降；RPPC 带来0.28 dB提升与7.09
+FID下降（§4.2）。结合 Table
+2，混合训练的结果支持通过物体与场景数据共同学习先验的设计，RPPC
+的结果则支持在当前网络中改变射线参数化的实际收益。Table 1(a、c–e)
+的速度、用户偏好及图像指标提供整体系统效果的证据，而非各模块的独立贡献。上述结果支持当前设计的实用性，但不能证明任意域混合都有效，也不能替代独立真实几何真值上的定量验证。</p>
+<h2 id="技术边界与启发生成一致性不是真实观测">6.
+技术边界与启发：生成一致性不是真实观测</h2>
+<p>DiffusionGS
+将扩散生成与三维构建统一，避免先生成矛盾图像再事后折中拟合。该机制的价值在于<strong>改变先验参与空间推断的方式</strong>，而不仅是改用一种更快的渲染器。</p>
+<p>然而，Figure 9(b)
+中同一输入改变随机种子可以产生不同三维形状及纹理。这种多样性与单图逆问题的欠定性相符。共享3DGS保证同一样本由一个表示渲染，并不保证隐藏区域等于真实结构；Figure
+3与8中的深度来自渲染或后拟合，论文未提供真值深度、表面距离或置信度校准的统计评估。</p>
+<p>进一步研究可以在已知几何与相机条件的受控数据上，比较逐步三维约束、末步约束及事后拟合，分可见/遮挡区域测量真实深度与表面误差，并检验多种子分歧是否能够预测真实误差。对于水下等参与介质成像，观测还受传播规律影响，颜色、介质和几何可能互相补偿，本文干净
+RGB
+上的结果不能直接外推。这些是基于本篇机制的后续研究方向，并非论文已验证结论。</p>
+<p>原论文的官方公开仓库说明公开代码与权重为重新实现和重新训练的版本；如需复现实验，必须区分论文原始实验实现与公开实现。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>DiffusionGS：将三维高斯融入扩散去噪器的单阶段图像到三维生成与重建</div>
+      <div>https://zq111724.github.io/Hexo/DiffusionGS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Hexo/LVSM/" title="LVSM：以最小三维归纳偏置实现稀疏视角新视角合成">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">LVSM：以最小三维归纳偏置实现稀疏视角新视角合成</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hexo/NVComposer/" title="NVComposer: Boosting Generative Novel View Synthesis with Multiple Sparse and Unposed Images">
+                        <span class="hidden-mobile">NVComposer: Boosting Generative Novel View Synthesis with Multiple Sparse and Unposed Images</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

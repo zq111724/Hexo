@@ -1,0 +1,1332 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2410.17242v2（2025-04-02）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code | Publication  1. 从三维重建到直接的新视角合成 给定若干幅稀疏的已知位姿图像，如何生成指定相机视角下的 RGB 图像">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LVSM：以最小三维归纳偏置实现稀疏视角新视角合成">
+<meta property="og:url" content="https://zq111724.github.io/Hexo/LVSM/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2410.17242v2（2025-04-02）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code | Publication  1. 从三维重建到直接的新视角合成 给定若干幅稀疏的已知位姿图像，如何生成指定相机视角下的 RGB 图像">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/LVSM/Figures/Figure_01.jpg">
+<meta property="article:published_time" content="2026-11-26T23:03:36.000Z">
+<meta property="article:modified_time" content="2026-11-26T23:15:41.545Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/LVSM/Figures/Figure_01.jpg">
+  
+  
+  
+  <title>LVSM：以最小三维归纳偏置实现稀疏视角新视角合成 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zq111724.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="LVSM：以最小三维归纳偏置实现稀疏视角新视角合成"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-27 07:03" pubdate>
+          2026年11月27日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          80 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">LVSM：以最小三维归纳偏置实现稀疏视角新视角合成</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <figure>
+<img src="/Hexo/LVSM/Figures/Figure_01.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1" />
+<figcaption aria-hidden="true">Figure 1</figcaption>
+</figure>
+<p><a href="/Hexo/LVSM_Full/">阅读完整精读报告</a></p>
+<!-- PAPER-METADATA BEGIN -->
+<p><strong>论文版本：</strong>
+arXiv:2410.17242v2（2025-04-02）；核验时为最新版（2026-11-27）。</p>
+<p><strong>官方资源：</strong> <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.17242">arXiv</a> | <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.17242v2">PDF</a> | <a
+target="_blank" rel="noopener" href="https://haian-jin.github.io/projects/LVSM/">Project Page</a> | <a
+target="_blank" rel="noopener" href="https://github.com/Haian-Jin/LVSM">Code</a> | <a
+target="_blank" rel="noopener" href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/9676c5283df26cabca412ca66b164a7d-Abstract-Conference.html">Publication</a></p>
+<!-- PAPER-METADATA END -->
+<h2 id="从三维重建到直接的新视角合成">1.
+从三维重建到直接的新视角合成</h2>
+<p>给定若干幅稀疏的已知位姿图像，如何生成指定相机视角下的 RGB
+图像？传统新视角合成（Novel View
+Synthesis，NVS）的一个典型思路是先获得场景表示，再通过渲染得到目标图像。无论是逐场景优化的
+NeRF、3D Gaussian Splatting，还是前馈预测三维表示的大型重建模型（Large
+Reconstruction
+Model，LRM），都对场景如何表示、图像如何形成作出了某些预先规定。</p>
+<p>LVSM（Large View Synthesis
+Model）提出另一种选择：如果任务本身仅要求预测目标图像，是否可以不显式构造三维场景，而让一个足够强的
+Transformer 直接从大量多视图数据中学习合成映射？</p>
+<h3 id="两种不同层级的三维归纳偏置">1.1 两种不同层级的三维归纳偏置</h3>
+<p>作者将相关方法使用的三维归纳偏置（3D inductive bias）区分为两类：</p>
+<ul>
+<li><strong>表示层归纳偏置</strong>：规定场景必须由体密度、辐射场、高斯原语、网格等形式表示，并使用相应的渲染机制生成图像。</li>
+<li><strong>网络层归纳偏置</strong>：通过极线投影、平面扫描、显式特征匹配等几何操作来组织不同视角之间的信息交换。</li>
+</ul>
+<p>这些约束有其价值：当观测不足时，它们提供明确的几何结构或成像关系。但是，固定表示和信息流也可能限制模型对复杂结构、非典型外观和视角相关效应的表达。已有大型重建模型已经减少了一部分网络层约束，却通常保留三维表示与渲染。LVSM希望进一步放开这一限制。</p>
+<p>需要明确：<strong>减少三维归纳偏置并不等于没有几何条件。</strong>
+LVSM仍需要已知的相机内参和外参，并利用这些参数计算每个像素对应的空间射线。它取消的是预设的三维场景形式和几何渲染操作，而不是相机条件。输出是目标RGB，不是深度、点云或高斯集合。</p>
+<p>这种不依赖显式三维表示的路线并非 LVSM 首创。Scene Representation
+Transformers（SRT）已经通过 Transformer
+学习潜在场景表示，再由目标相机条件生成图像，与 LVSM ED
+的高层思路相似。按原文 §2、§4.4，LVSM ED 的区别在于采用线性
+Patchify、固定长度场景 latent 及双向 Self-Attention，而 SRT 使用 CNN
+tokenizer、随输入视图数线性增长的 latent 序列及纯 Cross-Attention
+解码器。LVSM DO 则进一步取消独立的中间场景表示。</p>
+<h3 id="核心技术逻辑表示压缩还是直接条件预测">1.2
+核心技术逻辑：表示压缩还是直接条件预测？</h3>
+<figure>
+<img src="/Hexo/LVSM/Figures/Figure_02.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 2 — 两种LVSM模型架构" />
+<figcaption aria-hidden="true">Figure 2 — 两种LVSM模型架构</figcaption>
+</figure>
+<p>Figure 2（原文
+p.4）给出了两条路线。两者先把输入图像与射线、目标相机射线转成
+token，再通过全自注意力预测目标图像的
+patch。区别在于是否保留一个目标无关的独立场景表示：</p>
+<table>
+
+<thead>
+<tr>
+<th>架构</th>
+<th>信息流</th>
+<th>设计取舍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Encoder-Decoder（ED）</td>
+<td>多视图输入 → 固定长度场景latent → 与目标射线联合解码</td>
+<td>场景表示可以复用，适合同一场景反复渲染；固定长度可能限制信息保留</td>
+</tr>
+<tr>
+<td>Decoder-Only（DO）</td>
+<td>多视图输入与目标射线 → 单流Transformer → 目标RGB</td>
+<td>目标条件自第一层参与信息聚合；不经过独立场景瓶颈，但每次解码的序列长度随输入视图数量增长</td>
+</tr>
+</tbody>
+</table>
+<p>训练时两者使用同一类目标图像监督。由此形成贯穿论文的假设：更加自由的单流信息交换可能提高合成质量及新增观测利用能力，而固定场景表示可以换来更高的多目标解码吞吐。主比较、结构消融与视图数实验分别检验这些主张，并非用RGB指标证明隐式三维几何已被准确恢复。</p>
+<h2 id="统一的输入输出与训练目标">2. 统一的输入、输出与训练目标</h2>
+<h3 id="将相机条件和图像变成-token">2.1 将相机条件和图像变成 token</h3>
+<p>设有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+幅图像及相机参数：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>I</mi><mi>i</mi></msub><mo>,</mo><msub><mi>E</mi><mi>i</mi></msub><mo>,</mo><msub><mi>K</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>I</mi><mi>i</mi></msub><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>H</mi><mo>×</mo><mi>W</mi><mo>×</mo><mn>3</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">\{(I_i,E_i,K_i)\}_{i=1}^{N},\quad I_i\in\mathbb R^{H\times W\times3}.</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>i</mi></msub><annotation encoding="application/x-tex">E_i</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>i</mi></msub><annotation encoding="application/x-tex">K_i</annotation></semantics></math>
+分别为外参和内参，目标相机参数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>E</mi><mi>t</mi></msup><mo>,</mo><msup><mi>K</mi><mi>t</mi></msup></mrow><annotation encoding="application/x-tex">E^t,K^t</annotation></semantics></math>。模型需要预测
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mover><mi>I</mi><mo accent="true">̂</mo></mover><mi>t</mi></msup><annotation encoding="application/x-tex">\hat I^t</annotation></semantics></math>。</p>
+<p>给定相机，每个像素对应一条空间射线。LVSM用六维 Plücker ray
+embedding（普吕克射线嵌入）描述该射线。作为补充理解，若采用世界到相机外参
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>c</mi></msub><mo>=</mo><mi>R</mi><msub><mi>X</mi><mi>w</mi></msub><mo>+</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">X_c=RX_w+t</annotation></semantics></math>，齐次像素为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>u</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde u</annotation></semantics></math>，相机中心及单位射线方向可以写成：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi><mo>=</mo><mi>−</mi><msup><mi>R</mi><mi>⊤</mi></msup><mi>t</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>d</mi><mi>r</mi></msub><mo>=</mo><mfrac><mrow><msup><mi>R</mi><mi>⊤</mi></msup><msup><mi>K</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mover><mi>u</mi><mo accent="true">̃</mo></mover></mrow><mrow><mo stretchy="false" form="postfix">∥</mo><msup><mi>R</mi><mi>⊤</mi></msup><msup><mi>K</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mover><mi>u</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">∥</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">o=-R^\top t,\qquad d_r=\frac{R^\top K^{-1}\tilde u}{\|R^\top K^{-1}\tilde u\|}.</annotation></semantics></math></p>
+<p>射线的 Plücker 矩为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mi>o</mi><mo>×</mo><msub><mi>d</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">m=o\times d_r</annotation></semantics></math>，六维表示由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mi>r</mi></msub><annotation encoding="application/x-tex">d_r</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+组成。上述为教学性的常用坐标约定，原文没有指定六维排列和完整实现细节。射线确定的是空间直线，而不是射线上物体的深度。因此，即使相机已知，遮挡、匹配与未知几何仍需要从观测及学习先验推断。</p>
+<p>实现上，物体级和场景级实验的视图选择与相机位姿归一化均沿用
+GS-LRM（原文
+A.2，p.18）。原文未详细展开归一化算法；上述射线推导用于解释统一坐标约定下的几何关系，不代表完整的实际预处理流程。</p>
+<p>将 RGB 和射线分别切成不重叠的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>×</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">p\times p</annotation></semantics></math>
+patch。第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+幅输入图像的第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+个 patch 为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>p</mi><mo>×</mo><mi>p</mi><mo>×</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">I_{ij}\in\mathbb R^{p\times p\times3}</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>p</mi><mo>×</mo><mi>p</mi><mo>×</mo><mn>6</mn></mrow></msup></mrow><annotation encoding="application/x-tex">P_{ij}\in\mathbb R^{p\times p\times6}</annotation></semantics></math>；拼接并展平后，得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><msup><mi>p</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">9p^2</annotation></semantics></math>
+维向量，再通过线性层映射为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+维 token（原文 Eq.1）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mrow><mi mathvariant="normal">Linear</mi><mo>&#8289;</mo></mrow><mrow><mi>i</mi><mi>n</mi><mi>p</mi><mi>u</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">[</mo><msub><mi>I</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>,</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">]</mo><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mi>d</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">x_{ij}=\operatorname{Linear}_{input}([I_{ij},P_{ij}])\in\mathbb R^d.</annotation></semantics></math></p>
+<p>对于目标视图，不提供RGB，只用目标相机计算六维射线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>P</mi><mi>t</mi></msup><annotation encoding="application/x-tex">P^t</annotation></semantics></math>，按同样方式得到目标查询
+token（Eq.2）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mi>j</mi></msub><mo>=</mo><msub><mrow><mi mathvariant="normal">Linear</mi><mo>&#8289;</mo></mrow><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msubsup><mi>P</mi><mi>j</mi><mi>t</mi></msubsup><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mi>d</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">q_j=\operatorname{Linear}_{target}(P^t_j)\in\mathbb R^d.</annotation></semantics></math></p>
+<p>输入与目标分别形成长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mi>x</mi></msub><mo>=</mo><mi>N</mi><mi>H</mi><mi>W</mi><mi>/</mi><msup><mi>p</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">l_x=NHW/p^2</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mi>q</mi></msub><mo>=</mo><mi>H</mi><mi>W</mi><mi>/</mi><msup><mi>p</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">l_q=HW/p^2</annotation></semantics></math>
+的序列。默认
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>8</mn><mo>,</mo><mi>d</mi><mo>=</mo><mn>768</mn></mrow><annotation encoding="application/x-tex">p=8,d=768</annotation></semantics></math>；当分辨率为256×256、输入4幅时，输入序列4096个
+token，目标序列1024个 token。注意目标 query token
+是目标射线的嵌入，不等同于 Transformer 内部注意力矩阵 Q
+中的查询向量。</p>
+<h3 id="直接预测-rgb-而不是三维渲染参数">2.2 直接预测 RGB
+而不是三维渲染参数</h3>
+<p>原文 Eq.3 将整体映射写为：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>y</mi><msub><mi>l</mi><mi>q</mi></msub></msub><mo>=</mo><mi>M</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>q</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>q</mi><msub><mi>l</mi><mi>q</mi></msub></msub><mo>∣</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><msub><mi>l</mi><mi>x</mi></msub></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">y_1,\ldots,y_{l_q}=M(q_1,\ldots,q_{l_q}\mid x_1,\ldots,x_{l_x}).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+表示以下两种 Transformer 架构之一，每个输出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>j</mi></msub><annotation encoding="application/x-tex">y_j</annotation></semantics></math>
+是经过多层交互后的目标 patch 特征。输出头将其映射到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><msup><mi>p</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">3p^2</annotation></semantics></math>
+个 RGB 标量（Eq.4；Fig.8还显示输出前的 LayerNorm）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mover><mi>I</mi><mo accent="true">̂</mo></mover><mi>j</mi><mi>t</mi></msubsup><mo>=</mo><mrow><mi mathvariant="normal">Sigmoid</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mrow><mi mathvariant="normal">Linear</mi><mo>&#8289;</mo></mrow><mrow><mi>o</mi><mi>u</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mn>3</mn><msup><mi>p</mi><mn>2</mn></msup></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">\hat I^t_j=\operatorname{Sigmoid}(\operatorname{Linear}_{out}(y_j))\in\mathbb R^{3p^2}.</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">p=8</annotation></semantics></math>
+时，一个 token 预测64个像素的192个RGB分量。所有 patch
+按原图位置重组为目标图像。不需要先估计显式深度、密度或高斯属性，再执行沿射线积分。</p>
+<p>监督信号为真实目标图像
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>I</mi><mi>t</mi></msup><annotation encoding="application/x-tex">I^t</annotation></semantics></math>，损失包含像素误差和感知损失（Eq.5）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">ℒ</mi><mo>=</mo><mrow><mi mathvariant="normal">MSE</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mover><mi>I</mi><mo accent="true">̂</mo></mover><mi>t</mi></msup><mo>,</mo><msup><mi>I</mi><mi>t</mi></msup><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>λ</mi><mrow><mi mathvariant="normal">Perceptual</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mover><mi>I</mi><mo accent="true">̂</mo></mover><mi>t</mi></msup><mo>,</mo><msup><mi>I</mi><mi>t</mi></msup><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal L=\operatorname{MSE}(\hat I^t,I^t)+\lambda\operatorname{Perceptual}(\hat I^t,I^t).</annotation></semantics></math></p>
+<p>物体实验
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lambda=1</annotation></semantics></math>，场景实验
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\lambda=0.5</annotation></semantics></math>（A.2）。前者约束颜色数值，后者补充学习特征层面的相似性；原文未展开感知网络的具体层配置。真实目标RGB只用于损失，不作为目标查询输入。该训练关系解释了模型为何能够学习NVS，也限定了其证据：并没有独立的几何监督或显式场景参数恢复目标。</p>
+<h2 id="两种-transformer-如何利用观测信息">3. 两种 Transformer
+如何利用观测信息？</h2>
+<figure>
+<img src="/Hexo/LVSM/Figures/Figure_08.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 8 — 详细张量形状、层数与自注意力块" />
+<figcaption aria-hidden="true">Figure 8 —
+详细张量形状、层数与自注意力块</figcaption>
+</figure>
+<p>Figure 8（p.19）展开了网络。两者采用纯自注意力
+Transformer，默认总计24层。论文所称的 Decoder-Only
+不是语言模型式的因果自回归 decoder：输入和目标 token
+均可以参与双向注意，目标图中的各 patch 在网络中联合更新。</p>
+<h3 id="encoder-decoder学习目标无关的场景-latent">3.1
+Encoder-Decoder：学习目标无关的场景 latent</h3>
+<p>将输入序列记为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><msub><mi>l</mi><mi>x</mi></msub><mo>×</mo><mi>d</mi></mrow></msup></mrow><annotation encoding="application/x-tex">x\in\mathbb R^{l_x\times d}</annotation></semantics></math>。另外定义固定长度的可学习
+token 序列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>l</mi><mo>×</mo><mi>d</mi></mrow></msup></mrow><annotation encoding="application/x-tex">e\in\mathbb R^{l\times d}</annotation></semantics></math>，默认
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mo>=</mo><mn>3072</mn></mrow><annotation encoding="application/x-tex">l=3072</annotation></semantics></math>。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>e</mi><annotation encoding="application/x-tex">e</annotation></semantics></math>
+是所有场景共享的网络参数，而不是当前场景已经估计出的表示。</p>
+<p>Encoder 接收
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>e</mi><annotation encoding="application/x-tex">e</annotation></semantics></math>
+的拼接序列，经12层全自注意力，得到更新后的输入特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>′</mo></msup><annotation encoding="application/x-tex">x&#39;</annotation></semantics></math>
+和场景 latent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>（原文
+Eq.6 的紧凑记法）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msup><mi>x</mi><mo>′</mo></msup><mo>,</mo><mi>z</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msub><mrow><mi mathvariant="normal">Transformer</mi><mo>&#8289;</mo></mrow><mrow><mi>E</mi><mi>n</mi><mi>c</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>e</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">[x&#39;,z]=\operatorname{Transformer}_{Enc}(x,e).</annotation></semantics></math></p>
+<p>丢弃
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>′</mo></msup><annotation encoding="application/x-tex">x&#39;</annotation></semantics></math>，保留
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>l</mi><mo>×</mo><mi>d</mi></mrow></msup></mrow><annotation encoding="application/x-tex">z\in\mathbb R^{l\times d}</annotation></semantics></math>。由于
+Encoder 未接收目标查询
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>，对于固定输入观测，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+与目标相机无关。它可以作为同一场景的共享上下文。</p>
+<p>随后将
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+与目标射线 token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+拼接，经过12层 Decoder（Eq.7）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msup><mi>z</mi><mo>′</mo></msup><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msub><mrow><mi mathvariant="normal">Transformer</mi><mo>&#8289;</mo></mrow><mrow><mi>D</mi><mi>e</mi><mi>c</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo>,</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">[z&#39;,y]=\operatorname{Transformer}_{Dec}(z,q).</annotation></semantics></math></p>
+<p>此处
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mo>′</mo></msup><annotation encoding="application/x-tex">z&#39;</annotation></semantics></math>
+是经过目标条件更新后的
+latent，不再是目标无关的表示；网络丢弃它，仅从目标位置的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+回归RGB。与纯交叉注意力不同，Decoder 内部的 latent 可以读取目标
+token，目标之间也可以交换信息。</p>
+<p>该结构将整个映射分解为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>∣</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>D</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>,</mo><mi>Z</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">M(q\mid x)=D(q,Z(x))</annotation></semantics></math>。对同一场景的多个目标，只需计算一次
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Z(x)</annotation></semantics></math>，但所有后续目标使用的信息都要经过固定长度的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>。如果场景摘要没有保留某个目标所需的观测细节，解码器便无法从原输入重新获取该细节。这是潜在的信息瓶颈，并非证明3072个latent在所有情况下必然不足。</p>
+<h3 id="decoder-only让目标直接访问观测上下文">3.2
+Decoder-Only：让目标直接访问观测上下文</h3>
+<p>DO 进一步取消独立场景
+latent。它直接将输入序列与目标查询拼接，经24层全自注意力（Eq.8）：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msup><mi>x</mi><mo>′</mo></msup><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msub><mrow><mi mathvariant="normal">Transformer</mi><mo>&#8289;</mo></mrow><mrow><mi>D</mi><mi>e</mi><mi>c</mi><mo>−</mo><mi>o</mi><mi>n</mi><mi>l</mi><mi>y</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">[x&#39;,y]=\operatorname{Transformer}_{Dec-only}(x,q).</annotation></semantics></math></p>
+<p>从第一层起，目标条件可以影响输入 token 的更新，目标 token
+也能在不同层反复读取输入上下文。最终舍弃输入位置的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>′</mo></msup><annotation encoding="application/x-tex">x&#39;</annotation></semantics></math>，对目标位置的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+回归RGB。</p>
+<p>DO
+仍然具有多层隐藏特征；所谓消除中间场景表示，是指没有独立、目标无关、固定长度的场景摘要。不同目标相机进入网络会改变上下文，因此不能直接像
+ED 一样缓存最终的场景 latent。</p>
+<p>从结构上看，改变输入视图数量只需相应改变输入 token
+序列长度（保持图像分辨率与 patch 尺寸不变）。标准 Transformer
+的注意力投影和逐 token MLP
+在序列位置间共享参数，其权重形状不依赖序列长度。因此，DO
+可直接处理不同长度的输入上下文，ED 的 Encoder 也可接收可变数量的输入
+token，再聚合到固定数量的场景
+latent。这是结构层面的兼容性，并不保证训练分布之外的泛化质量；两者能否有效利用新增观测，仍需由
+§5.3 的输入数量实验检验。</p>
+<h3 id="多层双向交互为什么重要">3.3 多层双向交互为什么重要？</h3>
+<figure>
+<img src="/Hexo/LVSM/Figures/Figure_09.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 9 — 四种注意力可见性掩码" />
+<figcaption aria-hidden="true">Figure 9 —
+四种注意力可见性掩码</figcaption>
+</figure>
+<p>Fig.9（p.20）给出不同注意力设计。以 L 表示
+latent（ED）或输入（DO），T 表示目标
+patch；图中行表示正在更新的查询位置，列表示可读取的键/值位置。</p>
+<table>
+<thead>
+<tr>
+<th>设计</th>
+<th>L读L</th>
+<th>L读T</th>
+<th>T读L</th>
+<th>T读T</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>完整双向</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Per-patch prediction</td>
+<td>✓</td>
+<td>—</td>
+<td>✓</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Pure cross-attention</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>—</td>
+</tr>
+<tr>
+<td>不更新latent</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<p>目标 patch
+不仅可以读取观测，还能相互交换上下文。例如，一个局部区域的边缘或颜色估计可以借助邻近
+patch 的特征；目标信息也可反馈到 latent，再由其它目标 patch
+读取。由于存在多个 Transformer
+层，这种交换并不限于一次查询。图中的灰色整行表示对应分组不进行注意更新，并非对全负无穷
+logits 强行执行 softmax。</p>
+<p>这里的目标 patch
+均来自<strong>同一目标图像</strong>。不能将这个机制理解成多个新视图之间的联合扩散或跨帧一致性模块。原文
+A.6 说明推理时各目标图像独立生成。</p>
+<h3 id="信息瓶颈与算术成本的权衡">3.4 信息瓶颈与算术成本的权衡</h3>
+<p>标准 dense self-attention 在长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>、宽度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+的序列上形成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>×</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">L\times L</annotation></semantics></math>
+的注意力打分矩阵，算术复杂度含
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>L</mi><mn>2</mn></msup><mi>d</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(L^2d)</annotation></semantics></math>
+项（投影和MLP另有约
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>L</mi><msup><mi>d</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(Ld^2)</annotation></semantics></math>
+项）。Fig.8中的QKNorm改善训练稳定性，并不消除序列二次增长；FlashAttention可以降低中间显存和访存成本，但不会将全注意力的理论打分数变成线性。</p>
+<p>ED 的编码长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mi>x</mi></msub><mo>+</mo><mi>l</mi></mrow><annotation encoding="application/x-tex">l_x+l</annotation></semantics></math>，解码长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mo>+</mo><msub><mi>l</mi><mi>q</mi></msub></mrow><annotation encoding="application/x-tex">l+l_q</annotation></semantics></math>；DO
+每个目标处理
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mi>x</mi></msub><mo>+</mo><msub><mi>l</mi><mi>q</mi></msub></mrow><annotation encoding="application/x-tex">l_x+l_q</annotation></semantics></math>。以256分辨率、4输入、3072
+latent为例：ED编码7168个 token，解码4096；DO为5120。若目标数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>，只以每层
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math>
+作为注意力算术量代理，则 ED 和 DO 分别约为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo stretchy="false" form="prefix">(</mo><mn>7168</mn><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mn>12</mn><mi>M</mi><mo stretchy="false" form="prefix">(</mo><mn>4096</mn><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>,</mo><mspace width="2.0em"></mspace><mn>24</mn><mi>M</mi><mo stretchy="false" form="prefix">(</mo><mn>5120</mn><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">12(7168)^2+12M(4096)^2,\qquad24M(5120)^2.</annotation></semantics></math></p>
+<p>这是补充计算，不是论文实测FLOPs。单目标时编码可能使ED总计算更大；目标增加时，固定表示的复用逐渐体现优势。若输入增加到16幅，DO序列变成17408，而ED每目标解码仍为4096。实际速度还取决于投影、内存、设备和批处理，因此应与真实FPS实验结合，而不能只凭上述复杂度预测具体吞吐。</p>
+<h2 id="训练与推理条件">4. 训练与推理条件</h2>
+<p>论文在物体和场景数据上分别训练。物体模型使用 Objaverse
+约73万对象，每对象渲染32个随机视图；在 GSO（1099对象）和
+ABO（1000对象）测试，4幅输入、10幅目标。场景模型使用
+RealEstate10K，约8万片段来自1万段YouTube视频，采用pixelSplat的训练/测试划分。训练时物体默认4输入8目标，场景2输入6目标。主物体实验包含256和512两种设置，主场景比较为256分辨率。</p>
+<p>默认模型宽度768、24层，ED采用12+12层、3072 latent。主配置64
+A100、每卡batch8，总batch512；256分辨率训练，随后可微调到512。作者在§4.2指出普通
+Transformer 训练会因梯度爆炸而崩溃，使用
+QKNorm、梯度裁剪1、跳过范数超过5的优化步稳定训练；同时使用
+FlashAttention-v2、梯度检查点与bf16。完整训练参数见完整精读报告。</p>
+<p>推理无需每场景优化权重：给定新场景的带位姿观测和目标相机，ED先计算场景latent再解码，DO直接联合处理输入及目标token。官方代码仓库标明公开代码是重新实现版本，不应直接将其视作Adobe内部原始训练代码。</p>
+<h2 id="实验证据质量结构与可扩展性">5.
+实验证据：质量、结构与可扩展性</h2>
+<h3 id="主比较取消显式三维表示是否牺牲rgb质量">5.1
+主比较：取消显式三维表示是否牺牲RGB质量？</h3>
+<p>Table 1（p.6）中的 Decoder-Only 相对于 GS-LRM 的 PSNR
+对比如下。物体评估匹配输入和渲染分辨率，场景评估使用pixelSplat的256验证集。</p>
+<table>
+<thead>
+<tr>
+<th>数据集与分辨率</th>
+<th style="text-align: right;">GS-LRM</th>
+<th style="text-align: right;">ED</th>
+<th style="text-align: right;">DO</th>
+<th style="text-align: right;">DO增益（dB）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ABO 512</td>
+<td style="text-align: right;">29.09</td>
+<td style="text-align: right;">29.81</td>
+<td style="text-align: right;">32.10</td>
+<td style="text-align: right;">+3.01</td>
+</tr>
+<tr>
+<td>GSO 512</td>
+<td style="text-align: right;">30.52</td>
+<td style="text-align: right;">29.32</td>
+<td style="text-align: right;">32.36</td>
+<td style="text-align: right;">+1.84</td>
+</tr>
+<tr>
+<td>ABO 256</td>
+<td style="text-align: right;">28.98</td>
+<td style="text-align: right;">30.35</td>
+<td style="text-align: right;">32.47</td>
+<td style="text-align: right;">+3.49</td>
+</tr>
+<tr>
+<td>GSO 256</td>
+<td style="text-align: right;">29.59</td>
+<td style="text-align: right;">29.19</td>
+<td style="text-align: right;">31.71</td>
+<td style="text-align: right;">+2.12</td>
+</tr>
+<tr>
+<td>RealEstate10K 256</td>
+<td style="text-align: right;">28.10</td>
+<td style="text-align: right;">28.58</td>
+<td style="text-align: right;">29.67</td>
+<td style="text-align: right;">+1.57</td>
+</tr>
+</tbody>
+</table>
+<p>注意，原文§4.3将 GSO 512 的提升写为2.8 dB，但表中32.36−30.52=1.84
+dB；这里明确采用表格复算，保留原文不一致。DO在该表各组的PSNR、SSIM和LPIPS均领先，ED并非全部指标占优，例如GSO
+512三指标低于GS-LRM。RealEstate10K DO为29.67 dB、0.906 SSIM、0.098
+LPIPS，GS-LRM为28.10、0.892、0.114。</p>
+<figure>
+<img src="/Hexo/LVSM/Figures/Figure_03.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 3 — 512分辨率物体定性比较" />
+<figcaption aria-hidden="true">Figure 3 —
+512分辨率物体定性比较</figcaption>
+</figure>
+<p>Fig.3展示薄结构、小孔和高频纹理：DO在多组选例中更接近GT，能够减少浮状伪影、模糊与结构错误。</p>
+<figure>
+<img src="/Hexo/LVSM/Figures/Figure_04.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4 — 场景级定性比较" />
+<figcaption aria-hidden="true">Figure 4 — 场景级定性比较</figcaption>
+</figure>
+<p>Fig.4对比室内场景，LVSM在反射、栏杆、桌面纹理等局部区域具有视觉优势。RGB外观与真实图更一致，是有意义的NVS证据，但这些实验没有直接测量物体的三维拓扑、深度或材质参数。</p>
+<h3 id="结构消融全双向信息流是否必要">5.2
+结构消融：全双向信息流是否必要？</h3>
+<p>Table 3（p.9）将 Fig.9 的掩码干预用于具体实验。 其中 CNN tokenizer 与
+Pure Cross-Attention 解码器是原文 §4.4 借鉴 SRT
+的两种组件级替代设计，用于检验 LVSM 自身的线性 Patchify
+和全双向注意力选择，而非对完整 SRT 的复现实验。物体ED使用32
+GPU、batch256、8目标；场景DO采用原主训练设置。以下数值不可与Table
+2的小规模资源实验混用。</p>
+<table>
+<thead>
+<tr>
+<th>GSO（ED）</th>
+<th style="text-align: right;">PSNR↑</th>
+<th style="text-align: right;">SSIM↑</th>
+<th style="text-align: right;">LPIPS↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>完整ED</td>
+<td style="text-align: right;">28.07</td>
+<td style="text-align: right;">.920</td>
+<td style="text-align: right;">.053</td>
+</tr>
+<tr>
+<td>CNN tokenizer</td>
+<td style="text-align: right;">27.59</td>
+<td style="text-align: right;">.914</td>
+<td style="text-align: right;">.052</td>
+</tr>
+<tr>
+<td>不更新latent</td>
+<td style="text-align: right;">26.61</td>
+<td style="text-align: right;">.903</td>
+<td style="text-align: right;">.061</td>
+</tr>
+<tr>
+<td>Per-patch prediction</td>
+<td style="text-align: right;">26.27</td>
+<td style="text-align: right;">.897</td>
+<td style="text-align: right;">.072</td>
+</tr>
+<tr>
+<td>Pure cross-attention</td>
+<td style="text-align: right;">24.60</td>
+<td style="text-align: right;">.876</td>
+<td style="text-align: right;">.085</td>
+</tr>
+</tbody>
+</table>
+<p>关闭 latent 更新下降1.46 dB，限制逐patch预测下降1.80
+dB，同时取消两类交流的纯cross设计下降3.47 dB。CNN tokenizer
+的LPIPS略好（.052 vs
+.053）是例外，不能说线性token化在所有指标上都占优。场景DO同样从29.67下降到28.98
+dB（−0.69），SSIM从.906降为.897，LPIPS从.098升为.103。这些结果支持完整自注意力设计，但
+per-patch
+掩码同时改变目标反馈与目标之间的交互，不能精确拆分每条信息路径的因果贡献。</p>
+<p>Table 2（同页）在8
+GPU、总batch64下比较模型规模。ED总173M参数固定，6+18层在GSO/RE10K得到26.48/28.32
+dB，18+6层只有24.74/26.80；分配更多解码层有利。DO从6层43M增加到24层171M，GSO从24.15上升到27.04，场景从27.62到28.89。近同参数的DO24优于ED6+18，但不同序列长度意味着并未匹配全部训练计算量；作者关于编码压缩误差的解释仍是有待验证的假设。</p>
+<h3 id="训练时只使用4视图测试时增加观测会怎样">5.3
+训练时只使用4视图，测试时增加观测会怎样？</h3>
+<figure>
+<img src="/Hexo/LVSM/Figures/Figure_05.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 5 — 不同输入数量的零样本泛化" />
+<figcaption aria-hidden="true">Figure 5 —
+不同输入数量的零样本泛化</figcaption>
+</figure>
+<p>Fig.5（p.10）在GSO测试1、2、4、6、8、12、16幅输入，所有模型仅用4输入训练。DO随新增视图继续提升，16输入约35.5
+dB；ED和GS-LRM在约6–8视图后趋于饱和甚至下降（图读近似）。这不仅说明 ED
+和 DO
+在结构上均可接受不同数量的输入，也为训练之外的输入数量泛化提供了实际证据：在该测试范围内，DO
+对新增观测的利用效果更好。结果支持直接利用观测上下文的策略；固定场景表示可能限制新增信息的保留，但不能排除训练分布偏移、融合难度等替代解释。这里的
+zero-shot 特指测试输入数量变化，而非任意领域泛化。</p>
+<figure>
+<img src="/Hexo/LVSM/Figures/Figure_06.jpg" srcset="/Hexo/img/loading.gif" lazyload
+alt="Figure 6 — 输入视图数与解码FPS" />
+<figcaption aria-hidden="true">Figure 6 —
+输入视图数与解码FPS</figcaption>
+</figure>
+<p>Fig.6在物体256设置中测量<strong>解码</strong>速度。ED接近90
+FPS；DO约从单视图97 FPS降至4输入35 FPS、8输入16 FPS、16输入6
+FPS（图读近似）。这与序列长度分析一致，但 ED
+一次性编码开销不计在图6内。单输入时DO甚至可能更快，不能断言ED在所有端到端设置都具有速度优势。</p>
+<h3 id="较小模型能否在学术算力下训练">5.4
+较小模型能否在学术算力下训练？</h3>
+<p>§4.3另报告 RE10K 的较小DO模型：单A100
+80GB、6层、batch64训练7天，得到27.66
+dB、.870、.129；相较MVSplat的26.39、.869、.128，PSNR领先1.27
+dB，但LPIPS略差。双GPU、12层、batch64训练7天，得到28.56
+dB、.889、.112；相较GS-LRM，PSNR和LPIPS更好，SSIM略低。这说明小规模模型有竞争力，不代表64卡主模型的完整性能可由单卡直接复现。</p>
+<h2 id="能力边界与研究启发">6. 能力边界与研究启发</h2>
+<p>LVSM是确定性前馈回归模型。A.6说明作者在项目视频中观察到：即使各目标图像独立生成，已观测区域仍可以保持较好的跨视图一致性。与概率生成模型不同，固定输入和目标条件不会产生随机采样变化。但
+A.7
+同时指出未观测区域经常出现噪声、闪烁与固定图案；作者建议将生成方法与LVSM结合。此外，在512×512训练后测试512×960输入，中心区域较好、横向边界模糊。作者推测与中心裁剪训练导致的长边射线分布差异有关。</p>
+<p>从推断角度看，假设两个场景在所有输入视角中完全一致，却在遮挡背面有不同内容，那么相同输入条件的确定性网络无法保证两者的背面都正确。减少三维表示约束可以提升网络的表达自由度，却不消除观测不足引起的不可辨识性。用生成先验补全未知内容也不等于恢复真实内容；如需可信恢复，必须另行评价观测支持范围、真实几何与不确定性。</p>
+<p>由此产生几个值得继续检验的技术问题：固定latent的饱和究竟来自容量限制还是训练分布偏移？是否可以按新增观测的有效覆盖而非数量自适应选择上下文，在保持目标条件交换的同时降低长序列代价？对于观测不足的区域，能否提供经验证的不确定性而不是仅输出一张合理图像？这些是由本文现象引出的研究假设，不是作者已完成的实验或已经验证的新颖研究问题。</p>
+<p>LVSM的贡献在于展示了<strong>不依赖预设显式三维表示的高质量、可扩展NVS路线</strong>，并通过ED与DO的对比揭示场景信息压缩、目标条件化和解码计算之间的取舍。它没有证明三维归纳偏置普遍无用，也没有直接解决三维真实性、未知相机或不可见区域的可靠推断。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>LVSM：以最小三维归纳偏置实现稀疏视角新视角合成</div>
+      <div>https://zq111724.github.io/Hexo/LVSM/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hexo/DiffusionGS/" title="DiffusionGS：将三维高斯融入扩散去噪器的单阶段图像到三维生成与重建">
+                        <span class="hidden-mobile">DiffusionGS：将三维高斯融入扩散去噪器的单阶段图像到三维生成与重建</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

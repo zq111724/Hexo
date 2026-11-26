@@ -1,0 +1,3907 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/Hexo/img/fluid.png">
+  <link rel="icon" href="/Hexo/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="返回论文概览 第一部分：论文精读报告 GEN3C 精读报告  论文版本： arXiv:2503.03751v1（2025-03-05）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code | Model | Dataset  权威依据： 用户提供的同版本 PDF；页码均指 PDF 物理页。  0. 自动初">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control（完整精读与研究笔记）">
+<meta property="og:url" content="https://zq111724.github.io/Hexo/GEN3C_Full/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="返回论文概览 第一部分：论文精读报告 GEN3C 精读报告  论文版本： arXiv:2503.03751v1（2025-03-05）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code | Model | Dataset  权威依据： 用户提供的同版本 PDF；页码均指 PDF 物理页。  0. 自动初">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zq111724.github.io/Hexo/GEN3C/Figures/Figure_01.jpg">
+<meta property="article:published_time" content="2026-11-26T20:52:07.000Z">
+<meta property="article:modified_time" content="2026-11-26T21:48:15.908Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zq111724.github.io/Hexo/GEN3C/Figures/Figure_01.jpg">
+  
+  
+  
+  <title>GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control（完整精读与研究笔记） - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/Hexo/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/Hexo/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/Hexo/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zq111724.github.io","root":"/Hexo/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/Hexo/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/Hexo/js/utils.js" ></script>
+  <script  src="/Hexo/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/Hexo/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/Hexo/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/Hexo/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/Hexo/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control（完整精读与研究笔记）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-27 04:52" pubdate>
+          2026年11月27日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          62k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          518 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control（完整精读与研究笔记）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><a href="/Hexo/GEN3C/">返回论文概览</a></p>
+<h1 id="第一部分论文精读报告">第一部分：论文精读报告</h1>
+<h1 id="gen3c-精读报告">GEN3C 精读报告</h1>
+<!-- PAPER-METADATA BEGIN -->
+<p><strong>论文版本：</strong>
+arXiv:2503.03751v1（2025-03-05）；核验时为最新版（2026-11-27）。</p>
+<p><strong>官方资源：</strong> <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2503.03751">arXiv</a> | <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2503.03751v1">PDF</a> | <a
+target="_blank" rel="noopener" href="https://research.nvidia.com/labs/toronto-ai/GEN3C/">Project
+Page</a> | <a target="_blank" rel="noopener" href="https://github.com/nv-tlabs/GEN3C">Code</a> | <a
+target="_blank" rel="noopener" href="https://huggingface.co/nvidia/GEN3C-Cosmos-7B">Model</a> | <a
+target="_blank" rel="noopener" href="https://huggingface.co/datasets/nvidia/GEN3C-Testing-Example">Dataset</a></p>
+<!-- PAPER-METADATA END -->
+<p><strong>权威依据：</strong> 用户提供的同版本 PDF；页码均指 PDF
+物理页。</p>
+<!-- PTH:BEGIN INIT -->
+<h2 id="自动初始化论文与材料">0. 自动初始化：论文与材料</h2>
+<p><strong>论文结构</strong></p>
+<p>【原文事实】Xuanchi Ren、Tianchang Shen（共同第一作者）、Jiahui
+Huang、Huan Ling、Yifan Lu、Merlin Nimier-David、Thomas
+Müller、Alexander Keller、Sanja Fidler、Jun Gao，机构 NVIDIA、University
+of Toronto、Vector Institute（PDF p.1）。arXiv v1 日期
+2025-03-05。本报告绑定该版本，未将后续仓库或会议版本的内容混入。</p>
+<table>
+
+<thead>
+<tr>
+<th>部分</th>
+<th>PDF 页码</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Abstract、§1 Introduction</td>
+<td>1–2</td>
+<td>问题、显式几何条件及应用</td>
+</tr>
+<tr>
+<td>§2 Related Work</td>
+<td>2–3</td>
+<td>NVS、可控生成、视频一致性</td>
+</tr>
+<tr>
+<td>§3 Background</td>
+<td>3</td>
+<td>视频扩散、VAE、训练目标 Eq.1</td>
+</tr>
+<tr>
+<td>§4 Method</td>
+<td>3–6</td>
+<td>时空缓存、渲染、融合、训练、推理</td>
+</tr>
+<tr>
+<td>§5 Experiments and Applications</td>
+<td>6–9</td>
+<td>训练、单/双视角、驾驶、动态、消融、Cosmos</td>
+</tr>
+<tr>
+<td>§6 Conclusion</td>
+<td>9</td>
+<td>总结与动态内容限制</td>
+</tr>
+<tr>
+<td>References</td>
+<td>9–13</td>
+<td>[1]–[76]</td>
+</tr>
+<tr>
+<td>Appendix A</td>
+<td>14</td>
+<td>自回归更新，Eq.4–5</td>
+</tr>
+<tr>
+<td>Appendix B</td>
+<td>14–15</td>
+<td>训练、推理及基线设置</td>
+</tr>
+<tr>
+<td>Appendix C</td>
+<td>15–16</td>
+<td>掩码比较及补充定性结果</td>
+</tr>
+</tbody>
+</table>
+<p><strong>资源与证据</strong></p>
+<p>PDF 16 页，全文 Figure 1–16（正文 12，附录 4），Table
+1–6（全部正文），无独立编号 Algorithm。B1 目录
+<code>figure-catalog.json</code> 保留原文题注；B2
+<code>figure-map.json</code> 保存 PDF 物理页、区域和展示副本的映射。16
+幅图均有 PDF 保真区域和 JPEG 展示副本，11 PASS_EXACT、5
+PASS_WITH_NOTES；展示副本不声称无损，客户端渲染未验证。源 PDF SHA-256 为
+<code>5f2462a60f2bed4f097ea79680de022eec4e5ea2f2a30660af9c2a2e80a067d7</code>。Source
+为辅助载体，内部无独立版本印记；HTML 有外部装饰资源缺失，不影响完整 PDF
+阅读。原始论文资源保持不变。</p>
+<p>后文以【原文事实】【背景知识】【合理推断】【独立评价】【尚未证实】标识来源。原文事实包括作者明确声称但未独立证明的观点；定性截图只能证明相应可见现象，不能替代指标。所有页码指上传
+PDF 物理页。</p>
+<p>本单元只做资源和目录登记，不涉及需要解释的技术机制或数学推导。</p>
+<!-- PTH:END INIT -->
+<!-- PTH:BEGIN TITLE -->
+<h2 id="标题从相机参数条件到几何条件">1.1
+标题：从相机参数条件到几何条件</h2>
+<p><strong>标题译文</strong></p>
+<p>GEN3C: 3D-Informed World-Consistent Video Generation with Precise
+Camera Control</p>
+<p>GEN3C：由三维信息引导、具有精确相机控制的世界一致性视频生成。</p>
+<p><strong>术语辨析</strong></p>
+<ul>
+<li><strong>GEN3C</strong>：作者在 Abstract 和 Introduction 将名称与
+Camera Control 和 3D Consistency
+相联系。它首先是生成式视频模型，而非旨在直接输出高精度三维网格的重建网络。</li>
+<li><strong>3D-Informed</strong>：三维信息提供显式引导。§4.1–4.3
+通过深度反投影建立点云，在目标相机下渲染为二维条件视频，再以视频扩散生成输出。三维缓存是条件，而非要求最终图像完全等于点云渲染；因此允许修正噪声、补全遮挡，也存在偏离真实几何的可能。</li>
+<li><strong>World-Consistent</strong>：关注相机运动和时间变化中同一世界的内容保持一致。Figure
+2
+的往返运动示例将“相机转回来后是否仍看见同一个场景”作为直观动机。世界一致性不等于静止：动态内容中同一物体可以随时间移动。它也不是仅相邻帧平滑，短时平滑无法保证离开视野的区域再次出现时仍正确。</li>
+<li><strong>Precise Camera
+Control</strong>：用户指定相机轨迹；相机位姿和内参用于几何投影，而不仅是送给网络的数值条件。位姿决定观察中心与方向，内参（如焦距）决定成像关系；Figure
+1 的 Dolly Zoom
+同时改变两者。投影给出像素级空间锚点，但网络输出并未被硬性要求逐像素遵循几何，因此“precise”是设计目标和实验主张，不是严格误差为零的数学承诺。</li>
+</ul>
+<p>【合理推断】标题指向一个条件生成问题：在稀疏或动态观测不完备时，以部分三维信息和目标相机共同约束视频生成，兼顾观测一致性与不可见区域的合理补全。仅凭标题不能确定点云是否是最终重建产物、是否支持任意相机轨迹、是否需要输入位姿和精确深度、是否有长程一致性保证。这些须由
+§4 和 §5 验证。</p>
+<p>本单元是标题解释，不涉及独立的公式推导。</p>
+<!-- PTH:END TITLE -->
+<!-- PTH:BEGIN ABSTRACT -->
+<h2 id="摘要为什么要把三维几何放在生成模型之外">1.2
+摘要：为什么要把三维几何放在生成模型之外？</h2>
+<p><strong>摘要全文翻译</strong>（PDF p.1）</p>
+<p>我们提出
+GEN3C，一种具有精确相机控制和时间三维一致性的生成式视频模型。先前的视频模型已经能够生成真实感视频，但它们往往很少利用三维信息，导致诸如物体突然出现或消失之类的不一致现象。相机控制即使得到实现，也并不精确，因为相机参数仅仅是神经网络的输入，网络仍必须推断视频如何依赖于相机。相比之下，GEN3C
+由一个三维缓存引导：该缓存是通过预测种子图像或此前生成帧的逐像素深度而得到的点云。在生成接下来的帧时，GEN3C
+以根据用户提供的新相机轨迹对三维缓存进行二维渲染的结果为条件。关键在于，这意味着
+GEN3C
+不需要记忆自己此前生成了什么，也不需要根据相机位姿推断图像结构。相反，该模型可以将其生成能力集中于此前未观测的区域，以及将场景状态推进至下一帧。我们的结果表明，相较于先前工作，GEN3C
+具有更精确的相机控制，并在稀疏视角新视角合成中取得最先进的结果，即使是在驾驶场景和单目动态视频等具有挑战性的设置中也是如此。结果最好以视频形式观看。欢迎查看我们的项目网页：https://research.nvidia.com/labs/toronto-ai/GEN3C/
+。</p>
+<p><strong>逻辑拆解</strong></p>
+<table>
+
+<thead>
+<tr>
+<th>原文逻辑环节</th>
+<th>含义与后续证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>背景</td>
+<td>已有大规模视频生成具有强外观先验，但缺少显式 3D 历史。§1–2。</td>
+</tr>
+<tr>
+<td>问题 1</td>
+<td>离开视野又重新看到的物体可能消失或改变。Figure 2
+用往返相机展示历史遗忘，而非单纯画质不足。</td>
+</tr>
+<tr>
+<td>问题 2</td>
+<td>相机位姿数值本身并未直接给出像素在目标图像上的位置；网络须同时学习几何映射和内容生成。</td>
+</tr>
+<tr>
+<td>方法</td>
+<td>深度预测 → 反投影点云 → 缓存 → 新相机投影 →
+条件扩散。由外部几何确定部分结构。§4.1–4.4、Figure 3。</td>
+</tr>
+<tr>
+<td>长序列</td>
+<td>此前生成帧的深度可进入更新后的缓存；缓存成为跨视频片段的显式历史。§4.5、Appendix
+A。</td>
+</tr>
+<tr>
+<td>结果</td>
+<td>单/双视角、驾驶、动态等实验分别提供定量及定性证据。§5、Tables
+1–4。</td>
+</tr>
+</tbody>
+</table>
+<p>【背景知识】由已知三维点和目标相机可以确定其在图像平面上的投影，但点云不包含所有遮挡后表面；扩散模型的任务可理解为带部分观测条件的生成。缓存不能替代所有神经时序建模，因为运动、光照变化、未观测区域和噪声修复仍由网络处理。</p>
+<p>【独立评价】作者所谓“不需要记忆”指显式空间历史减轻网络隐式记忆负担，而非证明网络没有时序状态或无需关注跨帧信息；“集中全部生成能力”是动机性表述，不是对计算资源的形式化分解。不可见区域本质上多解，补全结果逼真不等于恢复唯一真实场景。Table
+4 还显示动态任务的 SSIM 并非最优；摘要中的 SOTA
+主张应限定在报告的比较协议与指标。</p>
+<p>一句话理解：GEN3C
+将几何可确定的像素引导交由三维缓存的投影提供，再利用视频扩散模型处理不完整、不精确的条件与未知内容，以改善稀疏观测下的相机可控性及跨时间一致性。</p>
+<p>摘要本身未给出公式，相关数学机制在 §4 和公式精读中展开。</p>
+<!-- PTH:END ABSTRACT -->
+<!-- PTH:BEGIN CONTRIB -->
+<h2 id="核心贡献原文主张及其论证位置">1.3
+核心贡献：原文主张及其论证位置</h2>
+<p><strong>贡献归纳</strong></p>
+<p>论文 Introduction 未采用编号贡献列表。下列为依据 p.1–2、§4 与 §5
+的主张重组，并非原文逐条列出的 Contributions。</p>
+<ol type="1">
+<li><strong>问题刻画（问题层）</strong>：缺少显式几何的视频生成，既难以将用户相机参数转换成准确画面，又难以持久记忆离开视野的内容。现象并非作者首次发现；本文将两个问题联系到
+3D 表示及渲染这一共同结构。Figure 2 负责提供动机实例，§2
+比较相机控制与历史表示路线。</li>
+<li><strong>时空 3D
+缓存条件生成（核心方法）</strong>：从一个或多个视角、静态或动态输入，以及历史生成帧预测深度并反投影成点云，按时间/视角存储；在目标相机下投影，使用二维条件视频指导扩散生成。相机变换由几何负责，生成模型负责补全与修正。§4.1–4.4、Figure
+3。点云、投影、单目深度、扩散本身是继承的工具；新意主张主要在这一组合和训练/推理机制。</li>
+<li><strong>多视角条件融合（具体方法）</strong>：保留每个视角的独立点云，分别渲染，再编码、掩码乘法、共享首层及跨视角最大聚合，避免显式合并时深度不一致直接形成混杂的像素条件。§4.3、Eq.2–3、Figure
+4、10、Table 6、Figure
+16。该结构旨在兼容不同视角数；并不代表网络能无限制地处理任意规模输入或严格校正所有相机误差。</li>
+<li><strong>自回归历史与可编辑性（机制与应用）</strong>：将新生成观测通过深度对齐再反投影写回缓存，后续片段从扩展的三维历史中取得条件。显式空间表示还能通过移除或移动点云来修改车辆轨迹，改变目标内外参可制作
+Dolly Zoom。§4.5、Appendix A、Figure 1、8。</li>
+<li><strong>广泛实验和底座迁移（实验贡献）</strong>：静态单/双视角、驾驶与单目动态
+NVS 四类设置，深度扰动与融合消融，以及 SVD 到 Cosmos
+的扩展。§5.1–5.7、Tables 1–6、Figures
+5–16。作者主张准确相机控制、广泛泛化及高质量生成。</li>
+</ol>
+<p><strong>证据对应</strong></p>
+<table>
+
+<thead>
+<tr>
+<th>贡献</th>
+<th>直接依据</th>
+<th>后续需要审查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>几何条件</td>
+<td>Fig.3, §4.1–4.4；Fig.14</td>
+<td>投影误差修复与新区域真实性不可混为一谈</td>
+</tr>
+<tr>
+<td>多视角融合</td>
+<td>Fig.4/10、Table 6、Fig.16</td>
+<td>不同视角数、冲突量、遮挡类型及光照的独立控制</td>
+</tr>
+<tr>
+<td>长程记忆</td>
+<td>Fig.1/2, §4.5, Appendix A</td>
+<td>长程累计漂移、错误缓存污染；未给出严格一致性证明</td>
+</tr>
+<tr>
+<td>扩展应用</td>
+<td>Fig.7–9、Table 3–4</td>
+<td>FID 不等于几何精度；动态 SSIM 比 GCD 低</td>
+</tr>
+<tr>
+<td>迁移</td>
+<td>Fig.11–12, §5.7</td>
+<td>Cosmos 对比仅定性、分辨率差异、训练成本</td>
+</tr>
+</tbody>
+</table>
+<p>【原文事实】论文没有给出关于三维一致性的普遍数学保证。Eq.1
+为一般扩散目标，Eq.2–3 为融合设计，Eq.4–5
+为对齐优化；这些属于数学化算法，而非独立的新物理理论或可识别性定理。这里只归纳作者贡献主张，独立创新性与充分性留待综合评价。</p>
+<!-- PTH:END CONTRIB -->
+<!-- PTH:BEGIN CONCLUSION -->
+<h2 id="结论及作者承认的限制">1.4 结论及作者承认的限制</h2>
+<p><strong>结论全文翻译</strong>（§6，PDF p.9）</p>
+<p>本文介绍了
+GEN3C，一种具有精确相机控制的一致性视频生成模型。我们通过从种子图像或此前生成的视频构建三维缓存来实现这一目标。随后，我们依据用户提供的相机轨迹将缓存渲染成二维视频，以强条件引导视频生成，从而获得比此前方法更准确的相机控制。我们的结果在稀疏视角新视角合成中也是最先进的，即使在驾驶场景和单目动态新视角合成等具有挑战性的设置中亦是如此。</p>
+<p><strong>局限（Limitations）</strong>：当生成具有动态内容的视频时，GEN3C
+依赖预先生成的视频提供物体运动。生成这样的视频本身就是一个挑战。一项有前景的扩展是在训练视频生成模型时引入文本条件，以通过提示指定运动。</p>
+<p><strong>结论再核对</strong></p>
+<p>【原文事实】作者总结两条主要成果：几何缓存使相机控制更准确；稀疏视角与动态场景中的
+NVS
+质量提高。该结论覆盖单视角、双视角、驾驶及单目动态输入，但动态输入本身承担运动条件，不能把该工作解读成已经解决了从文本自由生成可控物体运动。</p>
+<p>【独立评价】结论中的 SOTA 需要按指标和任务分别读。Table 1/2
+中所报告的 GEN3C 指标优于列出的基线；Table 3 的 FID
+为分布相似度，不直接测量目标相机几何；Table 4 的 LPIPS、FID 改善明显而
+SSIM 更低。精确相机控制的支持来自 TSED（Table
+1）和定性目标姿态对照，未证明任意轨迹具有统一的几何误差上界。自回归缓存扩展可帮助保留历史，但之前生成的错误也可能被固化。后两条为独立评价，非作者在
+Limitations 中逐字列出的限制。</p>
+<p>后续文本提示运动是作者提出的未来工作方向，而非本文已实现模块。结论段没有新的公式，数学条件与失效机制将在后续分析。</p>
+<!-- PTH:END CONCLUSION -->
+<!-- PTH:BEGIN FIG-OVERVIEW -->
+<h2 id="图表功能总览">2.1 图表功能总览</h2>
+<p><strong>图表功能目录</strong></p>
+<table style="width:99%;">
+
+<thead>
+<tr>
+<th>编号</th>
+<th style="text-align: right;">PDF 页</th>
+<th>章节</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Figure 1</td>
+<td style="text-align: right;">1</td>
+<td>teaser</td>
+<td>总览应用：长视频、静态/动态 NVS、驾驶、Dolly Zoom、编辑</td>
+</tr>
+<tr>
+<td>Figure 2</td>
+<td style="text-align: right;">2</td>
+<td>Introduction</td>
+<td>动机：往返相机与历史遗忘</td>
+</tr>
+<tr>
+<td>Figure 3</td>
+<td style="text-align: right;">3</td>
+<td>Method overview</td>
+<td>全方法：时空缓存、投影、扩散</td>
+</tr>
+<tr>
+<td>Figure 4</td>
+<td style="text-align: right;">4</td>
+<td>4.3</td>
+<td>融合：显式、拼接、共享首层与 max-pool</td>
+</tr>
+<tr>
+<td>Figure 5</td>
+<td style="text-align: right;">5</td>
+<td>5.2</td>
+<td>单视角 NVS 定性对照</td>
+</tr>
+<tr>
+<td>Figure 6</td>
+<td style="text-align: right;">6</td>
+<td>5.3</td>
+<td>双视角 NVS 定性对照</td>
+</tr>
+<tr>
+<td>Figure 7</td>
+<td style="text-align: right;">7</td>
+<td>5.4</td>
+<td>驾驶偏离轨迹与补全</td>
+</tr>
+<tr>
+<td>Figure 8</td>
+<td style="text-align: right;">8</td>
+<td>5.4</td>
+<td>驾驶车辆移除和轨迹编辑</td>
+</tr>
+<tr>
+<td>Figure 9</td>
+<td style="text-align: right;">8</td>
+<td>5.5</td>
+<td>单目动态视频重观察</td>
+</tr>
+<tr>
+<td>Figure 10</td>
+<td style="text-align: right;">8</td>
+<td>5.6</td>
+<td>多视角几何与光照冲突的融合消融</td>
+</tr>
+<tr>
+<td>Figure 11</td>
+<td style="text-align: right;">9</td>
+<td>5.7</td>
+<td>SVD/Cosmos 底座对比</td>
+</tr>
+<tr>
+<td>Figure 12</td>
+<td style="text-align: right;">9</td>
+<td>5.7</td>
+<td>Cosmos 极端旋转外推</td>
+</tr>
+<tr>
+<td>Figure 13</td>
+<td style="text-align: right;">15</td>
+<td>C.2</td>
+<td>单视角补充基线对照</td>
+</tr>
+<tr>
+<td>Figure 14</td>
+<td style="text-align: right;">15</td>
+<td>C.2</td>
+<td>投影修正和缺失区域生成</td>
+</tr>
+<tr>
+<td>Figure 15</td>
+<td style="text-align: right;">16</td>
+<td>C.3</td>
+<td>Kubric4D 动态时序细节</td>
+</tr>
+<tr>
+<td>Figure 16</td>
+<td style="text-align: right;">16</td>
+<td>C.1</td>
+<td>掩码拼接/乘法的 OOD 对比</td>
+</tr>
+<tr>
+<td>Table 1</td>
+<td style="text-align: right;">6</td>
+<td>5.2</td>
+<td>单视角定量与域内/域外差异</td>
+</tr>
+<tr>
+<td>Table 2</td>
+<td style="text-align: right;">7</td>
+<td>5.3</td>
+<td>双视角插值/外推定量</td>
+</tr>
+<tr>
+<td>Table 3</td>
+<td style="text-align: right;">7</td>
+<td>5.4</td>
+<td>驾驶 FID 随偏移变化</td>
+</tr>
+<tr>
+<td>Table 4</td>
+<td style="text-align: right;">8</td>
+<td>5.5</td>
+<td>单目动态定量</td>
+</tr>
+<tr>
+<td>Table 5</td>
+<td style="text-align: right;">8</td>
+<td>5.6</td>
+<td>深度噪声敏感性</td>
+</tr>
+<tr>
+<td>Table 6</td>
+<td style="text-align: right;">8</td>
+<td>5.6</td>
+<td>融合策略定量消融</td>
+</tr>
+</tbody>
+</table>
+<p><strong>阅读顺序</strong></p>
+<p>先读 Fig.1–2 确定问题与应用，再以 Fig.3–4
+理解缓存、投影及多视角聚合如何连接扩散模型。随后 Fig.5–9 与 Table 1–4
+分别回答输入稀疏性、域外泛化、驾驶视角偏移、动态运动保持及编辑。Fig.10
+与 Table 6 是同一融合设计的定性/定量互补；Table 5
+单独改变深度噪声比；Fig.16 进一步对掩码选择给出定性消融。Fig.11–12
+说明更换预训练视频底座的潜力，Fig.13–15 是相应任务的补充结果。</p>
+<p>注意区分示意图、可见视觉现象、数据表和完整视频证据。截图无法独立验证所有帧的三维一致性；定量性能也不直接证明所有不可见区域的真实几何。各
+Figure 的保真 PDF 与展示副本以 B2 映射记录为准，本报告只复用经核验的
+JPEG。图表总览仅建立证据阅读顺序，数学推导与逐模块技术机制留在相应单元。</p>
+<!-- PTH:END FIG-OVERVIEW -->
+<!-- PTH:BEGIN FIG-01 -->
+<h3 id="figure-1-应用总览与世界一致性">2.2.1 Figure 1 ·
+应用总览与世界一致性</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_01.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 1" />
+<figcaption aria-hidden="true">Figure 1</figcaption>
+</figure>
+<p>来源：原论文 PDF p.1，teaser；B2 核验的 JPEG 展示副本，区域及保真 PDF
+见 figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 1. GEN3C can generate long and temporally consistent videos
+with precise camera control. We apply it to various applications,
+including single-view and sparse-views novel view synthesis, monocular
+dynamic video novel view synthesis, and driving simulation. With an
+explicit 3D cache, GEN3C further supports generating videos with
+cinematic effects, such as Dolly Zoom which simultaneously changes poses
+and intrinsics, and 3D editing.</p>
+<p><strong>Caption 中文</strong></p>
+<p>GEN3C
+能够通过精确的相机控制生成长且具有时间一致性的视频。我们将它应用于多种任务，包括单视角和稀疏视角新视角合成、单目动态视频的新视角合成和驾驶模拟。借助显式三维缓存，GEN3C
+进一步支持带有电影效果的视频生成，例如同时改变相机位姿和内参的 Dolly
+Zoom（滑动变焦），以及三维编辑。</p>
+<p><strong>布局与子图</strong></p>
+<p>图由上方多种输入/生成序列及底部应用示例组成。左侧 Inputs 区分 single
+view（小猫图像）、sparse views（城市场景的少量不同视角）和 dynamic
+video（河马视频）；右侧 Generated video
+给出相机轨迹示意及多个采样时刻的输出。小猫一行出现帧号
+26、39、106、118，说明作者展示的是跨长序列的不同时间片，而非四张独立图片。动态河马一行展示在相同输入运动之上改变观看轨迹。底部
+Cinematic effect 为雪景的 Dolly Zoom；Driving simulation 显示 Original /
+Lane change (4m) 和 Original / Editing
+两组，区分相机移动与场景内容编辑。</p>
+<p><strong>技术逻辑</strong></p>
+<p>静态输入反投影后，同一时刻点云复制至各目标帧；动态输入则为每个时刻提供几何。相机轨迹改变时，同一部分三维内容在新视角下重新投影，遮挡后内容需由生成模型补全。Dolly
+Zoom
+不只是数字放大：位姿改变观察点，焦距调节视角，两者配合可大致保持前景尺寸而改变背景透视。车辆编辑修改缓存中的对象而非直接在最终帧涂抹。对应
+§4.1–4.5、§5.4。</p>
+<p><strong>证据边界</strong></p>
+<p>【原文事实】图展示作者选定的多种应用。它不是同一测试集的统一性能表；仅凭抽帧不能评估
+118
+帧间是否每一帧连续、真实三维结构是否一致、编辑对象是否在全部视角正确。Dolly
+Zoom 说明可使用不同内参，不意味着任意内参或极端轨迹均通过定量验证。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-01 -->
+<!-- PTH:BEGIN FIG-02 -->
+<h3 id="figure-2-往返运动中历史遗忘">2.2.2 Figure 2 ·
+往返运动中历史遗忘</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_02.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 2" />
+<figcaption aria-hidden="true">Figure 2</figcaption>
+</figure>
+<p>来源：原论文 PDF p.2，Introduction；B2 核验的 JPEG
+展示副本，区域及保真 PDF 见 figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 2. Motivation: Our model can generate consistent videos when
+the camera covers the same region multiple times, while previous work
+produces severe artifacts due to the lack of explicit modeling of the
+history.</p>
+<p><strong>Caption 中文</strong></p>
+<p>动机：当相机多次覆盖同一区域时，我们的模型能够生成一致的视频；此前方法由于缺乏对历史的显式建模而产生严重伪影。</p>
+<p><strong>布局与子图</strong></p>
+<p>两行分别为 CameraCtrl 与 Ours；列按前进/返回两个运动阶段展示帧
+6、29、66、79（以图上的运动阶段和帧号辨认）。室内走廊、门口、楼梯等是用来比较内容身份与空间位置的锚点。CameraCtrl
+返回画面出现与早期观测不相符的场景结构；Ours
+则更接近此前可见的楼梯与门口布局。重点不是逐帧锐度，而是时间相隔较远后重新出现的区域。</p>
+<p><strong>技术逻辑</strong></p>
+<p>【背景知识】静态世界的一致性要求相机返回旧视角时观察到同一几何与外观，而不只是相邻帧连续。仅输入相机数值和有限时序潜特征，网络需隐式记忆场景；GEN3C
+将已有 RGB-D 观测转为显式空间缓存，返回视角能直接重新渲染旧点。§4.5 和
+Appendix A 的更新使新生成区域也能进入历史。</p>
+<p><strong>证据边界</strong></p>
+<p>该图是动机与选定实例，不是循环一致性误差实验。图未给出两次相机位姿完全相同的误差阈值、跨全部序列的回访统计或逐帧位姿估计，因此不能推出严格回环闭合或完全消除遗忘。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-02 -->
+<!-- PTH:BEGIN FIG-03 -->
+<h3 id="figure-3-从时空缓存到条件视频扩散">2.2.3 Figure 3 ·
+从时空缓存到条件视频扩散</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_03.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 3" />
+<figcaption aria-hidden="true">Figure 3</figcaption>
+</figure>
+<p>来源：原论文 PDF p.3，Method overview；B2 核验的 JPEG
+展示副本，区域及保真 PDF 见 figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 3. Overview of GEN3C. With the user input, which can be a
+single-view image, multi-view images, or dynamic video(s), we first
+build a spatiotemporal 3D cache (Sec. 4.1) by predicting the depth for
+each image and unprojecting it into 3D. With the camera poses from the
+user, we then render the cache into video(s) (Sec. 4.2), which are fed
+into the video diffusion model to generate a photorealistic video that
+aligns with the desired camera poses (Sec. 4.3 &amp; 4.4).</p>
+<p><strong>Caption 中文</strong></p>
+<p>GEN3C
+概览。对于用户输入（可以是单视角图像、多视角图像或动态视频），我们首先通过预测各图像的深度并将其反投影到三维空间来构建时空三维缓存（§4.1）。随后，利用用户提供的相机位姿，将缓存渲染为视频（§4.2），再将其输入视频扩散模型，生成与所需相机位姿一致的真实感视频（§4.3、§4.4）。</p>
+<p><strong>布局与子图</strong></p>
+<p>从左至右四部分：Inputs（single-view V=1,L=1；multi-view
+V&gt;1,L=1；dynamic video(s) V≥1,L&gt;1）；Spatial-temporal 3D
+cache（Estimate 深度、Unproject 反投影，静态分支 Duplicate t）；Render
+3D cache（按用户相机序列分别投影各个视角的点云）；3D-informed video
+generation（Encoder 将渲染帧变潜变量，汇聚后与视频扩散/噪声 latent
+交互，Decoder 输出
+RGB）。图中同一列不同时间的点云来自时间索引，视角维度保留独立来源。黑色缺失区域不是已观测到的黑色物体，正文另有可见性
+mask。图内“Spatial maxpool”标签不能独立解释成空间降采样；Eq.3
+明确在各视角的首层特征上取最大。</p>
+<p><strong>技术逻辑</strong></p>
+<p>输入不是简单的 V 张图全部融合为单一 3DGS。对于 t 时刻 v
+来源，深度和相机参数产生有色点云 P^{t,v}；目标 C^t 下渲染得到 RGB
+I^{t,v} 与覆盖掩码 M^{t,v}，沿 t 堆叠成 I<sup>v,M</sup>v。E 冻结，编码
+z<sup>v=E(I</sup>v)，掩码 min-pooling 至潜空间后相乘，和共同的带噪目标
+z_tau 沿通道拼接。共享首层逐视角执行，跨 V 维逐元素 max-pool
+后送给余下的扩散模型。训练目标是目标真实视频的干净
+latent，而推理从高斯噪声开始迭代去噪并解码。输出仍是 RGB
+视频，不是缓存中缺失点的唯一三维恢复。静态复制和动态逐时刻缓存使同一网络能处理两种场景。</p>
+<p><strong>证据边界</strong></p>
+<p>【原文事实】Figure 3
+是架构总览，不包含全部通道维度或训练细节；它省略了 CLIP
+首帧条件、长视频写回及深度对齐。正文 Eq.2–3 和 Appendix A
+优先于简略图示。模型受几何条件引导，但不具有形式化硬性投影一致性约束。</p>
+<p>Eq.2–3 的聚合轴和掩码位置按正文明确；完整张量和推导见数学单元。</p>
+<!-- PTH:END FIG-03 -->
+<!-- PTH:BEGIN FIG-04 -->
+<h3 id="figure-4-三种多视角融合方式">2.2.4 Figure 4 ·
+三种多视角融合方式</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_04.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 4" />
+<figcaption aria-hidden="true">Figure 4</figcaption>
+</figure>
+<p>来源：原论文 PDF p.4，4.3；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 4. Three approaches to fuse the point cloud from two
+views.</p>
+<p><strong>Caption 中文</strong></p>
+<p>来自两个视角的点云的三种融合方法。</p>
+<p><strong>布局与子图</strong></p>
+<ol type="a">
+<li>Explicit fusion：P_A、P_B 先合并为 P_{A∪B}，再 Render、Encode
+成一个条件潜变量；(b) Latent concat：P_A、P_B 各自 Render 成独立投影，再
+Encode 为 z_A、z_B，沿通道 concat；(c) Ours：各自
+Render、Encode，并分别进行首层计算，随后 Maxpool 得到
+z′。三幅小图的分叉与合流位置是关键：前两种分别在三维表示和潜变量通道合流，本文是在共享网络首层后融合特征。</li>
+</ol>
+<p><strong>技术逻辑</strong></p>
+<p>显式合并要求各深度坐标可靠对齐；来自不同帧的颜色或光照若冲突，三维合并会把不一致投影成重影或相互遮挡。直接
+concat 保留不同来源但通道数随 V
+变化，网络首层权重输入宽度固定，需事先指定最大
+V、填充和排序；交换视角可能导致不同输出。共享首层 f 对每个视角的 masked
+latent 和同一个 noisy latent 独立处理，跨视角逐元素 max
+保持输出形状固定且对排列不变：交换输入顺序不会改变各位置候选值的最大值。它不显式计算置信度或保证选中正确几何；特征可由不同来源在不同通道获胜。§4.3、Eq.2–3。</p>
+<p><strong>证据边界</strong></p>
+<p>Figure 10 和 Table 6 对比的是显式融合与本文方案；正文称 concat
+经验上可工作，但图 4
+本身没有给出三者完整数值。排列不变是聚合形式的性质，不是跨视角冲突必然解决或视角数任意扩展仍能泛化的证明。</p>
+<p>最大聚合维度 V 而非通道/空间维；输出尺寸固定，置换不变性来自 max
+的交换性。</p>
+<!-- PTH:END FIG-04 -->
+<!-- PTH:BEGIN FIG-05 -->
+<h3 id="figure-5-单视角-nvs-的可见细节">2.2.5 Figure 5 · 单视角 NVS
+的可见细节</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_05.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 5" />
+<figcaption aria-hidden="true">Figure 5</figcaption>
+</figure>
+<p>来源：原论文 PDF p.5，5.2；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 5. Qualitative results for single-view novel view synthesis.
+Compared to the baselines, our model generates photorealistic novel view
+images that precisely align with the camera poses. The green zoom-in
+boxes highlight the fine-grained details that our model can
+preserve.</p>
+<p><strong>Caption 中文</strong></p>
+<p>单视角新视角合成的定性结果。与基线相比，我们的模型生成了与相机位姿精确对齐的真实感新视角图像。绿色放大框突出显示模型能够保留的细粒度细节。</p>
+<p><strong>布局与子图</strong></p>
+<p>列从 Input、CameraCtrl、NVS-Solver、Ours 到
+GT；三行展示不同场景，绿色框为局部对比。第一行观察室内椅腿等细结构与相对位置；第二行比较装饰性室内结构与纹理；第三行以列车车身文字/边缘等为视觉锚点。输入与
+GT 并非同一视角，因此不能以直接拷贝输入的局部纹理作为成功。对照 GT，Ours
+的局部形状和位置在所示实例中更接近目标。</p>
+<p><strong>技术逻辑</strong></p>
+<p>相机参数条件模型需学习位姿到像素的映射，几何 warp
+约束法则可能受深度误差或去噪强度影响。GEN3C
+投影缓存提供新视角的结构位置，模型学习修复点云孔洞及错误投影；细结构能否保留与输入深度和条件生成共同相关。对应
+§5.2 和 Table 1。GT=Ground Truth，为真实目标视角。</p>
+<p><strong>证据边界</strong></p>
+<p>图只支持展示样本中的可见细节，不能从绿色框单独确认更准确的深度或全部序列的控制精度。Table
+1 补充全测试集合指标；未给出逐类别细结构统计。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-05 -->
+<!-- PTH:BEGIN FIG-06 -->
+<h3 id="figure-6-双视角插值和外推">2.2.6 Figure 6 ·
+双视角插值和外推</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_06.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 6" />
+<figcaption aria-hidden="true">Figure 6</figcaption>
+</figure>
+<p>来源：原论文 PDF p.6，5.3；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 6. Qualitative results on two-views novel view synthesis.
+Compared to the baselines, our model generates much more plausible and
+realistic novel views with a smooth transition between two input views
+even if the overlap is small (such as the first row).</p>
+<p><strong>Caption 中文</strong></p>
+<p>双视角新视角合成的定性结果。与基线相比，即使重叠较小（例如第一行），我们的模型也能生成更合理、更真实的新视角，并在两个输入视角之间实现平滑过渡。</p>
+<p><strong>布局与子图</strong></p>
+<p>左边两列是两个输入视角，后面依次为 PixelSplat、MVSplat、Ours 和
+GT；各行不同场景包括室内空间及室外屋顶/场景结构。第一行两个输入重叠有限，难点在中间相机下同时协调两个来源；后续场景能观察结构边界、纹理连续及缺失区域。重建式结果在输入覆盖之外的区域容易出现破碎或模糊，Ours
+的画面在示例中更完整。</p>
+<p><strong>技术逻辑</strong></p>
+<p>PixelSplat/MVSplat 输出可渲染 Gaussian
+splats，依赖输入对三维几何的约束；GEN3C
+保留两个独立点云来源，在潜特征层融合，利用视频先验对两视角没有直接覆盖的区域做生成式补全。插值是在两输入观测之间合成；外推是超出其覆盖轨迹范围。两种设定不等价，外推通常未知区域更大。§5.3、Table
+2。</p>
+<p><strong>证据边界</strong></p>
+<p>所示“平滑过渡”来自代表性画面与作者主张，截图没有直接量化时间一致性；更完整的视觉外观不证明不可见表面真实。重建基线输出显式场景，本文输出生成视频，任务输出性质有差别。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-06 -->
+<!-- PTH:BEGIN FIG-07 -->
+<h3 id="figure-7-驾驶场景偏离原轨迹">2.2.7 Figure 7 ·
+驾驶场景偏离原轨迹</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_07.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 7" />
+<figcaption aria-hidden="true">Figure 7</figcaption>
+</figure>
+<p>来源：原论文 PDF p.7，5.4；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 7. Qualitative results on novel view synthesis for driving
+scene. Our model can fill in the missing regions in the original video
+even when the deviation is large, while reconstruction-based baselines
+produce severe artifacts.</p>
+<p><strong>Caption 中文</strong></p>
+<p>驾驶场景新视角合成的定性结果。即使偏移很大，我们的模型也能补全原始视频中缺失的区域，而基于重建的基线产生严重伪影。</p>
+<p><strong>布局与子图</strong></p>
+<p>行分别为 Nerfacto、3D-GS 与 Ours；列为 Original、Left 2m、Left 4m、Up
+1m、Up
+2m。随着相机从原始轨迹横向左移或上移，路面、车道、路侧物体和背景的遮挡关系改变。重建基线在较大偏离时暴露缺失、拉伸和破碎区域；Ours
+生成的道路边界和场景外观更连贯。左右偏移与上移是不同方向的测试。</p>
+<p><strong>技术逻辑</strong></p>
+<p>Waymo Open Dataset 输入包含驾驶视频；附录 B.5 使用 LiDAR
+点云提供深度尺度，对逐帧预测深度对齐、反投影并保留时间维度。新轨迹下缓存投影无法覆盖全部目标像素，扩散先验填补这些区域。驾驶基线
+Nerfacto 和 3DGS
+使用三相机所有训练帧；生成方法不是依靠每个新轨迹的真实监督图像。Table 3
+只定量报告横向偏移不同幅度的 FID，而纵向变化为此处定性。</p>
+<p><strong>证据边界</strong></p>
+<p>偏离原轨迹缺少逐像素 GT。视觉合理及 FID
+较低不等于交通环境的准确性、物体位置或道路标线完全正确；不能直接将生成结果认定为安全验证所需的真实驾驶数据。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-07 -->
+<!-- PTH:BEGIN FIG-08 -->
+<h3 id="figure-8-在显式缓存中进行车辆编辑">2.2.8 Figure 8 ·
+在显式缓存中进行车辆编辑</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_08.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 8" />
+<figcaption aria-hidden="true">Figure 8</figcaption>
+</figure>
+<p>来源：原论文 PDF p.8，5.4；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 8. Qualitative results on 3D editing for driving scene. We
+remove and modify the trajectory of cars from the original scene.</p>
+<p><strong>Caption 中文</strong></p>
+<p>驾驶场景三维编辑的定性结果。我们从原始场景中移除车辆，并修改车辆轨迹。</p>
+<p><strong>布局与子图</strong></p>
+<p>图按 Original、Removal、Editing
+等展示编辑前后的驾驶画面，两组场景中的绿色框标记被移除或改变位置的车辆及相邻区域。第一种编辑要求车辆消失且原车辆所在区域被合理填补；第二种改变对象空间位置/轨迹，画面中新位置及周围场景需协调。应将编辑区域与未编辑背景分开观察。</p>
+<p><strong>技术逻辑</strong></p>
+<p>缓存是带颜色和空间坐标的点云，允许针对物体区域删除点或对点施加空间变换。之后按目标相机重新投影；移除点后露出的背景未必在原缓存中，生成模型利用上下文补全。因此这不是只在二维像素掩码内编辑，也不是神经模型从任意文字自主决定三维动作。正文
+§4.1、5.4 说明这种能力，具体对象分割与编辑交互细节并未完整算法化。</p>
+<p><strong>证据边界</strong></p>
+<p>图为定性编辑示例。没有可核对的真实编辑后视频、编辑后碰撞约束或语义保持指标；不能证明所有对象可以被正确分割或运动轨迹满足动力学。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-08 -->
+<!-- PTH:BEGIN FIG-09 -->
+<h3 id="figure-9-单目动态视频的新轨迹">2.2.9 Figure 9 ·
+单目动态视频的新轨迹</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_09.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 9" />
+<figcaption aria-hidden="true">Figure 9</figcaption>
+</figure>
+<p>来源：原论文 PDF p.8，5.5；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 9. Qualitative results on monocular dynamic NVS. Our model
+generates plausible novel camera trajectories for the given dynamic
+video. Note that, when zooming out from the original video, our model
+successfully reasons depth of field out.</p>
+<p><strong>Caption 中文</strong></p>
+<p>单目动态 NVS
+的定性结果。我们的模型为给定动态视频生成合理的新相机轨迹。注意，当相机相较原视频拉远时，我们的模型能够成功推断景深效果。</p>
+<p><strong>布局与子图</strong></p>
+<p>左侧为动态河马输入视频的抽帧；另两组分别表现环绕和拉远的观看方式，每组以多个时刻展示同一动态对象及水面、背景。观察相机改变时的河马姿态与场景边界：模型必须既改变观看方向和距离，又保持对应时间的运动状态。作者特别指出拉远时背景与景深外观的变化。</p>
+<p><strong>技术逻辑</strong></p>
+<p>动态视频的各帧对应不同世界时刻，因此不能将其当作静态场景的多视角观测直接融合。§4.1
+定义 P^{t,v}，单目动态 V=1，每个 t 的点云来自相应输入帧；用 C^t
+投影该时刻的几何，再由视频扩散同时处理相邻帧与未知区域。这里的“生成轨迹”是沿给定轨迹生成视频，不是模型预测用户应使用哪条轨迹。</p>
+<p><strong>证据边界</strong></p>
+<p>河马例子无新视角
+GT，作者关于景深的陈述为定性观察，没有光学焦距、光圈或景深物理模型的测量。输入视频已提供动态对象运动；不能把结果解读为模型独立生成真实运动学。§5.5
+Table 4 使用另一有 GT 的合成动态数据集量化。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-09 -->
+<!-- PTH:BEGIN FIG-10 -->
+<h3 id="figure-10-深度和光照冲突下的融合">2.2.10 Figure 10 ·
+深度和光照冲突下的融合</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_10.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 10" />
+<figcaption aria-hidden="true">Figure 10</figcaption>
+</figure>
+<p>来源：原论文 PDF p.8，5.6；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 10. Qualitative results on ablating different fusion
+strategies. GEN3C can generate a realistic novel view with misaligned
+depth and different lighting in the input views, while the explicit
+fusion strategy fails.</p>
+<p><strong>Caption 中文</strong></p>
+<p>不同融合策略的消融定性结果。当输入视角深度未对齐且光照不同时，GEN3C
+能生成真实感新视角，而显式融合策略失败。</p>
+<p><strong>布局与子图</strong></p>
+<p>两组示例各以两个小输入图示来源，对比 Explicit Fusion、Ours 和
+GT。一个场景可见桌面及其边缘等结构，另一个为室内光照/亮度不同的视角。比较关键是来自两个来源的结构是否重叠错位、亮暗是否产生不协调接缝。显式融合在错位和外观冲突区域有可见伪影，本文输出更连贯。</p>
+<p><strong>技术逻辑</strong></p>
+<p>P_A 和 P_B
+直接求并集时，一个真实表面可能因预测深度偏差落在不同三维位置；投影后相互遮挡或形成双重边缘。合并时还丢失来源身份，颜色差异难以归因。独立渲染与共享首层融合保留每个来源的候选图像，在网络特征空间协调冲突。关联
+Fig.4 与 Table 6。</p>
+<p><strong>证据边界</strong></p>
+<p>图展示两种不一致因素共同出现时的实例，未分别控制深度误差和光照误差，也未证明网络恢复了真实三维对齐。Table
+6 给出总体性能差异，不单独测量颜色归一化或几何注册误差。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-10 -->
+<!-- PTH:BEGIN FIG-11 -->
+<h3 id="figure-11-更换视频扩散底座">2.2.11 Figure 11 ·
+更换视频扩散底座</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_11.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 11" />
+<figcaption aria-hidden="true">Figure 11</figcaption>
+</figure>
+<p>来源：原论文 PDF p.9，5.7；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 11. Qualitative comparison on using different base models:
+Stable Video Diffusion (SVD) [4] v.s. Cosmos [1]. When having a more
+powerful video generation model, GEN3C is able to generate more
+realistic output with less artifacts. Note that the slight misalignment
+between the two results is due to the models using different video
+resolutions.</p>
+<p><strong>Caption 中文</strong></p>
+<p>不同基础模型的定性比较：Stable Video Diffusion（SVD）[4] 与 Cosmos
+[1]。采用更强的视频生成模型时，GEN3C
+能生成更真实、伪影更少的输出。注意，两组结果的轻微未对齐是由于模型使用了不同的视频分辨率。</p>
+<p><strong>布局与子图</strong></p>
+<p>两行分别为 SVD 与 Cosmos；各列为 Input 和 New camera
+1–4。输入是室内厨房场景，多个目标相机暴露不同的台面、墙体和物体区域。对比时看跨视角物体身份及结构边缘，Cosmos
+的部分外观和细节在展示样本中更自然。不能将两行轻微空间位置偏差全部归为相机控制错误，题注明确说明分辨率不同。</p>
+<p><strong>技术逻辑</strong></p>
+<p>§5.7 用 Cosmos1.0Diffusion-7BVideo2World 替换 SVD；渲染帧由 Cosmos
+tokenizer 编码，其嵌入与 noisy latent
+拼接，继续利用相同的几何条件思想。RE10K、DL3DV 上 fine-tune 10,000
+steps、batch size
+64。本文方法利用视频底座所学生成先验，不要求将点云表示本身替换为 Cosmos
+内部几何。</p>
+<p><strong>证据边界</strong></p>
+<p>对比仅定性，底座参数规模、训练数据、分辨率和计算量未完全控制；不能由该图证明某一结构单独带来数值提升，或
+Cosmos 在所有表格和动态任务上复现 SVD 的结论。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-11 -->
+<!-- PTH:BEGIN FIG-12 -->
+<h3 id="figure-12-cosmos-极端视角变化">2.2.12 Figure 12 · Cosmos
+极端视角变化</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_12.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 12" />
+<figcaption aria-hidden="true">Figure 12</figcaption>
+</figure>
+<p>来源：原论文 PDF p.9，5.7；B2 核验的 JPEG 展示副本，区域及保真 PDF 见
+figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 12. Example of extreme NVS using Cosmos as the base model: the
+input view is the middle one, and our model is capable of rotating
+significantly to the left and right.</p>
+<p><strong>Caption 中文</strong></p>
+<p>以 Cosmos 为基础模型的极端 NVS
+示例：中间图是输入视角，我们的模型能够向左和向右进行大幅度旋转。</p>
+<p><strong>布局与子图</strong></p>
+<p>三幅街道/有轨电车场景图，中间为输入，两侧为相机旋转后的生成图。目标视角新增视野区域并改变结构投影，原视角已可见的街景信息应保持可识别。图中未列出具体角度或相机轨迹误差。</p>
+<p><strong>技术逻辑</strong></p>
+<p>对单视角点云而言，大幅旋转使投影覆盖范围收缩，遮挡后以及原图视野之外的内容不能从单张图唯一恢复。更强的生成底座可提高外观合理性，几何渲染仍只提供已知区域的锚点。与
+Fig.11 的底座替换共同解释极端外推潜力。</p>
+<p><strong>证据边界</strong></p>
+<p>作者没有在此给出目标视角真实图或极端角度分组的定量结果。可见画面完整不代表重建未知世界真实几何，也不代表任意旋转都可成功。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-12 -->
+<!-- PTH:BEGIN FIG-13 -->
+<h3 id="figure-13-补充单视角定性对照">2.2.13 Figure 13 ·
+补充单视角定性对照</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_13.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 13" />
+<figcaption aria-hidden="true">Figure 13</figcaption>
+</figure>
+<p>来源：原论文 PDF p.15，C.2；B2 核验的 JPEG 展示副本，区域及保真 PDF
+见 figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 13. Additional qualitative results for single-view novel view
+synthesis.</p>
+<p><strong>Caption 中文</strong></p>
+<p>单视角新视角合成的额外定性结果。</p>
+<p><strong>布局与子图</strong></p>
+<p>列为
+Input、GenWarp、MotionCtrl、Ours、GT，展示三组不同场景。应分别比较生成目标与
+GT
+的布局、视角相关物体相对位置、细节及伪影；不同输入与输出本来就存在目标视角差异。它补充
+Fig.5 中未同时展示的两种基线，并保留相同的定性阅读逻辑。</p>
+<p><strong>技术逻辑</strong></p>
+<p>GenWarp 利用几何重投影引导生成，MotionCtrl
+属于相机参数条件路线；GEN3C 进一步使用时空 3D cache
+和经过训练的条件融合。附录 B.3 说明 GenWarp、MotionCtrl 使用基于 SVD
+的官方 checkpoint，测试数据与本文相同。Table 1
+是这些方法的定量对照。</p>
+<p><strong>证据边界</strong></p>
+<p>附录 C.2 正文称提供“quantitative”结果，但 Figure 13 题注明确为
+qualitative，实际内容为图像而非数值表。这里按实际呈现视作补充定性证据，不捏造数值或把基线论文内容独立验证。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-13 -->
+<!-- PTH:BEGIN FIG-14 -->
+<h3 id="figure-14-显式投影缺陷如何被生成模型修正">2.2.14 Figure 14 ·
+显式投影缺陷如何被生成模型修正</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_14.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 14" />
+<figcaption aria-hidden="true">Figure 14</figcaption>
+</figure>
+<p>来源：原论文 PDF p.15，C.2；B2 核验的 JPEG 展示副本，区域及保真 PDF
+见 figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 14. Illustration of rendered depth images and model outputs.
+Our model can fix the error in the depth projection (such as the orange
+handrail in the first image and the light in the second one), and
+generate realistic content in the missing regions (such as the inpainted
+railway).</p>
+<p><strong>Caption 中文</strong></p>
+<p>渲染深度图像与模型输出的示意。我们的模型能够修复深度投影的错误（如第一幅图中的橙色扶手和第二幅图中的灯），并在缺失区域生成真实感内容（例如补全后的铁轨）。</p>
+<p><strong>布局与子图</strong></p>
+<p>Input 与 Ours
+并列两组。输入是通过深度估计反投影后再投影得到的彩色条件图，黑色孔洞/缺失区清晰可见；并非只显示以灰度编码的标量深度图。第一组列车/铁路场景重点看橙色扶手以及轨道缺失区域，第二组室内图重点看灯和其投影变形。输出相对条件图修复部分破碎形状并补全空白。</p>
+<p><strong>技术逻辑</strong></p>
+<p>该图具体解释生成网络为何不能只做传统点云渲染：估计深度错误引起像素在新相机下的错误移动，稀疏点云或遮挡变化形成
+disocclusion。条件扩散并非在缺失像素中直接复制输入，而是根据投影条件和学习先验生成整段视频。mask
+告知已覆盖区域；潜空间乘法抑制未覆盖特征。</p>
+<p><strong>证据边界</strong></p>
+<p>图没有对修复后的真实深度进行验证；生成图像中橙色扶手更合理并不意味着其坐标可反推出正确三维表面。题注称
+rendered depth images，应根据实际图像与 §4.2
+理解为深度引导的彩色投影条件。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-14 -->
+<!-- PTH:BEGIN FIG-15 -->
+<h3 id="figure-15-kubric4d-动态对象细节">2.2.15 Figure 15 · Kubric4D
+动态对象细节</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_15.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 15" />
+<figcaption aria-hidden="true">Figure 15</figcaption>
+</figure>
+<p>来源：原论文 PDF p.16，C.3；B2 核验的 JPEG 展示副本，区域及保真 PDF
+见 figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 15. Qualitative results on Kubric4D [14]. Compared to GCD
+[54], our method demonstrates superior performance in preserving object
+details and dynamics in input videos.</p>
+<p><strong>Caption 中文</strong></p>
+<p>Kubric4D [14] 上的定性结果。与 GCD [54]
+相比，我们的方法在保留输入视频中的物体细节与动态方面表现更好。</p>
+<p><strong>布局与子图</strong></p>
+<p>两组不同合成动态场景，每组含 Frame 7、Frame 14；对照 Input、Ours、GCD
+和
+GT。图中可观察投影条件的边缘缺失，以及不同时间的物体位置、外观和细节。阅读时同一时刻横向比较
+GT，时间上纵向比较物体运动是否延续；不能拿不同帧的位置变化当作错误。</p>
+<p><strong>技术逻辑</strong></p>
+<p>Kubric4D
+具有受控合成的三维点云及动态序列，输入为给定物体运动的视频，目标是换相机观察同一时刻。作者与
+GCD 在 20 个保留测试场景进行比较（§5.5），GCD 256×384
+输出放大至相同评估分辨率。GEN3C
+逐时刻建立点云、投影并由视频模型生成目标序列。</p>
+<p><strong>证据边界</strong></p>
+<p>Table 4 的 LPIPS、FID 支持感知质量改善，PSNR 接近，SSIM 反而低于
+GCD；不能以图中物体细节优势声称所有指标均优。合成场景中观察的时序运动不证明真实动态场景中物理一致性。</p>
+<p>本图不包含需独立推导的数学公式；涉及的数学定义在相应公式单元展开。</p>
+<!-- PTH:END FIG-15 -->
+<!-- PTH:BEGIN FIG-16 -->
+<h3 id="figure-16-掩码进入网络的两种方式">2.2.16 Figure 16 ·
+掩码进入网络的两种方式</h3>
+<figure>
+<img src="/Hexo/GEN3C/Figures/Figure_16.jpg" srcset="/Hexo/img/loading.gif" lazyload alt="Figure 16" />
+<figcaption aria-hidden="true">Figure 16</figcaption>
+</figure>
+<p>来源：原论文 PDF p.16，C.1；B2 核验的 JPEG 展示副本，区域及保真 PDF
+见 figure-map.json。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Figure 16. Comparison of different strategies for incorporating
+masking information into the model. (Left) the mask channel is
+concatenated to the latent as an additional channel. (Right) the mask
+values are applied directly to the latent through element-wise
+multiplication.</p>
+<p><strong>Caption 中文</strong></p>
+<p>将掩码信息纳入模型的不同策略比较。（左）将掩码通道作为额外通道与潜变量拼接。（右）通过逐元素相乘将掩码值直接应用于潜变量。</p>
+<p><strong>布局与子图</strong></p>
+<p>左右两列比较驾驶场景的 Latent concat mask 与 element-wise
+multiplication
+两种条件注入。可比较路面、车辆和边界的变形或伪影：图中右列车辆和街景结构相对清晰连贯。该图并非多视角
+latent concat 的消融，而是单独改变 mask 输入形式。</p>
+<p><strong>技术逻辑</strong></p>
+<p>附录 C.1 与 §4.3：将 M′ 作为附加通道 concat
+会增大首层输入维度，新增训练参数未经过大规模预训练；驾驶横移的掩码分布超出训练条件且无目标
+GT 时，新增权重可能泛化差。直接 z^v ⊙ M′
+保持原潜空间通道数，用广播将未覆盖 latent 置零。min-pool
+对二值覆盖掩码保守地保留全部覆盖块。零值不是专门的“未知”类别，网络需从条件上下文理解含义。</p>
+<p><strong>证据边界</strong></p>
+<p>只有定性图及作者解释，未提供掩码策略的数值表、不同随机种子或掩码分布的统计。新增参数与
+OOD 泛化是作者给出的机制解释，不是已排除其他因素的因果证明。</p>
+<p>Eq.2 中 M′ 的单通道空间 mask 广播到所有 latent 通道，乘法不扩充
+latent 通道数。</p>
+<!-- PTH:END FIG-16 -->
+<!-- PTH:BEGIN TABLE-01 -->
+<h3 id="table-1-单视角与域外泛化">2.3.1 Table 1 · 单视角与域外泛化</h3>
+<p>来源：PDF p.6，§5.2。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Table 1. Quantitative results for single view to video generation.
+RE10K is the in-domain dataset and Tanks and Temples is the
+out-of-domain dataset.</p>
+<p><strong>Caption 中文</strong></p>
+<p>单视角到视频生成的定量结果。RE10K 为域内数据集，Tanks and Temples
+为域外数据集。</p>
+<p><strong>数据复录</strong></p>
+<table>
+
+<thead>
+<tr>
+<th>方法</th>
+<th style="text-align: right;">T&amp;T PSNR↑ (dB)</th>
+<th style="text-align: right;">T&amp;T SSIM↑</th>
+<th style="text-align: right;">T&amp;T LPIPS↓</th>
+<th style="text-align: right;">RE10K PSNR↑ (dB)</th>
+<th style="text-align: right;">RE10K SSIM↑</th>
+<th style="text-align: right;">RE10K LPIPS↓</th>
+<th style="text-align: right;">RE10K TSED↑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MotionCtrl</td>
+<td style="text-align: right;">13.46</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">13.60</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.1363</td>
+</tr>
+<tr>
+<td>CameraCtrl</td>
+<td style="text-align: right;">15.88</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">18.40</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.8033</td>
+</tr>
+<tr>
+<td>GenWarp</td>
+<td style="text-align: right;">16.04</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">15.50</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.0330</td>
+</tr>
+<tr>
+<td>NVS-Solver</td>
+<td style="text-align: right;">16.95</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">16.90</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.7286</td>
+</tr>
+<tr>
+<td>GEN3C</td>
+<td style="text-align: right;">18.66</td>
+<td style="text-align: right;">0.67</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">19.88</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.9143</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实验解释</strong></p>
+<p>【原文事实】§5.2 两数据集各 100 个测试序列，T&amp;T（Tanks and
+Temples）域外，RE10K 域内。CameraCtrl
+用同样数据、训练协议和视频底座复现，唯一描述的主要条件改变是以 Plücker
+嵌入替代缓存渲染。GenWarp、NVS-Solver
+使用相同的深度估计和全局尺度/偏移对齐；附录 B.3 补充官方
+checkpoint/代码。比较既考察目标图像重合，也考察感知质量及三维一致性。</p>
+<p>【背景知识】PSNR 是对像素均方误差的对数度量（dB，越高越好），SSIM
+衡量局部结构/亮度/对比度相似性（越高越好），LPIPS
+衡量深层特征感知距离（越低越好）；TSED 为作者引用 [69] 的 3D consistency
+score，本论文未展开其具体计算阈值，不能自行假设它就是相机位姿误差。</p>
+<p>【独立评价】在所列基线中，T&amp;T 最强 PSNR NVS-Solver 16.95，GEN3C
+18.66（+1.71 dB）；RE10K 最强 CameraCtrl 18.40，GEN3C 19.88（+1.48
+dB）。TSED 0.9143 比 CameraCtrl 0.8033 高 0.1110。CameraCtrl PSNR
+从域内到域外降 2.52 dB，GEN3C 降 1.22
+dB，支持作者对相机几何条件域外适应性的主张，但两个测试集合并非相同内容与轨迹的受控变量，仅能解释为所报告数据集差异。Table
+1 中 TSED 只列 RE10K，不能声称域外 TSED
+也被量化改善。无置信区间或显著性检验。</p>
+<p>指标差值按原表计算；PSNR 差值是 dB，不是线性百分比。</p>
+<!-- PTH:END TABLE-01 -->
+<!-- PTH:BEGIN TABLE-02 -->
+<h3 id="table-2-双视角插值外推">2.3.2 Table 2 · 双视角插值/外推</h3>
+<p>来源：PDF p.7，§5.3。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Table 2. Quantitative results for two-views NVS. The two values in
+each table cell represent the interpolation and extrapolation results,
+respectively.</p>
+<p><strong>Caption 中文</strong></p>
+<p>双视角 NVS
+的定量结果。每个表格单元的两个数值分别代表插值和外推结果。</p>
+<p><strong>数据复录</strong></p>
+<table>
+<thead>
+<tr>
+<th>数据集</th>
+<th>方法</th>
+<th>PSNR↑ (dB)</th>
+<th>SSIM↑</th>
+<th>LPIPS↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T&amp;T</td>
+<td>PixelSplat</td>
+<td>21.34 / 17.45</td>
+<td>0.70 / 0.65</td>
+<td>0.42 / 0.46</td>
+</tr>
+<tr>
+<td>T&amp;T</td>
+<td>MVSplat</td>
+<td>20.90 / 16.08</td>
+<td>0.70 / 0.63</td>
+<td>0.39 / 0.44</td>
+</tr>
+<tr>
+<td>T&amp;T</td>
+<td>GEN3C</td>
+<td>22.22 / 20.51</td>
+<td>0.76 / 0.72</td>
+<td>0.14 / 0.16</td>
+</tr>
+<tr>
+<td>RE10K</td>
+<td>PixelSplat</td>
+<td>19.74 / 16.95</td>
+<td>0.75 / 0.70</td>
+<td>0.40 / 0.44</td>
+</tr>
+<tr>
+<td>RE10K</td>
+<td>MVSplat</td>
+<td>21.40 / 15.51</td>
+<td>0.78 / 0.69</td>
+<td>0.30 / 0.37</td>
+</tr>
+<tr>
+<td>RE10K</td>
+<td>GEN3C</td>
+<td>24.08 / 21.56</td>
+<td>0.86 / 0.83</td>
+<td>0.11 / 0.15</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实验解释</strong></p>
+<p>§5.3：两数据集各 40
+个测试序列，随机选两输入帧；插值目标在两帧之间，外推在范围外。基线是前馈稀疏视角重建
+PixelSplat 和 MVSplat，接收带相机参数的两张图像并输出 3D Gaussian
+splats，使用官方 checkpoint/代码（附录 B.4）。GEN3C
+不求解统一的稠密显式场景，而以两来源的独立深度点云投影指导目标视频生成。</p>
+<p>所有所列插值/外推指标 GEN3C 均最佳。T&amp;T 外推 PSNR 比最佳基线
+PixelSplat 高 3.06 dB，RE10K 高 4.61 dB；相应插值优势是 0.88 和 2.68
+dB。GEN3C 自身也有明显外推损失（T&amp;T 1.71 dB、RE10K 2.52
+dB），因此生成先验减轻而非消除欠约束。视觉实例见 Fig.6。LPIPS
+改善尤其明显，与生成模型学习的外观先验相符，但不能据此断言最终输出可提取高精度
+3DGS 或网格。所比较的是 NVS 输出，非三维重建精度。</p>
+<p>插值/外推差值均按同数据集同指标的第一/第二列数值计算。</p>
+<!-- PTH:END TABLE-02 -->
+<!-- PTH:BEGIN TABLE-03 -->
+<h3 id="table-3-驾驶场景-fid-与轨迹偏移">2.3.3 Table 3 · 驾驶场景 FID
+与轨迹偏移</h3>
+<p>来源：PDF p.7，§5.4。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Table 3. Quantitative results of FID [18] for NVS on driving scene.
+GEN3C significantly outperforms the baselines, especially when
+generating novel views that are far away from the original
+trajectory.</p>
+<p><strong>Caption 中文</strong></p>
+<p>驾驶场景 NVS 的 FID [18] 定量结果。GEN3C
+显著优于基线，尤其在生成远离原轨迹的新视角时。</p>
+<p><strong>数据复录</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th style="text-align: right;">y ± 0.0 m</th>
+<th style="text-align: right;">y ± 1.0 m</th>
+<th style="text-align: right;">y ± 2.0 m</th>
+<th style="text-align: right;">y ± 4.0 m</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nerfacto</td>
+<td style="text-align: right;">48.34</td>
+<td style="text-align: right;">67.77</td>
+<td style="text-align: right;">80.41</td>
+<td style="text-align: right;">112.40</td>
+</tr>
+<tr>
+<td>3D-GS</td>
+<td style="text-align: right;">34.81</td>
+<td style="text-align: right;">53.85</td>
+<td style="text-align: right;">61.78</td>
+<td style="text-align: right;">81.26</td>
+</tr>
+<tr>
+<td>GEN3C</td>
+<td style="text-align: right;">7.93</td>
+<td style="text-align: right;">18.19</td>
+<td style="text-align: right;">25.11</td>
+<td style="text-align: right;">35.33</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实验解释</strong></p>
+<p>§5.4 从验证集筛选 18
+个静态场景，用前相机原轨迹的横向位移构造目标轨迹；Nerfacto 与 3DGS
+以三个相机全部训练帧优化场景（B.5）。目标新轨迹无 GT，因此评估
+FID（Fréchet Inception
+Distance，越低越好；无量纲分布距离），而不是有参考图的 PSNR。表中 y
+表示横移（单位 m）；Fig.7 的上移例不在表格列中。</p>
+<p>GEN3C 在零偏移即有较低 FID，偏移 4m 时 35.33，3DGS 为 81.26、Nerfacto
+为 112.40。GEN3C 从 7.93 增至
+35.33，仍随偏移变大退化。重建方法对新可见区域缺少支撑，而生成先验可改善这些区域的外观。由于
+FID
+衡量集合统计而非逐帧位姿、对象坐标、驾驶安全或三维一致性，结论应是所报告设置下分布视觉质量优势；作者未报告独立显著性检验，也未给出目标轨迹真实像素。</p>
+<p>本表不包含需要独立推导的公式；数据比较使用表内原始数值和指标方向。</p>
+<!-- PTH:END TABLE-03 -->
+<!-- PTH:BEGIN TABLE-04 -->
+<h3 id="table-4-单目动态-nvs">2.3.4 Table 4 · 单目动态 NVS</h3>
+<p>来源：PDF p.8，§5.5。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Table 4. Quantitative results on monocular dynamic NVS.</p>
+<p><strong>Caption 中文</strong></p>
+<p>单目动态 NVS 的定量结果。</p>
+<p><strong>数据复录</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th style="text-align: right;">PSNR↑ (dB)</th>
+<th style="text-align: right;">SSIM↑</th>
+<th style="text-align: right;">LPIPS↓</th>
+<th style="text-align: right;">FID↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCD</td>
+<td style="text-align: right;">19.37</td>
+<td style="text-align: right;">0.67</td>
+<td style="text-align: right;">0.48</td>
+<td style="text-align: right;">150.64</td>
+</tr>
+<tr>
+<td>GEN3C</td>
+<td style="text-align: right;">19.41</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">98.58</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实验解释</strong></p>
+<p>§5.5：GCD 发布的 Kubric 20 个留出测试场景，使用 GCD 公开训练
+checkpoint，原输出
+256×384，上采样到本文输出分辨率。输入动态视频已提供运动，目标为沿新轨迹观察同一动态场景。LPIPS
+与 FID 较低（改善 0.19 和 52.06），PSNR 仅高 0.04 dB，SSIM 低
+0.04。因此优势主要反映感知和集合分布质量，并非四项指标全面领先，也不足以说明几何位置误差更低。分辨率和上采样本身是比较的潜在混杂因素。真实域外
+Sora/MovieGen 视频的结果在 Fig.9 只作定性展示。</p>
+<p>本表不包含需要独立推导的公式；数据比较使用表内原始数值和指标方向。</p>
+<!-- PTH:END TABLE-04 -->
+<!-- PTH:BEGIN TABLE-05 -->
+<h3 id="table-5-深度噪声鲁棒性">2.3.5 Table 5 · 深度噪声鲁棒性</h3>
+<p>来源：PDF p.8，§5.6。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Table 5. Quantitative results on the robustness analysis on noisy
+depth estimation. The two values in each table cell represent the
+interpolation and extrapolation results, respectively.</p>
+<p><strong>Caption 中文</strong></p>
+<p>含噪深度估计鲁棒性分析的定量结果。每个单元的两个值分别表示插值和外推结果。</p>
+<p><strong>数据复录</strong></p>
+<table>
+<thead>
+<tr>
+<th>噪声比</th>
+<th>PSNR↑ (dB)</th>
+<th>SSIM↑</th>
+<th>LPIPS↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0%</td>
+<td>24.08 / 21.56</td>
+<td>0.86 / 0.83</td>
+<td>0.12 / 0.15</td>
+</tr>
+<tr>
+<td>3%</td>
+<td>22.39 / 21.00</td>
+<td>0.83 / 0.81</td>
+<td>0.16 / 0.18</td>
+</tr>
+<tr>
+<td>10%</td>
+<td>20.85 / 19.64</td>
+<td>0.79 / 0.76</td>
+<td>0.19 / 0.22</td>
+</tr>
+<tr>
+<td>30%</td>
+<td>18.52 / 17.91</td>
+<td>0.72 / 0.70</td>
+<td>0.29 / 0.31</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实验解释</strong></p>
+<p>§5.6 沿用 §5.3 双视角设置，对估计深度增加高斯噪声，比例以
+d_0.95−d_0.05 的分位数跨度为尺度。0%
+表示没有额外扰动而非真值深度。随噪声增加，PSNR、SSIM 降低、LPIPS
+增大，表明几何条件质量实质影响输出。3% 时插值 PSNR 下降 1.69 dB、外推
+0.56 dB，作者称小噪声下降可忽略，但该表无统计检验且 1.69 dB
+不能一概视为可忽略。30% 时对应下降 5.56、3.65
+dB；模型仍能输出图像，不能称深度误差不重要。30%
+也不是所有像素均相对深度偏差 30%。</p>
+<p>【原文差异】0% 的插值 LPIPS 是 0.12，而 Table 2 和 Table 6 的同类值为
+0.11；其他基准值一致。保留原表数值，不擅自修正，也不推测究竟是重复实验差异还是笔误。噪声公式第二参数的方差/标准差惯例及采样相关性未详细说明。</p>
+<p>原文的高斯噪声写法和分位数尺度见 MATH-05；差值使用表内原始数值。</p>
+<!-- PTH:END TABLE-05 -->
+<!-- PTH:BEGIN TABLE-06 -->
+<h3 id="table-6-独立投影与显式融合">2.3.6 Table 6 ·
+独立投影与显式融合</h3>
+<p>来源：PDF p.8，§5.6。</p>
+<p><strong>Caption 原文</strong></p>
+<p>Table 6. Ablation of different fusion strategies on RE10K dataset.
+The two values in each table cell represent the interpolation and
+extrapolation results, respectively.</p>
+<p><strong>Caption 中文</strong></p>
+<p>RE10K
+数据集上的不同融合策略消融。每个单元的两个值分别表示插值和外推结果。</p>
+<p><strong>数据复录</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>PSNR↑ (dB)</th>
+<th>SSIM↑</th>
+<th>LPIPS↓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Explicit Fusion</td>
+<td>21.81 / 19.87</td>
+<td>0.79 / 0.75</td>
+<td>0.21 / 0.28</td>
+</tr>
+<tr>
+<td>Ours</td>
+<td>24.08 / 21.56</td>
+<td>0.86 / 0.83</td>
+<td>0.11 / 0.15</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实验解释</strong></p>
+<p>原表表头未印箭头，方向据 §5.2 同指标补充。§5.6 与 §5.3
+相同实验设置，显式融合将多个估计点云直接合并再投影，本文独立投影后共享首层及
+max-pool。两种设定下 Ours 的 PSNR 分别高 2.27/1.69 dB，SSIM 高
+0.07/0.08，LPIPS 低 0.10/0.13。Fig.10
+说明光照和深度错位可能导致显式融合伪影。虽然正文一处只说“predict the
+interpolation”，题注及数据单元明确同时报告插值与外推，故按实际表格两列解释。该消融并非
+Fig.4 全部三种策略的定量对照；latent concat
+没有独立行。还没有将融合改动与额外参数规模、不同训练时长分别控制的细粒度消融。</p>
+<p>本表不包含需要独立推导的公式；数据比较使用表内原始数值和指标方向。</p>
+<!-- PTH:END TABLE-06 -->
+<!-- PTH:BEGIN FIG-TABLE-RELATIONS -->
+<h2 id="图表之间的逻辑关系">2.4 图表之间的逻辑关系</h2>
+<p><strong>证据链</strong></p>
+<table>
+
+<thead>
+<tr>
+<th>问题/主张</th>
+<th>结构设计证据</th>
+<th>实验依据</th>
+<th>读者应能回答</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>相机控制不精确、返回场景不一致</td>
+<td>Fig.2 动机、Fig.3 缓存投影、Appendix A 写回</td>
+<td>Fig.5、13、14；Table 1</td>
+<td>相机如何从数值变为像素空间约束？</td>
+</tr>
+<tr>
+<td>稀疏视角融合存在几何/外观冲突</td>
+<td>Fig.4 的三个合流位置，Eq.2–3</td>
+<td>Fig.6、10；Tables 2、6</td>
+<td>为什么先分别渲染再聚合？</td>
+</tr>
+<tr>
+<td>深度不准确，部分区域缺失</td>
+<td>Fig.3、14；§4.2–4.3</td>
+<td>Table 5、Fig.16</td>
+<td>缺失与错误投影分别怎样处理？</td>
+</tr>
+<tr>
+<td>极端外推下重建覆盖不足</td>
+<td>Fig.1、7</td>
+<td>Tables 2、3</td>
+<td>为什么生成先验可以改善外观？</td>
+</tr>
+<tr>
+<td>动态物体保持运动状态</td>
+<td>Fig.3 时空缓存；Fig.9、15</td>
+<td>Table 4</td>
+<td>时间轴与多视角轴为何不能混用？</td>
+</tr>
+<tr>
+<td>可编辑性、基础模型升级</td>
+<td>Fig.8、11–12</td>
+<td>§5.4、5.7</td>
+<td>哪些能力来自显式条件，哪些来自底座？</td>
+</tr>
+</tbody>
+</table>
+<p><strong>互补与缺口</strong></p>
+<p>Fig.4 是设计空间，Fig.10 和 Table 6 是实际比较；Fig.16 为另一独立
+mask 设计的定性结果，不能合并为同一变量。Fig.14
+解释深度投影为何需要修复，Table 5
+测试人工深度扰动对质量的影响，但未分离遮挡缺失、几何错位、深度尺度和不同空间频率噪声。Fig.5/13
+的细结构与 Table 1 的总体 PSNR/SSIM/LPIPS、TSED 互补；Fig.6 与 Table 2
+在双视角设置互补。Fig.7 的纵向偏移与横移例均为定性，Table 3
+只量化横移。Fig.9 和 Fig.15 分别是域外动态定性和合成动态有 GT
+的案例；Table 4 只支持相应测试集的数值结论。</p>
+<p>【独立评价】架构图与消融表不能代替严格因果实验；作者未量化长程重复访问时的真实几何误差、生成缓存漂移、编辑准确性、遮挡区真实性或所有动态物理规律。完整视频、不同轨迹与更强几何
+GT
+将提供补充证据。本单元的关系图谱不新增数学公式，具体公式在后文单独解释。</p>
+<!-- PTH:END FIG-TABLE-RELATIONS -->
+<!-- PTH:BEGIN PROBLEM -->
+<h2 id="研究问题与任务定义">3.1 研究问题与任务定义</h2>
+<p><strong>任务定义</strong>（§1、§4.1、§5.2–5.5）</p>
+<p>【原文事实】GEN3C
+研究由相机轨迹控制的世界一致性视频生成，具体应用包含稀疏视角新视角合成（Novel
+View Synthesis, NVS）、驾驶新轨迹模拟和动态
+NVS。它不直接学习一个用于每条相机射线确定性积分的统一隐式场，而是提供可投影的近似
+3D
+缓存作为视频生成条件。任务需同时面对两个目标：真实已观测内容不随目标相机或历史长度任意改变；未知区域能被生成成合理的连续视频。</p>
+<p>【背景知识】稀疏观测反问题欠定：可见表面与其投影对目标相机提供一部分约束，被遮挡区域可有多个与输入完全相容的几何/外观解。如果采用确定性重建，仅有一张/两张图时未知几何往往难以估计；生成模型通过训练分布提供先验，但不能从无证据恢复唯一真相。GEN3C
+的设计是把已知信息和先验分别交给几何缓存与扩散模型处理，而非声称解决不可识别性。</p>
+<p><strong>输入输出</strong></p>
+<table>
+
+<thead>
+<tr>
+<th>情况</th>
+<th>输入</th>
+<th>缓存</th>
+<th>输出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单视角静态</td>
+<td>一张 RGB，源相机（缺失时估计）</td>
+<td>V=1，复制到 L 个目标时刻</td>
+<td>沿 C<sup>1…C</sup>L 的 RGB 视频</td>
+</tr>
+<tr>
+<td>稀疏/多视角静态</td>
+<td>V 张 RGB 及源相机</td>
+<td>V 个独立有色点云，时间复制</td>
+<td>同一场景目标视角序列</td>
+</tr>
+<tr>
+<td>单/多目动态</td>
+<td>V 个同步、同长 L 的视频及源相机序列</td>
+<td>L×V 个逐时刻点云</td>
+<td>同一运动在新相机下的视频</td>
+</tr>
+<tr>
+<td>自回归长视频</td>
+<td>种子/缓存和更长目标相机序列</td>
+<td>随生成片段更新的缓存</td>
+<td>多片段相接的长视频</td>
+</tr>
+<tr>
+<td>编辑</td>
+<td>上述缓存经空间操作</td>
+<td>移除/修改/添加点的缓存</td>
+<td>重新生成的编辑视频</td>
+</tr>
+</tbody>
+</table>
+<p>源相机未知时，§4.1 提出 DROID-SLAM
+估计，但该系统仍依赖估计是否可靠；论文未说明仅一张无标定图片如何稳定求得所有内外参。目标相机由用户给定，位置/朝向/成像参数控制投影，网络不负责预测应选哪条轨迹。逐像素深度一般来自预训练估计器，真实驾驶数据额外借助
+LiDAR 尺度。动态任务假定运动已由输入视频提供（§6）。</p>
+<p>【合理推断】可将条件生成抽象为从 p(x_target | seed observations,
+target cameras)
+取样，缓存是中间条件表示；这是辅助理解的概率表达，不是论文单列的公式。因输出是
+RGB 序列而非可独立测量的场景模型，NVS
+感知指标和几何恢复指标必须区分。</p>
+<!-- PTH:END PROBLEM -->
+<!-- PTH:BEGIN MOTIVATION -->
+<h2 id="研究背景动机及根本困难">3.2 研究背景、动机及根本困难</h2>
+<p><strong>根因分析</strong></p>
+<p>【原文事实】§1
+将应用背景定位于电影制作、VR/AR、机器人和社交平台的可交互内容生成。传统图形学对精细三维资产依赖高；NeRF、3DGS
+等 NVS
+减少手工建模，但通常需要较密的多视角观测，远离训练轨迹时容易产生伪影。大规模预训练视频生成具有外观先验，但相机可控与跨时间一致性不足。</p>
+<p>根因可以拆成三层（【合理推断】，结合 §1–2）：</p>
+<ol type="1">
+<li><strong>相机控制缺少显式像素锚点</strong>：仅将相机参数或 Plücker
+ray embedding
+作为网络输入时，网络还需学习场景几何和位姿如何决定目标图像。不同训练分布的轨迹/布局要求泛化；几何反投影再投影可直接把部分源内容放到新图上的合理位置，降低学习这一映射的负担。</li>
+<li><strong>历史记忆缺少持久世界坐标</strong>：相邻帧时序模块可保证局部平滑，但物体离开视野后没有稳定的历史地址，返回时可能重采样不同内容。点云缓存为已有表面保存位置与
+RGB；再投影可访问与相机运动方向无关的历史。缓存并不存储所有材质、光照或动态状态。</li>
+<li><strong>稀疏观测及错误估计造成几何条件不完整</strong>：视场外、遮挡后区域和无纹理/细结构的深度不可靠；直接点云渲染只能显示已估计表面，多来源显式合并可使错位和外观冲突变成伪影。扩散模型提供修复/补全先验；独立视角渲染与融合留给网络协调。这同时引入生成歧义和误差传播风险。</li>
+</ol>
+<p>三层困难相互联系，却不等价。相机控制改善不保证内容真实，稳定历史也可能稳定地保留错误；填补未知区域改善外观不能消除观测歧义。本文选择“显式几何提供部分约束
++ 生成先验补全”而非要求模型从少量观测建立完备三维世界。</p>
+<p><strong>证据与边界</strong></p>
+<p>Figure 2 是往返相机的直观反例；Table 1 对同底座和同训练协议
+CameraCtrl 的比较，提供域内/域外相机控制和一致性相关证据。Fig.14
+展示投影错误和空洞，Table 5 测试深度噪声，Fig.10/Table 6
+说明融合冲突，Fig.7/Table 3
+展示远离原轨迹的重建覆盖问题。长程缓存写回的机制见 Appendix
+A，但未对比相同长度下无缓存/有缓存的专门回环误差；问题真实存在的证据不等于完整因果拆解或数学证明。本文并非首次发现这些困难，主要贡献是以时空点云缓存和生成式渲染统一处理。</p>
+<p>本单元的几何关系在后续公式单元详细推导，不另造原文未提供的公式。</p>
+<!-- PTH:END MOTIVATION -->
+<!-- PTH:BEGIN RELATED -->
+<h2 id="相关工作从显式重建到几何引导的生成-nvs">3.3
+相关工作：从显式重建到几何引导的生成 NVS</h2>
+<p><strong>研究路线</strong>（§2，PDF pp.2–3；参考文献编号沿用论文）</p>
+<p>本节只依据本文对相关工作的描述，不检索引用论文全文；对基线技术细节不作独立事实核验。</p>
+<table>
+
+<thead>
+<tr>
+<th>路线</th>
+<th>本文引用的代表工作</th>
+<th>核心思想</th>
+<th>作者指出的局限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>优化式 NVS/重建</td>
+<td>3DGS [25]、NeRF [36]、Nerfacto [51]；大规模 [3,28,63,72]、质量
+[2,21,59]、速度 [38,59]、动态 [11,33]</td>
+<td>从多视角重建可渲染场景</td>
+<td>需要较密输入，极端视角伪影</td>
+</tr>
+<tr>
+<td>几何正则辅助稀疏重建</td>
+<td>[10,39,44,49,55,64,71,76]</td>
+<td>以深度/法线先验补充欠约束优化</td>
+<td>对先验估计误差敏感</td>
+</tr>
+<tr>
+<td>前馈稀疏视角重建</td>
+<td>PixelSplat [6]、MVSplat [8] 等 [7,22,43,52,56,68,74]</td>
+<td>学习输入视图到可渲染表示或新视图的映射</td>
+<td>作者认为训练数据有限、域外/极端视角泛化困难</td>
+</tr>
+<tr>
+<td>生成先验辅助重建</td>
+<td>ReconFusion [62]、CAT3D [12]</td>
+<td>利用图像/视频生成先验增强稀疏重建</td>
+<td>逐场景优化耗时</td>
+</tr>
+<tr>
+<td>接近的并行工作</td>
+<td>ReconX [30]、ViewCrafter [70]</td>
+<td>以几何/生成机制引导新视角</td>
+<td>作者称依赖 DUSt3R [57] 多视角对齐，薄结构及错位可能产生伪影</td>
+</tr>
+<tr>
+<td>单视图生成引导</td>
+<td>MultiDiff [37]</td>
+<td>深度 warp 作为视频扩散条件</td>
+<td>本文称仅考虑单视角</td>
+</tr>
+<tr>
+<td>相机数值条件</td>
+<td>[15,31,48,54,60,61]；实验中 MotionCtrl [60]、CameraCtrl [16]</td>
+<td>微调视频模型，以相机参数/嵌入为条件</td>
+<td>需学习相机到视频映射，训练外相机运动困难</td>
+</tr>
+<tr>
+<td>无训练几何引导</td>
+<td>[19,67]（含 NVS-Solver）</td>
+<td>以深度 warp 调整预训练扩散去噪</td>
+<td>一致性引导强度需权衡，可能产生伪影或相机控制不足</td>
+</tr>
+<tr>
+<td>持久世界/历史</td>
+<td>[34]、Streetscapes [9]、CVD [27]、StreamingT2V [17]</td>
+<td>[34] 从历史 SfM 点云渲染条件并用 GAN；[9] 依赖高度图；[27]
+同步生成多个视频；[17] 用 latent feature maps 记忆</td>
+<td>高度图未必可用、同步帧不能保留视野外历史、潜历史不直接提供 3D
+相机控制</td>
+</tr>
+</tbody>
+</table>
+<p><strong>区别与继承</strong></p>
+<p>最相近的技术不应笼统归为“完全没有三维”。MultiDiff、ReconX、ViewCrafter、[34]
+和训练自由几何 warp 路线已经使用几何信息。本文重点区别是：(i)
+以每张图的深度点云作为独立时空缓存元素，不要求所有来源先成功配准为同一个点云；(ii)
+在给定目标相机下为每个来源单独渲染；(iii) 在预训练视频扩散首层后做
+permutation-invariant 聚合，通过训练学习错误修复和空洞补全；(iv)
+用深度仿射对齐把生成片段写回历史。与 CameraCtrl
+的受控比较更接近验证数值条件 vs 几何渲染条件的差异。与
+PixelSplat/MVSplat
+比较的是最终图像，不证明缓存比显式高斯更准确地重建三维表面。</p>
+<p>【背景知识】SfM（Structure from
+Motion）依赖多个观测推断相机和稀疏三维点；从单张图深度反投影不需要同一表面在多个视角有足够对应，但依赖单目先验和相机尺度。GAN（Generative
+Adversarial Network）与 diffusion 是不同生成训练范式；本文相较 [34]
+主要采用深度预测和扩散式协调，而不是首次提出点云条件。Plücker embedding
+编码空间射线几何，可提供相机方向信息，不能直接告诉网络场景表面的颜色/深度。</p>
+<p>【独立评价】引言中的前人局限属于作者叙述，单篇论文的图表仅支持测试基线上的相对表现，未证明所有前馈重建、数值条件或显式融合必然失败。§2
+未独立评估所有所引工作；新颖性应限定为具体机制组合，而非“首个三维可控视频生成”。本单元比较技术路线，不需要新增数学推导。</p>
+<!-- PTH:END RELATED -->
+<!-- PTH:BEGIN METHOD-01 -->
+<h2 id="方法时空点云缓存的构建">3.4.1 方法：时空点云缓存的构建</h2>
+<p><strong>核心内容</strong>（§4.1，p.4；Fig.3；§5.1，p.6）</p>
+<p>【原文事实】本文选择从每个 RGB
+图像的预测深度反投影得到的带色点云作为缓存基本元素，因为跨域深度估计已有较强能力，且点云可以快速渲染及编辑。以
+v 表示来源视角，t 表示时间，缓存是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>×</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">L\times V</annotation></semantics></math>
+个独立的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="script">𝒫</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><annotation encoding="application/x-tex">\mathcal P^{t,v}</annotation></semantics></math>（不是一个固定大小的稠密三维数组，也不是学习得到的高斯基元）。每个点的几何位置由对应像素深度、相机内参和外参确定，颜色来自源像素。</p>
+<table>
+
+<thead>
+<tr>
+<th>应用</th>
+<th>源数据</th>
+<th>构建操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单图到视频</td>
+<td>一张 RGB</td>
+<td>创建一个点云，沿时间复制 L 份</td>
+</tr>
+<tr>
+<td>静态 NVS</td>
+<td>V 张不同视角 RGB</td>
+<td>每张各自深度预测/反投影，沿时间复制</td>
+</tr>
+<tr>
+<td>动态 NVS</td>
+<td>V 个同步且同长 L 的视频</td>
+<td>每个时间、每个来源各自反投影，不跨时间强制合并</td>
+</tr>
+</tbody>
+</table>
+<p>源相机参数假设已知，否则用 DROID-SLAM [53] 估计。§5.1
+训练中静态真实数据用 DAV2（Depth Anything V2 [66]）逐帧深度估计并对齐
+SLAM 场景尺度；驾驶数据使用 LiDAR 尺度；合成 Kubric4D
+来自已有点云序列，可以直接渲染
+RGB-D。缓存允许选择性移除、添加或移动物体（Fig.8），但这些编辑并非通过一个学习的
+4D 流场自动预测。</p>
+<p><strong>机制与证据</strong></p>
+<p>【背景知识】t 表示场景状态变化，v
+表示同一时刻的不同空间观测。若两个时间 t、t+1
+的动态对象位置不同，将它们简单合并到同一静态点云会同时出现旧、新位置；时空索引保留对应状态，目标第
+t 帧仅从该时间的候选点云获得条件。若场景静止，则同一世界几何对任意 t
+适用，复制只是索引层面的复用，并不要求重估深度 L
+次。多视角独立保存允许来源不完全对齐，不应将其理解成已经获得一致的全局几何。缓存所保存的是有色可见表面采样：源图遮挡后、视野外区域没有直接观测，深度预测也可能产生错误；不能仅凭缓存表示完整物体。</p>
+<p>【数学连接】针孔相机下深度图反投影可写为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>c</mi></msub><mo>=</mo><mi>d</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><msup><mi>K</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">[</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo>,</mo><mn>1</mn><msup><mo stretchy="false" form="postfix">]</mo><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">X_c=d(u,v)K^{-1}[u,v,1]^T</annotation></semantics></math>，再通过源相机的
+camera-to-world 变换获得
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>w</mi></msub><annotation encoding="application/x-tex">X_w</annotation></semantics></math>。这里像素坐标
+v 与来源视角 v 容易混淆，后文用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>u</mi><mi>p</mi></msub><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(u_p,v_p)</annotation></semantics></math>；补充推导详见
+MATH-03。原文 §4.1 未固定深度为 z-depth 或 ray distance
+的具体约定，该表达仅在 z-depth 假设成立时适用。</p>
+<p>【证据边界】深度与相机估计误差会传递到缓存；没有可靠多视角约束时不存在真实几何保证。单张无标定图的全部内外参估计细节和动态图像同步误差未详细说明。</p>
+<!-- PTH:END METHOD-01 -->
+<!-- PTH:BEGIN METHOD-02 -->
+<h2 id="方法将缓存投影为二维条件视频">3.4.2
+方法：将缓存投影为二维条件视频</h2>
+<p><strong>核心内容</strong>（§4.2，p.4；Fig.3、14）</p>
+<p>【原文事实】设用户提供目标相机轨迹
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">𝒞</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msup><mi>C</mi><mn>1</mn></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>C</mi><mi>L</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathcal C=(C^1,\ldots,C^L)</annotation></semantics></math>。§4.2
+定义渲染器</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>I</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><mo>,</mo><msup><mi>M</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><mo stretchy="false" form="postfix">)</mo><mo>:=</mo><mi>R</mi><mo stretchy="false" form="prefix">(</mo><msup><mi mathvariant="script">𝒫</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><mo>,</mo><msup><mi>C</mi><mi>t</mi></msup><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">(I^{t,v},M^{t,v}):=R(\mathcal P^{t,v},C^t).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>I</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><annotation encoding="application/x-tex">I^{t,v}</annotation></semantics></math>
+为从目标第 t 个相机观察来源 v 的 RGB
+投影；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>M</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><annotation encoding="application/x-tex">M^{t,v}</annotation></semantics></math>
+标记未覆盖（disocclusion）及需补全区域。结合 §4.3 的乘法与附录 A.1 的
+coverage 语义，在乘法中的有效覆盖取 1、未覆盖取
+0。沿时间堆叠：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>I</mi><mi>v</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>L</mi><mo>×</mo><mn>3</mn><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi></mrow></msup></mrow><annotation encoding="application/x-tex">I^v\in\mathbb R^{L\times3\times H\times W}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>M</mi><mi>v</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>L</mi><mo>×</mo><mn>1</mn><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi></mrow></msup></mrow><annotation encoding="application/x-tex">M^v\in\mathbb R^{L\times1\times H\times W}</annotation></semantics></math>。共得到
+V 个彼此独立的条件视频及其 mask。注意 R 的输入是目标相机
+C^t，所有来源在同一个目标相机平面投影；源相机用于创建点云，不是这里所改变的轨迹。</p>
+<p>流程：从缓存选取时刻 t 的每个来源点云 → 依据 C^t 投影到同一目标平面 →
+处理可见点并记录覆盖 → 收集每个来源的 L 帧 → 各自进入编码器。</p>
+<p><strong>机制与证据</strong></p>
+<p>【背景知识】点云投影只对存在的点建立位置约束。一个源像素对应的三维点，在目标视角下可能移出视野、被更近点遮挡、落到离散像素之间；原来被遮挡的区域在新视角暴露（disocclusion），但没有源点可提供真实
+RGB。因此遮挡/缺失不同于已知像素为黑色；使用 mask
+可以告诉模型条件可用性。§4.2 没有展开具体 z-buffer、splat
+半径、插值实现，不能将某个常见点渲染器的代码细节当作原文算法。Fig.14
+的彩色重投影输入显示黑色孔洞及错误投影，正是扩散需要处理的两类问题。显式投影相较纯
+pose embedding
+的不同在于目标图上的候选结构已经由几何给出，而不是只给出相机坐标。</p>
+<p>【数学连接】<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+不是最终生成网络：投影对输入点的位置是可计算的确定性几何变换，而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>x</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>D</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat x=D(z)</annotation></semantics></math>
+来自条件去噪。掩码的维度为 1 个通道，后续 min-pool 到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>,</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">h,w</annotation></semantics></math>
+后在潜变量通道广播；详见 Eq.2–3。</p>
+<p>【证据边界】“precise”仅描述引导关系和实验结果，不是生成图像与投影逐像素硬一致。深度、标定、离散采样和可见性误差都可能影响
+R，且生成过程可能重写已覆盖区域。</p>
+<!-- PTH:END METHOD-02 -->
+<!-- PTH:BEGIN METHOD-03 -->
+<h2 id="方法多视角条件的注入与融合">3.4.3
+方法：多视角条件的注入与融合</h2>
+<p><strong>核心内容</strong>（§4.3，pp.4–5；Fig.4、10、16；Table 6）</p>
+<p>【原文事实】设计原则是尽可能少引入新可训练参数，使微调网络仍能利用大规模预训练分布。每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>I</mi><mi>v</mi></msup><annotation encoding="application/x-tex">I^v</annotation></semantics></math>
+经冻结 VAE encoder
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mi>v</mi></msup><mo>=</mo><mi>E</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>I</mi><mi>v</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">z^v=E(I^v)</annotation></semantics></math>；掩码
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>M</mi><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msup><annotation encoding="application/x-tex">M^{v,\prime}</annotation></semantics></math>
+从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>M</mi><mi>v</mi></msup><annotation encoding="application/x-tex">M^v</annotation></semantics></math>
+经 min-pooling 对齐潜空间网格。训练时从目标真实视频
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+获得 clean latent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">E(x)</annotation></semantics></math>，构造共同的
+noisy latent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>τ</mi></msub><mo>=</mo><msub><mi>α</mi><mi>τ</mi></msub><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>σ</mi><mi>τ</mi></msub><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">z_\tau=\alpha_\tau E(x)+\sigma_\tau\epsilon</annotation></semantics></math>。</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msup><mo>=</mo><mtext mathvariant="normal">In-Layer</mtext><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">Concat</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>z</mi><mi>v</mi></msup><mo>⊙</mo><msup><mi>M</mi><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msup><mo>,</mo><msub><mi>z</mi><mi>τ</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">z^{v,\prime}=\text{In-Layer}(\text{Concat}(z^v\odot M^{v,\prime},z_\tau)),\tag{2}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mo>′</mo></msup><mo>=</mo><mtext mathvariant="normal">Max-Pool</mtext><mo stretchy="false" form="prefix">{</mo><msup><mi>z</mi><mrow><mn>1</mn><mo>,</mo><mi>′</mi></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>z</mi><mrow><mi>V</mi><mo>,</mo><mi>′</mi></mrow></msup><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">z&#39;=\text{Max-Pool}\{z^{1,\prime},\ldots,z^{V,\prime}\}.\tag{3}</annotation></semantics></math></p>
+<p>其中 Concat 沿 channel 维，In-Layer
+是视频扩散模型共享的第一层；所有来源使用同一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mi>τ</mi></msub><annotation encoding="application/x-tex">z_\tau</annotation></semantics></math>，并非
+V 个独立的去噪样本。max-pool 在 view
+轴按元素聚合，后续剩余层只接受一个形状固定的特征。SVD 原 latent 空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>L</mi><mo>′</mo></msup><mo>=</mo><mi>L</mi><mo>,</mo><mi>C</mi><mo>=</mo><mn>4</mn><mo>,</mo><mi>h</mi><mo>=</mo><mi>H</mi><mi>/</mi><mn>8</mn><mo>,</mo><mi>w</mi><mo>=</mo><mi>W</mi><mi>/</mi><mn>8</mn></mrow><annotation encoding="application/x-tex">L&#39;=L,C=4,h=H/8,w=W/8</annotation></semantics></math>；掩码为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>×</mo><mn>1</mn><mo>×</mo><mi>h</mi><mo>×</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">L\times1\times h\times w</annotation></semantics></math>，通过广播相乘；拼接得到每个来源的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>×</mo><mn>8</mn><mo>×</mo><mi>h</mi><mo>×</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">L\times8\times h\times w</annotation></semantics></math>（在采用上述
+SVD 输入通道假设下，不含实现可能另有的独立条件）。</p>
+<p><strong>机制与证据</strong></p>
+<p>以 V=2
+的场景为例，分别渲染的两个候选在目标相机下可能一个提供椅背、一个提供遮挡后桌面；若深度相差使椅腿错位，直接点云合并会产生错误叠加。Eq.2
+分别在共享网络中提取候选条件特征，Eq.3
+在每个特征位置取最大而不规定来源顺序。因此可以让不同来源的有效信息进入融合结果，网络随后通过上下文修复冲突。它没有计算显式配准矩阵或每像素几何置信度，也不是对
+RGB 或点坐标直接 max-pool。</p>
+<p>另一选择 latent concat 需要固定 V
+或预设最大容量和顺序；增加来源会改变通道数及输入权重。本文按 view
+共享首层参数，不随 V 增加首层参数数量，但首层计算成本仍随 V
+增加。显式融合对坐标及外观一致性要求更高。掩码若作为额外 channel
+拼接（Fig.16 左），会引入未预训练的新通道参数；直接乘法（右）保持 latent
+channel 数，在训练外掩码上作者观察更少伪影。min-pool
+意味着一个潜空间单元内只要有未覆盖像素即设为无效；可能损失小的真实细节但避免混入未知区域。</p>
+<p>【数学连接】Eq.3
+的置换不变性由每位置最大运算交换律保证。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">max</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">max</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>b</mi><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\max(a,b)=\max(b,a)</annotation></semantics></math>；推广任意有限
+V，不要求先固定视角顺序。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msup><annotation encoding="application/x-tex">z^{v,\prime}</annotation></semantics></math>
+的首层权重共享是必要前提之一；不应将聚合写成对空间分辨率下采样。Eq.2–3
+张量及公式细节见 MATH-02。</p>
+<p>【证据边界】Table 6 只量化显式融合与本文，Fig.16
+是掩码策略的定性对照。正文最大训练 V=4，形式上的任意 V 输入不证明对更大
+V 的效果或计算成本不变。max
+特征不保证自动筛除错误深度、冲突颜色或遮挡。</p>
+<!-- PTH:END METHOD-03 -->
+<!-- PTH:BEGIN METHOD-04 -->
+<h2 id="方法条件扩散训练与目标数据">3.4.4
+方法：条件扩散训练与目标数据</h2>
+<p><strong>核心内容</strong>（§3，p.3；§4.4，p.5；§5.1，p.6；Appendix
+B.1，p.14）</p>
+<p>【原文事实】在 §3 的 latent diffusion 基础上，本文选择预训练
+SVD，将原 image-to-video 模型的前向改为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>f</mi><mi>θ</mi><mo>′</mo></msubsup><annotation encoding="application/x-tex">f&#39;_\theta</annotation></semantics></math>。训练需要“由缓存渲染的有缺陷视频”与“同目标相机轨迹下的真实
+RGB 视频
+x”的配对。静态真实数据通过同一原视频选取不同时间的视图构建静态缓存和目标连续帧；同步驾驶视频使用
+3 相机缓存、FRONT 相机 GT；Kubric4D
+用动态点云序列渲染多个来源轨迹及不同目标轨迹。</p>
+<p>对于每个配对：①计算
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>I</mi><mi>v</mi></msup><mo>,</mo><msup><mi>M</mi><mi>v</mi></msup></mrow><annotation encoding="application/x-tex">I^v,M^v</annotation></semantics></math>；②冻结编码器得到目标
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mn>0</mn></msub><mo>=</mo><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">z_0=E(x)</annotation></semantics></math>
+和各条件
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mi>v</mi></msup><annotation encoding="application/x-tex">z^v</annotation></semantics></math>；③随机采样扩散时间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+与高斯噪声
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>，构造
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mi>τ</mi></msub><annotation encoding="application/x-tex">z_\tau</annotation></semantics></math>；④按
+Eq.2–3 共享首层和聚合；⑤以第一帧 CLIP embedding 作为额外条件；⑥通过 Eq.1
+的 denoising objective 优化修改后的模型，以干净
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mn>0</mn></msub><annotation encoding="application/x-tex">z_0</annotation></semantics></math>
+作为回归 target（不是把噪声
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>
+当成本文的实际 y）。作者使用 AdamW，lr
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-5}</annotation></semantics></math>，条件
+dropout 15%（rendered videos 与首帧
+CLIP），逐阶段提高分辨率、再微调时间层；详细数据设置见 EXP-01。</p>
+<p><strong>机制与证据</strong></p>
+<p>为什么有缺陷的投影能够训练补全？训练中输入点云来自不同视角的估计深度，目标图来自同相机真实观测（或合成
+GT），在同一空间坐标下构成从“部分、不准确条件”到“完整目标”的监督。扩散网络通过不同噪声等级的重建目标学习条件分布。目标中的真实遮挡后内容与上下文建立统计联系，模型并非通过确定性的点云插值生成所有未知区域。首帧
+CLIP 提供整体语义/外观条件，cache render
+提供逐时刻空间锚点，二者不能等同；CLIP 不直接编码全部精确像素位置。训练
+dropout 支持推理 classifier-free
+guidance，但原文没有详述条件是否联合/独立 dropout 的具体代码。</p>
+<p>【数学连接】一般扩散 Eq.1 的目标可取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>τ</mi></msub><mi>ϵ</mi><mo>−</mo><msub><mi>σ</mi><mi>τ</mi></msub><msub><mi>x</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\alpha_\tau\epsilon-\sigma_\tau x_0</annotation></semantics></math>
+或
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>；本文的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><msub><mi>z</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">y=z_0</annotation></semantics></math>
+来自 §4.4
+明确说明。对条件模型的期望平方误差在固定输入的理想最优预测为目标条件均值，此为背景知识，不等于最终生成序列简单输出均值。推理通过采样轨迹和多步去噪生成。</p>
+<p>【证据边界】配对监督训练能够鼓励与目标相机一致，但原文没有额外显式三维几何一致性损失或外观物理约束；不能推断微调对所有不可见区域给出唯一真实解。</p>
+<!-- PTH:END METHOD-04 -->
+<!-- PTH:BEGIN METHOD-05 -->
+<h2 id="方法推理自回归长视频与三维历史更新">3.4.5
+方法：推理、自回归长视频与三维历史更新</h2>
+<p><strong>核心内容</strong>（§4.5，pp.5–6；Appendix
+A.1/B.2，p.14；Fig.1–2）</p>
+<p>【原文事实】短视频推理：从 Gaussian noise 初始化
+latent，依据用户相机序列渲染 cache 并通过修改的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>f</mi><mi>θ</mi><mo>′</mo></msubsup><annotation encoding="application/x-tex">f&#39;_\theta</annotation></semantics></math>
+迭代去噪；用预训练 VAE decoder
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+得 RGB。附录 B.2：classifier-free guidance weight 3，25 diffusion
+steps；正文报告 1 张 NVIDIA A100 生成 14 帧约 30
+s。生成长序列时，将视频分为长度 L 的 chunks，相邻片段重叠 1
+帧，依次预测。</p>
+<p>缓存更新步骤（Appendix A.1）：</p>
+<ol type="1">
+<li>第一段按短视频管线生成 RGB。</li>
+<li>对片段末帧用 DAV2 预测像素深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>（正文
+§4.5 的描述为“for each generated frame”，附录 A.1
+明确举末帧实现；此处保留差异，不假定两者完全一致）。</li>
+<li>在该生成帧已知的用户相机位姿处渲染旧 cache，取得深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>d</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow></msup><annotation encoding="application/x-tex">d^{\mathrm{tgt}}</annotation></semantics></math>
+及覆盖 mask
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>。</li>
+<li>优化全局尺度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+和平移/偏移
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，最小化已覆盖处的深度残差：</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>,</mo><mi>t</mi><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>&#8289;</mo></mrow><munder><mi mathvariant="normal">min</mi><mrow><mi>s</mi><mo>,</mo><mi>t</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mi>d</mi><mo>+</mo><mi>t</mi><mo>−</mo><msup><mi>d</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow></msup><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mi>M</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">s,t=\arg\min_{s,t}\|(sd+t-d^{\mathrm{tgt}})\cdot M\|_2^2.\tag{4}</annotation></semantics></math></p>
+<ol start="5" type="1">
+<li>应用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>d</mi><mo>′</mo></msup><mo>=</mo><mi>s</mi><mi>d</mi><mo>+</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">d&#39;=sd+t</annotation></semantics></math>（Eq.5），结合该帧
+RGB 和已知相机反投影，再追加到原有三维缓存。</li>
+<li>以扩展 cache 渲染下一段目标相机轨迹，循环直到完成。</li>
+</ol>
+<p>这里的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+是 Eq.4–5 中的深度平移参数，不是时间索引。若所有 chunks 长度相同且相邻 1
+帧 overlap，k 段共有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo stretchy="false" form="prefix">(</mo><mi>L</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k(L-1)+1</annotation></semantics></math>
+个不同帧（【补充推导】）；实际末段可能较短。</p>
+<p><strong>机制与证据</strong></p>
+<p>为何不能直接追加预测深度？独立深度预测可能处于不同尺度或零点，新旧点云即使来自同一表面也会形成错位。旧
+cache
+在同一相机下给出部分可比较深度，通过重叠覆盖区最小二乘确定仿射对齐，再将同一变换应用于新增观测。这样既保留旧区域尺度，又能把新视野中生成的区域写入持久历史。返回旧视角时，可重渲染旧空间点，而无需仅靠最近片段的时序特征记忆。这里的“reprojection
+error”在 Eq.4 实际上是同目标平面上的深度残差，不是优化三维相机 pose
+的二维特征重投影距离；相机位姿已知。</p>
+<p>【数学连接】Eq.4 可视为在 mask 选中的有效像素上对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>d</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi></mrow></msup><annotation encoding="application/x-tex">d^{\mathrm{tgt}}</annotation></semantics></math>
+关于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+做一元线性回归；若有效重叠深度方差为零，尺度不可唯一求解；无有效像素时对齐无约束。MATH-04
+给出闭式推导和条件。</p>
+<p>【独立评价】缓存增长不保证纠错：如果新生成区域是幻觉，其 RGB
+和深度可能被当作后续条件永久保存；尺度/偏移只能纠正全局仿射误差，不能修复局部非线性错位。论文未给出缓存冲突清理、回环闭合、增长上限及长期累计误差的系统实验。正文与附录写回帧选择不一致，不能从
+PDF 确认最终代码实际写回多少帧。</p>
+<!-- PTH:END METHOD-05 -->
+<!-- PTH:BEGIN METHOD-06 -->
+<h2 id="方法cosmos-基础模型迁移">3.4.6 方法：Cosmos 基础模型迁移</h2>
+<p><strong>核心内容</strong>（§5.7，p.9；Fig.11–12）</p>
+<p>【原文事实】§5.7 将 SVD [4] 替换为 Cosmos1.0Diffusion-7BVideo2World
+[1]。作者沿用此前微调协议，使用 Cosmos tokenizer 编码缓存渲染帧，与
+noisy latent 拼接，利用 RE10K 和 DL3DV 两真实数据集 fine-tune 10,000
+步，batch size 64。Fig.11 比较同输入和目标相机下 SVD/Cosmos 输出，Fig.12
+展示单图大角度左右旋转。论文称更强预训练底座能够改善图像真实感，减少伪影。</p>
+<p>这一扩展不是重新学习缓存几何，也没有把 Cosmos 定义为 3D
+重建网络。核心接口是给定目标相机下的缓存渲染与视频模型的 token/latent
+条件输入。</p>
+<p><strong>机制与证据</strong></p>
+<p>框架之所以具有迁移性，在于近似几何来自外部缓存，主要结构约束已经投影成二维视频，与
+SVD
+某一特定时序层没有本质绑定。更强的预训练模型可在欠观测区域提供更丰富的外观先验，缓解极端视角的生成困难。可是两个模型的
+token 结构、分辨率、参数与训练分布可能不同，迁移实现需要与目标 tokenizer
+和网络输入形状匹配。正文仅说明拼接 noisy latent 与 rendered
+embeddings，不能把 SVD 的 4 通道、L′=L、H/8、W/8
+或所有多视角聚合具体结构无条件套给 Cosmos。</p>
+<p>【数学连接】通用接口可理解为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow></msub><mo>=</mo><msub><mi>E</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>I</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">c_{\mathrm{render}}=E_{\mathrm{base}}(I)</annotation></semantics></math>
+与 noisy latent 的条件组合；这是补充抽象，不是 §5.7 新公式。原文未提供
+Cosmos 的具体 token shape 或全部网络改动，无法推导相应参数量。</p>
+<p>【证据边界】Fig.11–12 是定性，题注明示分辨率差异。不能外推 Cosmos
+全部 Table 1–6 指标更好，或由 10K steps 推断训练耗时和可复现成本。</p>
+<!-- PTH:END METHOD-06 -->
+<!-- PTH:BEGIN MATH-01 -->
+<h2 id="数学条件视频扩散训练目标-eq.-1">3.5.1 数学：条件视频扩散训练目标
+Eq. (1)</h2>
+<p><strong>核心内容</strong>（§3，p.3；§4.4，p.5）</p>
+<p>【原文事实】§3：从 <span class="math inline">$x_0\sim p_{\rm
+data}(x)$</span> 采样干净数据，从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>τ</mi></msub><annotation encoding="application/x-tex">p_\tau</annotation></semantics></math>
+采样扩散时间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>，从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn mathvariant="bold">𝟎</mn><mo>,</mo><mi mathvariant="bold-italic">𝑰</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathcal N(\mathbf 0,\mathbf I)</annotation></semantics></math>
+采样噪声
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>，构造</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>τ</mi></msub><mo>=</mo><msub><mi>α</mi><mi>τ</mi></msub><msub><mi>x</mi><mn>0</mn></msub><mo>+</mo><msub><mi>σ</mi><mi>τ</mi></msub><mi>ϵ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">x_\tau=\alpha_\tau x_0+\sigma_\tau\epsilon.</annotation></semantics></math></p>
+<p>训练损失 Eq.1：</p>
+<p><span class="math display">$$\mathbb E_{x_0\sim p_{\rm
+data}(x),\,\tau\sim p_\tau,\,\epsilon\sim\mathcal N(\mathbf 0,\mathbf
+I)}\left[\|f_\theta(x_\tau;c,\tau)-y\|_2^2\right].\tag{1}$$</span></p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math></td>
+<td>干净训练视频</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>τ</mi></msub><annotation encoding="application/x-tex">x_\tau</annotation></semantics></math></td>
+<td>噪声等级为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+的样本</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>τ</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>τ</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_\tau,\sigma_\tau</annotation></semantics></math></td>
+<td>噪声 schedule 系数，控制保留信号及噪声量</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></td>
+<td>标准高斯噪声</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>θ</mi></msub><annotation encoding="application/x-tex">f_\theta</annotation></semantics></math></td>
+<td>可训练去噪模型</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math></td>
+<td>可选条件</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math></td>
+<td>预测目标，可为 noise、velocity 或 clean sample</td>
+</tr>
+</tbody>
+</table>
+<p>论文列出的三种 target 是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>τ</mi></msub><mi>ϵ</mi><mo>−</mo><msub><mi>σ</mi><mi>τ</mi></msub><msub><mi>x</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\alpha_\tau\epsilon-\sigma_\tau x_0</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>。实际训练
+§4.4 在 VAE
+潜空间进行：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>L</mi><mo>×</mo><mn>3</mn><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi></mrow></msup></mrow><annotation encoding="application/x-tex">x\in\mathbb R^{L\times3\times H\times W}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mn>0</mn></msub><mo>=</mo><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><msup><mi>L</mi><mo>′</mo></msup><mo>×</mo><mi>C</mi><mo>×</mo><mi>h</mi><mo>×</mo><mi>w</mi></mrow></msup></mrow><annotation encoding="application/x-tex">z_0=E(x)\in\mathbb R^{L&#39;\times C\times h\times w}</annotation></semantics></math>；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>τ</mi></msub><mo>=</mo><msub><mi>α</mi><mi>τ</mi></msub><msub><mi>z</mi><mn>0</mn></msub><mo>+</mo><msub><mi>σ</mi><mi>τ</mi></msub><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">z_\tau=\alpha_\tau z_0+\sigma_\tau\epsilon</annotation></semantics></math>；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><msub><mi>z</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">y=z_0</annotation></semantics></math>。SVD
+中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>L</mi><mo>′</mo></msup><mo>=</mo><mi>L</mi><mo>,</mo><mi>C</mi><mo>=</mo><mn>4</mn><mo>,</mo><mi>h</mi><mo>=</mo><mi>H</mi><mi>/</mi><mn>8</mn><mo>,</mo><mi>w</mi><mo>=</mo><mi>W</mi><mi>/</mi><mn>8</mn></mrow><annotation encoding="application/x-tex">L&#39;=L,C=4,h=H/8,w=W/8</annotation></semantics></math>，时间维未压缩。条件
+c 包含渲染经 Eq.2–3 处理后的条件及首帧 CLIP embedding。最终 RGB 为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>x</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>D</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat x=D(z)</annotation></semantics></math>。</p>
+<p><strong>机制与证据</strong></p>
+<p>【背景知识与补充推导】固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>τ</mi></msub><mo>,</mo><mi>c</mi><mo>,</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">x_\tau,c,\tau</annotation></semantics></math>
+后，最小化关于预测向量 a 的条件风险
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mo stretchy="false" form="postfix">∥</mo><mi>a</mi><mo>−</mo><mi>y</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>∣</mo><msub><mi>x</mi><mi>τ</mi></msub><mo>,</mo><mi>c</mi><mo>,</mo><mi>τ</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">R(a)=\mathbb E[\|a-y\|^2\mid x_\tau,c,\tau]</annotation></semantics></math>。将平方展开为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mi>T</mi></msup><mi>a</mi><mo>−</mo><mn>2</mn><msup><mi>a</mi><mi>T</mi></msup><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>y</mi><mo>∣</mo><mi>⋅</mi><mo stretchy="false" form="postfix">]</mo><mo>+</mo><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><msup><mi>y</mi><mi>T</mi></msup><mi>y</mi><mo>∣</mo><mi>⋅</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">a^Ta-2a^T\mathbb E[y\mid\cdot]+\mathbb E[y^Ty\mid\cdot]</annotation></semantics></math>，梯度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>a</mi><mo>−</mo><mn>2</mn><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>y</mi><mo>∣</mo><mi>⋅</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">2a-2\mathbb E[y\mid\cdot]</annotation></semantics></math>，Hessian
+为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>I</mi></mrow><annotation encoding="application/x-tex">2I</annotation></semantics></math>，故理想最优
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mo>*</mo></msup><mo>=</mo><mi mathvariant="double-struck">𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>y</mi><mo>∣</mo><msub><mi>x</mi><mi>τ</mi></msub><mo>,</mo><mi>c</mi><mo>,</mo><mi>τ</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">a^*=\mathbb E[y\mid x_\tau,c,\tau]</annotation></semantics></math>。单次
+denoising regression
+学习条件统计规律，不是从有限观测直接解析求出真场景。扩散采样从随机初值逐步更新潜变量，不等于一个步骤直接输出均值。对于
+clean prediction，在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>τ</mi></msub><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\sigma_\tau\ne0</annotation></semantics></math>
+时可重排
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>τ</mi></msub><mo>−</mo><msub><mi>α</mi><mi>τ</mi></msub><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mi>/</mi><msub><mi>σ</mi><mi>τ</mi></msub></mrow><annotation encoding="application/x-tex">\epsilon=(x_\tau-\alpha_\tau x_0)/\sigma_\tau</annotation></semantics></math>；这不是原文指定的采样器实现。</p>
+<p>训练时有目标视频，推理没有 E(x)，使用采样过程中当前的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mi>τ</mi></msub><annotation encoding="application/x-tex">z_\tau</annotation></semantics></math>
+与渲染条件。不能将 GT 编码作为推理输入。</p>
+<p>【数学条件】条件均值推导要求目标二阶矩有限和足够表达能力；换算噪声需
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>τ</mi></msub><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\sigma_\tau\ne0</annotation></semantics></math>。Eq.1
+未在本文推导 score matching 与每种 schedule 的等价性，不能假设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>α</mi><mi>τ</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>σ</mi><mi>τ</mi><mn>2</mn></msubsup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\alpha_\tau^2+\sigma_\tau^2=1</annotation></semantics></math>
+必然对本实现成立。</p>
+<p>【证据边界】式 (1)
+是继承的扩散目标，创新在条件构造与融合。该损失没有明确深度、位姿或跨帧三维重投影硬约束。</p>
+<!-- PTH:END MATH-01 -->
+<!-- PTH:BEGIN MATH-02 -->
+<h2 id="数学潜空间遮罩与跨视角特征聚合-eq.-23">3.5.2
+数学：潜空间遮罩与跨视角特征聚合 Eq. (2)–(3)</h2>
+<p><strong>核心内容</strong>（§4.3，pp.4–5；Fig.3–4、16）</p>
+<p>【原文事实】对来源
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>V</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">v\in\{1,\ldots,V\}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>I</mi><mi>v</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>L</mi><mo>×</mo><mn>3</mn><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi></mrow></msup></mrow><annotation encoding="application/x-tex">I^v\in\mathbb R^{L\times3\times H\times W}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>M</mi><mi>v</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>L</mi><mo>×</mo><mn>1</mn><mo>×</mo><mi>H</mi><mo>×</mo><mi>W</mi></mrow></msup></mrow><annotation encoding="application/x-tex">M^v\in\mathbb R^{L\times1\times H\times W}</annotation></semantics></math>。冻结
+E 得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mi>v</mi></msup><mo>=</mo><mi>E</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>I</mi><mi>v</mi></msup><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mi>L</mi><mo>×</mo><mn>4</mn><mo>×</mo><mi>h</mi><mo>×</mo><mi>w</mi></mrow></msup></mrow><annotation encoding="application/x-tex">z^v=E(I^v)\in\mathbb R^{L\times4\times h\times w}</annotation></semantics></math>（SVD），<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>M</mi><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msup><annotation encoding="application/x-tex">M^{v,\prime}</annotation></semantics></math>
+为 min-pool
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>M</mi><mi>v</mi></msup><annotation encoding="application/x-tex">M^v</annotation></semantics></math>（pool
+size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mi>/</mi><mi>h</mi><mo>×</mo><mi>W</mi><mi>/</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">H/h\times W/w</annotation></semantics></math>），形状
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>×</mo><mn>1</mn><mo>×</mo><mi>h</mi><mo>×</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">L\times1\times h\times w</annotation></semantics></math>。原文：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msup><mo>=</mo><mtext mathvariant="normal">In-Layer</mtext><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">Concat</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>z</mi><mi>v</mi></msup><mo>⊙</mo><msup><mi>M</mi><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msup><mo>,</mo><msub><mi>z</mi><mi>τ</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">z^{v,\prime}=\text{In-Layer}(\text{Concat}(z^v\odot M^{v,\prime},z_\tau)),\tag{2}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mo>′</mo></msup><mo>=</mo><mtext mathvariant="normal">Max-Pool</mtext><mo stretchy="false" form="prefix">{</mo><msup><mi>z</mi><mrow><mn>1</mn><mo>,</mo><mi>′</mi></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>z</mi><mrow><mi>V</mi><mo>,</mo><mi>′</mi></mrow></msup><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">z&#39;=\text{Max-Pool}\{z^{1,\prime},\ldots,z^{V,\prime}\}.\tag{3}</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>⊙</mi><annotation encoding="application/x-tex">\odot</annotation></semantics></math>
+逐元素乘法，mask
+单通道广播；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>τ</mi></msub><mo>=</mo><msub><mi>α</mi><mi>τ</mi></msub><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>σ</mi><mi>τ</mi></msub><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">z_\tau=\alpha_\tau E(x)+\sigma_\tau\epsilon</annotation></semantics></math>；Concat
+沿通道，In-Layer 共享首层，Max-Pool 在 V 个来源之间取最大。</p>
+<p><strong>机制与证据</strong></p>
+<p>【补充推导 1：mask】覆盖 mask 取 0/1，对低分辨率位置
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i,j)</annotation></semantics></math>
+对应的高分辨率块
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">B_{ij}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>M</mi><mrow><mi>t</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msubsup><mo>=</mo><msub><mrow><mi mathvariant="normal">min</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>,</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msub><mi>B</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></msub><msubsup><mi>M</mi><mrow><mi>t</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>p</mi><mo>,</mo><mi>q</mi></mrow><mi>v</mi></msubsup></mrow><annotation encoding="application/x-tex">M^{v,\prime}_{t,1,i,j}=\min_{(p,q)\in B_{ij}}M^v_{t,1,p,q}</annotation></semantics></math>。全覆盖才
+min=1；任一未覆盖则 min=0。故
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mover><mi>z</mi><mo accent="true">̃</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>k</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mi>v</mi></msubsup><mo>=</mo><msubsup><mi>z</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mi>v</mi></msubsup><msubsup><mi>M</mi><mrow><mi>t</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mrow><mi>v</mi><mo>,</mo><mi>′</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">\tilde z^v_{t,k,i,j}=z^v_{t,k,i,j}M^{v,\prime}_{t,1,i,j}</annotation></semantics></math>
+在未覆盖块对全部 k 置零。SVD 下 H/h=W/w=8，整除时每块 8×8，64
+像素都覆盖才保留 latent 单元。VAE 感受野可能跨块，min-pool
+并不保证严格隔离全部不可靠信息，也可能损失一部分有效细结构。</p>
+<p>【补充推导 2：维度与置换】每来源 masked latent 与 noisy latent 均为
+L×4×h×w，拼接为 L×8×h×w，首层输出记为 L×F×h_f×w_f（不假定具体 F 或
+stride）。对位置
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>k</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">q=(t,k,i,j)</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>v</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">g_v(q)</annotation></semantics></math>
+为首层输出，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mrow><mi mathvariant="normal">max</mi><mo>&#8289;</mo></mrow><mrow><mi>v</mi><mo>=</mo><mn>1</mn></mrow><mi>V</mi></msubsup><msub><mi>g</mi><mi>v</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">z&#39;(q)=\max_{v=1}^V g_v(q)</annotation></semantics></math>。任意来源排列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>
+有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mi mathvariant="normal">max</mi><mrow><mi>v</mi><mo>=</mo><mn>1</mn></mrow><mi>V</mi></munderover><msub><mi>g</mi><mrow><mi>π</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mi mathvariant="normal">max</mi><mrow><mi>v</mi><mo>=</mo><mn>1</mn></mrow><mi>V</mi></munderover><msub><mi>g</mi><mi>v</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\max_{v=1}^V g_{\pi(v)}(q)=\max_{v=1}^V g_v(q).</annotation></semantics></math></p>
+<p>最大值只依赖候选集合而与顺序无关，且首层共享，故排列不变。V=1
+时等于该来源；V=2 时两来源同位置特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,4)</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,2)</annotation></semantics></math>
+得
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4)</annotation></semantics></math>，不同通道可来自不同来源，并非选择完整某一个视角或平均。重复完全相同的来源对
+max
+值不变；新增来源若更大则改变结果。最大值是特征数值选择，不等价于置信度或物理深度最小值。</p>
+<p>【补充推导 3：参数/计算】简单拼接 V 个 C 通道条件及 C
+通道噪声，首层宽度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">(V+1)C</annotation></semantics></math>。对固定输出
+F 的二维卷积、核 k×k，参数量与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>C</mi><mi>F</mi><msup><mi>k</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">(V+1)CFk^2</annotation></semantics></math>
+成正比（示意，非本文精确参数量）。共享首层每次输入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>C</mi></mrow><annotation encoding="application/x-tex">2C</annotation></semantics></math>，参数量不随
+V 改变；计算量仍含 V 次首层。</p>
+<p>【成立条件】所有来源需渲染/编码到相同目标时间与空间尺寸；同一 noisy
+latent、共享首层和同一条件规则是置换不变前提。若增加来源顺序相关
+embedding，需重新分析。最大运算在并列最大处不可微但有次梯度，训练梯度集中于获胜候选，是潜在取舍。</p>
+<p>【证据边界】Fig.3 “Spatial maxpool” 不能覆盖 Eq.3 的明确定义；Table
+6、Fig.16 支持特定设置的选择，不证明任意 V 和冲突条件的最优性。</p>
+<!-- PTH:END MATH-02 -->
+<!-- PTH:BEGIN MATH-03 -->
+<h2 id="数学相机反投影与再投影补充几何推导">3.5.3
+数学：相机反投影与再投影（补充几何推导）</h2>
+<p><strong>核心内容</strong>（§4.1–4.2，p.4；Fig.1、3、10、14）</p>
+<p>【原文事实】§4.1 由 RGB 和估计深度反投影得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="script">𝒫</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><annotation encoding="application/x-tex">\mathcal P^{t,v}</annotation></semantics></math>，§4.2
+用目标相机
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>C</mi><mi>t</mi></msup><annotation encoding="application/x-tex">C^t</annotation></semantics></math>
+渲染得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>I</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><mo>,</mo><msup><mi>M</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup></mrow><annotation encoding="application/x-tex">I^{t,v},M^{t,v}</annotation></semantics></math>。论文未给出针孔模型逐步公式。以下为【背景知识及补充推导】，不冒称作者公式或实现细节。</p>
+<p>设源像素
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>u</mi><mi>p</mi></msub><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(u_p,v_p)</annotation></semantics></math>
+的齐次坐标
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>p</mi><mo accent="true">̃</mo></mover><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>u</mi><mi>p</mi></msub><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub><mo>,</mo><mn>1</mn><msup><mo stretchy="false" form="postfix">)</mo><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">\tilde p=(u_p,v_p,1)^T</annotation></semantics></math>，内参
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>s</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>f</mi><mi>x</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>c</mi><mi>x</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>f</mi><mi>y</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>c</mi><mi>y</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">K_s=\begin{bmatrix}f_x&amp;0&amp;c_x\\0&amp;f_y&amp;c_y\\0&amp;0&amp;1\end{bmatrix}</annotation></semantics></math>（无
+skew 的针孔相机例）；深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mi>s</mi></msub><annotation encoding="application/x-tex">d_s</annotation></semantics></math>
+假定为源相机 z 坐标。源 camera-to-world 为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mi>s</mi></msub><mo>,</mo><msub><mi>t</mi><mi>s</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(R_s,t_s)</annotation></semantics></math>，目标
+world-to-camera 为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mi>t</mi></msub><mo>,</mo><msub><mi>t</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(R_t,t_t)</annotation></semantics></math>，目标内参
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>t</mi></msub><annotation encoding="application/x-tex">K_t</annotation></semantics></math>。下标
+s/t 指 source/target，与时间 t、Eq.4 的尺度 s 和偏移 t 区分。</p>
+<p><strong>机制与证据</strong></p>
+<ol type="1">
+<li><strong>反投影到源相机系</strong>。由透视模型
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>p</mi><mo accent="true">̃</mo></mover><mo>∝</mo><msub><mi>K</mi><mi>s</mi></msub><msub><mi>X</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">\tilde p\propto K_sX_s</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>s</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo>,</mo><mi>Z</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">X_s=(X,Y,Z)^T</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>=</mo><msub><mi>d</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">Z=d_s</annotation></semantics></math>，得</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>s</mi></msub><mo>=</mo><msub><mi>d</mi><mi>s</mi></msub><msubsup><mi>K</mi><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mover><mi>p</mi><mo accent="true">̃</mo></mover><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mo stretchy="false" form="prefix">(</mo><msub><mi>u</mi><mi>p</mi></msub><mo>−</mo><msub><mi>c</mi><mi>x</mi></msub><mo stretchy="false" form="postfix">)</mo><msub><mi>d</mi><mi>s</mi></msub><mi>/</mi><msub><mi>f</mi><mi>x</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mo stretchy="false" form="prefix">(</mo><msub><mi>v</mi><mi>p</mi></msub><mo>−</mo><msub><mi>c</mi><mi>y</mi></msub><mo stretchy="false" form="postfix">)</mo><msub><mi>d</mi><mi>s</mi></msub><mi>/</mi><msub><mi>f</mi><mi>y</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>d</mi><mi>s</mi></msub></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">X_s=d_sK_s^{-1}\tilde p=\begin{bmatrix}(u_p-c_x)d_s/f_x\\(v_p-c_y)d_s/f_y\\d_s\end{bmatrix}.</annotation></semantics></math></p>
+<p>若深度是沿单位射线的距离而非 z-depth，则改为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>s</mi></msub><mo>=</mo><msub><mi>d</mi><mi>s</mi></msub><msubsup><mi>K</mi><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mover><mi>p</mi><mo accent="true">̃</mo></mover><mi>/</mi><mo stretchy="false" form="postfix">∥</mo><msubsup><mi>K</mi><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mover><mi>p</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">∥</mo></mrow><annotation encoding="application/x-tex">X_s=d_sK_s^{-1}\tilde p/\|K_s^{-1}\tilde p\|</annotation></semantics></math>。不能混用。</p>
+<ol start="2" type="1">
+<li><p><strong>变换到世界坐标并保存颜色</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>w</mi></msub><mo>=</mo><msub><mi>R</mi><mi>s</mi></msub><msub><mi>X</mi><mi>s</mi></msub><mo>+</mo><msub><mi>t</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">X_w=R_sX_s+t_s</annotation></semantics></math>，附带源
+RGB。来源相机需在相容尺度和世界坐标系，否则对应物理表面发生冲突。</p></li>
+<li><p><strong>目标相机坐标</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mi>R</mi><mi>t</mi></msub><msub><mi>X</mi><mi>w</mi></msub><mo>+</mo><msub><mi>t</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">X_t=R_tX_w+t_t</annotation></semantics></math>。若目标为
+camera-to-world
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mrow><mi>c</mi><mi>w</mi></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow><mi>c</mi><mi>w</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(R_{cw},t_{cw})</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>t</mi></msub><mo>=</mo><msubsup><mi>R</mi><mrow><mi>c</mi><mi>w</mi></mrow><mi>T</mi></msubsup><mo>,</mo><msub><mi>t</mi><mi>t</mi></msub><mo>=</mo><mi>−</mi><msubsup><mi>R</mi><mrow><mi>c</mi><mi>w</mi></mrow><mi>T</mi></msubsup><msub><mi>t</mi><mrow><mi>c</mi><mi>w</mi></mrow></msub></mrow><annotation encoding="application/x-tex">R_t=R_{cw}^T,t_t=-R_{cw}^Tt_{cw}</annotation></semantics></math>（旋转正交）。</p></li>
+<li><p><strong>目标像素投影</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><msub><mi>K</mi><mi>t</mi></msub><msub><mi>X</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">q=K_tX_t</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>u</mi><mi>p</mi><mo>′</mo></msubsup><mo>=</mo><msub><mi>q</mi><mn>1</mn></msub><mi>/</mi><msub><mi>q</mi><mn>3</mn></msub><mo>,</mo><msubsup><mi>v</mi><mi>p</mi><mo>′</mo></msubsup><mo>=</mo><msub><mi>q</mi><mn>2</mn></msub><mi>/</mi><msub><mi>q</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">u&#39;_p=q_1/q_3,v&#39;_p=q_2/q_3</annotation></semantics></math>。有效点需
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Z</mi><mi>t</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">Z_t&gt;0</annotation></semantics></math>、投影在图像边界内，并按可见性处理遮挡。离散投影不覆盖每个目标像素，mask
+记录覆盖。论文未指定具体 z-buffer 实现。</p></li>
+</ol>
+<p>【补充误差传播】两相机平行、相同焦距 f、水平平移 b，得目标
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>u</mi><mi>p</mi><mo>′</mo></msubsup><mo>=</mo><msub><mi>u</mi><mi>p</mi></msub><mo>−</mo><mi>f</mi><mi>b</mi><mi>/</mi><msub><mi>d</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">u&#39;_p=u_p-fb/d_s</annotation></semantics></math>（相机向右移动
+b&gt;0）。若估计深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>s</mi></msub><mo>+</mo><mi>δ</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">d_s+\delta d</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><msup><mi>u</mi><mo>′</mo></msup><mo>=</mo><mi>f</mi><mi>b</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>1</mn><msub><mi>d</mi><mi>s</mi></msub></mfrac><mo>−</mo><mfrac><mn>1</mn><mrow><msub><mi>d</mi><mi>s</mi></msub><mo>+</mo><mi>δ</mi><mi>d</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>f</mi><mi>b</mi><mi>δ</mi><mi>d</mi></mrow><mrow><msub><mi>d</mi><mi>s</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mi>s</mi></msub><mo>+</mo><mi>δ</mi><mi>d</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>≈</mo><mfrac><mrow><mi>f</mi><mi>b</mi></mrow><msubsup><mi>d</mi><mi>s</mi><mn>2</mn></msubsup></mfrac><mi>δ</mi><mi>d</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\delta u&#39;=fb\left(\frac1{d_s}-\frac1{d_s+\delta d}\right)=\frac{fb\delta d}{d_s(d_s+\delta d)}\approx\frac{fb}{d_s^2}\delta d.</annotation></semantics></math></p>
+<p>近似需
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>δ</mi><mi>d</mi><mo stretchy="false" form="prefix">|</mo><mo>≪</mo><msub><mi>d</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">|\delta d|\ll d_s</annotation></semantics></math>。大基线、近表面、深度误差放大像素偏差；解释显式融合的重影及外推难点。一般相机旋转、内参差异和遮挡不在此特例中。</p>
+<p>【补充关系】Dolly Zoom 的近似成像尺寸
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mrow><mi>i</mi><mi>m</mi><mi>g</mi></mrow></msub><mo>≈</mo><mi>f</mi><msub><mi>H</mi><mrow><mi>o</mi><mi>b</mi><mi>j</mi></mrow></msub><mi>/</mi><mi>Z</mi></mrow><annotation encoding="application/x-tex">h_{img}\approx fH_{obj}/Z</annotation></semantics></math>；改变前景距离
+Z 并按比例改变 f
+可保持其像高，背景不同深度不保持同样比例，产生透视变化。仅针孔和物体尺寸相对深度较小的近似。</p>
+<p>【证据边界】这些公式说明几何引导来源，不是原文 renderer
+或深度估计器实现；未知表面、姿态误差和生成修复不能由针孔公式消除。</p>
+<!-- PTH:END MATH-03 -->
+<!-- PTH:BEGIN MATH-04 -->
+<h2 id="数学深度尺度偏移对齐-eq.-45">3.5.4 数学：深度尺度/偏移对齐 Eq.
+(4)–(5)</h2>
+<p><strong>核心内容</strong>（Appendix A.1，p.14；§4.5，pp.5–6）</p>
+<p>【原文事实】Appendix A.1 对自回归片段末帧估计深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>，在该帧相机处渲染既有点云深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>d</mi><mtext mathvariant="normal">tgt</mtext></msup><annotation encoding="application/x-tex">d^{\text{tgt}}</annotation></semantics></math>，掩码
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+标明覆盖。原文公式：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>,</mo><mi>t</mi><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>&#8289;</mo></mrow><munder><mi mathvariant="normal">min</mi><mrow><mi>s</mi><mo>,</mo><mi>t</mi></mrow></munder><msubsup><mrow><mo stretchy="true" form="prefix">∥</mo><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>⋅</mo><mi>d</mi><mo>+</mo><mi>t</mi><mo>−</mo><msup><mi>d</mi><mtext mathvariant="normal">tgt</mtext></msup><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mi>M</mi><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn><mn>2</mn></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">s,t=\arg\min_{s,t}\left\|(s\cdot d+t-d^{\text{tgt}})\cdot M\right\|_2^2.\tag{4}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>d</mi><mo>′</mo></msup><mo>=</mo><mi>s</mi><mo>⋅</mo><mi>d</mi><mo>+</mo><mi>t</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">d&#39;=s\cdot d+t.\tag{5}</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+是全局
+scale，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+是全局
+translation/offset（非时间索引）；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>d</mi><mo>′</mo></msup><annotation encoding="application/x-tex">d&#39;</annotation></semantics></math>
+是对齐深度。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>d</mi><mtext mathvariant="normal">tgt</mtext></msup><annotation encoding="application/x-tex">d^{\text{tgt}}</annotation></semantics></math>
+为旧缓存渲染深度而非真实传感器 GT。目标相机已知，不在本优化调整。</p>
+<p><strong>机制与证据</strong></p>
+<p>【补充推导：闭式解】展开像素 i，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>i</mi></msub><mo>=</mo><msub><mi>d</mi><mi>i</mi></msub><mo>,</mo><msub><mi>b</mi><mi>i</mi></msub><mo>=</mo><msubsup><mi>d</mi><mi>i</mi><mtext mathvariant="normal">tgt</mtext></msubsup><mo>,</mo><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><msubsup><mi>M</mi><mi>i</mi><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">a_i=d_i,b_i=d_i^{\text{tgt}},w_i=M_i^2</annotation></semantics></math>。二值
+mask 下
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><msub><mi>M</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">w_i=M_i</annotation></semantics></math>，仅覆盖像素计误差。目标
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>s</mi><msub><mi>a</mi><mi>i</mi></msub><mo>+</mo><mi>t</mi><mo>−</mo><msub><mi>b</mi><mi>i</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">J(s,t)=\sum_iw_i(sa_i+t-b_i)^2</annotation></semantics></math>。对
+s,t 求导置零：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>s</mi><msub><mi>a</mi><mi>i</mi></msub><mo>+</mo><mi>t</mi><mo>−</mo><msub><mi>b</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1.0em"></mspace><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>s</mi><msub><mi>a</mi><mi>i</mi></msub><mo>+</mo><mi>t</mi><mo>−</mo><msub><mi>b</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\sum_iw_i a_i(sa_i+t-b_i)=0,\quad\sum_iw_i(sa_i+t-b_i)=0.</annotation></semantics></math></p>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">W=\sum_iw_i</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><mi>/</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">\bar a=\sum_iw_ia_i/W</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>b</mi><mo accent="true">‾</mo></mover><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><msub><mi>b</mi><mi>i</mi></msub><mi>/</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">\bar b=\sum_iw_ib_i/W</annotation></semantics></math>。第二式给出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mover><mi>b</mi><mo accent="true">‾</mo></mover><mo>−</mo><mi>s</mi><mover><mi>a</mi><mo accent="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">t=\bar b-s\bar a</annotation></semantics></math>。代入第一式，均值项消去：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mfrac><mrow><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>a</mi><mi>i</mi></msub><mo>−</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>b</mi><mi>i</mi></msub><mo>−</mo><mover><mi>b</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><mrow><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>a</mi><mi>i</mi></msub><mo>−</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>t</mi><mo>=</mo><mover><mi>b</mi><mo accent="true">‾</mo></mover><mo>−</mo><mi>s</mi><mover><mi>a</mi><mo accent="true">‾</mo></mover><mi>.</mi></mrow><annotation encoding="application/x-tex">s=\frac{\sum_iw_i(a_i-\bar a)(b_i-\bar b)}{\sum_iw_i(a_i-\bar a)^2},\qquad t=\bar b-s\bar a.</annotation></semantics></math></p>
+<p>正规方程：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msubsup><mi>a</mi><mi>i</mi><mn>2</mn></msubsup></mtd><mtd columnalign="center" style="text-align: center"><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mi>W</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>s</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>t</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><msub><mi>b</mi><mi>i</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msub><mi>b</mi><mi>i</mi></msub></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{bmatrix}\sum_iw_i a_i^2&amp;\sum_iw_i a_i\\\sum_iw_i a_i&amp;W\end{bmatrix}\begin{bmatrix}s\\t\end{bmatrix}=\begin{bmatrix}\sum_iw_i a_i b_i\\\sum_iw_i b_i\end{bmatrix}.</annotation></semantics></math></p>
+<p>系数矩阵半正定；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">W&gt;0</annotation></semantics></math>
+且加权深度方差非零时，行列式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>a</mi><mi>i</mi></msub><mo>−</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">W\sum_iw_i(a_i-\bar a)^2&gt;0</annotation></semantics></math>，唯一无约束最小二乘解存在。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">W=0</annotation></semantics></math>
+时任意 s,t 给出零损失；若所有覆盖深度相同，s 和 t
+不可区分。小重叠或近常深度会病态。例：有效像素
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">d=(1,2,3)</annotation></semantics></math>，缓存深度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>7</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,5,7)</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>=</mo><mn>2</mn><mo>,</mo><mover><mi>b</mi><mo accent="true">‾</mo></mover><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\bar a=2,\bar b=5</annotation></semantics></math>，分子4、分母2，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mn>2</mn><mo>,</mo><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">s=2,t=1</annotation></semantics></math>；未覆盖像素同样应用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>d</mi><mo>′</mo></msup><mo>=</mo><mn>2</mn><mi>d</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">d&#39;=2d+1</annotation></semantics></math>，但无直接目标深度约束。</p>
+<p>几何意义：同一目标相机下新深度需与旧缓存处在相容尺度。过程不改变
+RGB，也没有优化相机、非线性局部误差或 3D 刚体旋转。</p>
+<p>【成立条件】假设重叠区对应同一表面、mask
+可靠、两深度可由全局仿射变换近似关联。原文未给出
+s&gt;0、对齐后正值、鲁棒残差或异常值处理约束；补充闭式解仅针对 Eq.4
+的无约束问题，不能断言代码使用该闭式求解。</p>
+<p>【独立评价】旧缓存错误会传播；非重叠新区域只共享全局变换，未得到真深度验证。写回生成
+RGB-D 既可增强历史一致性，也可能放大错误。</p>
+<!-- PTH:END MATH-04 -->
+<!-- PTH:BEGIN MATH-05 -->
+<h2 id="数学深度扰动的相对尺度及鲁棒性">3.5.5
+数学：深度扰动的相对尺度及鲁棒性</h2>
+<p><strong>核心内容</strong>（§5.6，p.9；Table 5，p.8）</p>
+<p>【原文事实】§5.6 在预测深度上添加高斯噪声，原文记法</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>s</mi><mo>*</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mn>0.95</mn></msub><mo>−</mo><msub><mi>d</mi><mn>0.05</mn></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal N(0,s*(d_{0.95}-d_{0.05})).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>0.95</mn></msub><mo>,</mo><msub><mi>d</mi><mn>0.05</mn></msub></mrow><annotation encoding="application/x-tex">d_{0.95},d_{0.05}</annotation></semantics></math>
+是估计深度的95%和5%分位数，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+为 noise ratio；Table 5 取0%、3%、10%、30%。此处 s 不是 Appendix A.1
+的尺度参数。正文未明确正态分布第二参数是方差还是标准差，也未说明跨像素相关性，保留原记法，不擅自修改。</p>
+<p><strong>机制与证据</strong></p>
+<p>【背景知识】分位数跨度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>d</mi><mo>=</mo><msub><mi>d</mi><mn>0.95</mn></msub><mo>−</mo><msub><mi>d</mi><mn>0.05</mn></msub></mrow><annotation encoding="application/x-tex">\Delta d=d_{0.95}-d_{0.05}</annotation></semantics></math>
+比 max-min
+对极少量极端异常值稳健，提供整个深度分布的场景尺度，而不是每个像素相对自身深度。辅助理解：若第二参数意指标准差，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>d</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">\Delta d=10</annotation></semantics></math>m、s=0.03
+时标准差为0.3m；若意指方差则不能如此解释。非论文实测场景数据。由 MATH-03
+的平行相机特例，像素误差近似
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><msup><mi>u</mi><mo>′</mo></msup><mo>≈</mo><mi>f</mi><mi>b</mi><mi>δ</mi><mi>d</mi><mi>/</mi><msup><mi>d</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\delta u&#39;\approx fb\delta d/d^2</annotation></semantics></math>；同样绝对深度扰动在近处/远处、不同目标基线产生不同像素偏差，因此噪声比例与最终指标不存在直接线性关系。</p>
+<p>【数字关联】Table 5 插值 PSNR
+从24.08到22.39/20.85/18.52；外推从21.56到21.00/19.64/17.91。SSIM
+下降、LPIPS 上升。0%
+仍依赖原估计深度；人工高斯扰动不代表系统性尺度错、边缘断裂、视图不一致或水下散射等复杂误差。</p>
+<p>【证据边界】不从未定义的噪声参数推导精确方差或统计显著性；模型对噪声有一定容忍但随误差退化，不证明任意几何误差下鲁棒。</p>
+<!-- PTH:END MATH-05 -->
+<!-- PTH:BEGIN EXP-01 -->
+<h2 id="实验训练数据与优化设置">3.6.1 实验：训练数据与优化设置</h2>
+<p><strong>核心内容</strong>（§5.1，p.6；Appendix B.1–B.2，p.14）</p>
+<p>【原文事实】§5.1
+的难点是缺少真实、同步、多视角动态视频配对，作者以真实静态序列提供空间一致性监督、以合成多目动态序列提供时间一致性监督，并加入真实驾驶数据。</p>
+<table>
+
+<thead>
+<tr>
+<th>数据集</th>
+<th>规模（论文陈述）</th>
+<th>缓存生成与目标配对</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RE10K [75]</td>
+<td>74,766 clips，室内外房地产场景</td>
+<td>DROID-SLAM 相机、DAV2 每帧深度、场景尺度对齐；随机等间距 V∈[1,4]
+帧，缓存当作静态，L 个连续目标帧包含其中一帧</td>
+</tr>
+<tr>
+<td>DL3DV [29]</td>
+<td>10k 视频</td>
+<td>相同标注和采样流程</td>
+</tr>
+<tr>
+<td>Waymo Open Dataset [50]</td>
+<td>1000 scenes，每场景200帧</td>
+<td>DAV2 深度与 LiDAR 尺度对齐；三相机同步 L 帧构成 V=3 缓存，GT 只取
+FRONT 相机</td>
+</tr>
+<tr>
+<td>Kubric4D [14,54]</td>
+<td>GCD 生成的3000场景</td>
+<td>已有动态多对象点云序列；渲染 V∈[1,4] 条轨迹形成缓存，另一轨迹为
+GT</td>
+</tr>
+</tbody>
+</table>
+<p>作者强调 WOD 多相机深度、相机 ISP（Image Signal
+Processor，图像信号处理）差异使模型学会协调不同来源。真实静态视频可通过同一段序列过去/未来图像模拟目标视角变化，不需要原始采集有多台同步相机，但此法假设静态场景。最大训练
+V=4，方法形式允许推理可变
+V。数据集规模不等于作者实际训练样本数，原文没有完整训练/验证划分清单。</p>
+<p>附录 B.1 训练设置：AdamW、learning rate 3e-5，条件 dropout 15%（cache
+renders 与首帧 CLIP）；渐进训练三阶段：</p>
+<table>
+
+<thead>
+<tr>
+<th>阶段</th>
+<th>数据</th>
+<th>分辨率</th>
+<th>序列长度</th>
+<th style="text-align: right;">iterations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>RE10K、DL3DV</td>
+<td>320×576</td>
+<td>14</td>
+<td style="text-align: right;">100K</td>
+</tr>
+<tr>
+<td>2</td>
+<td>四数据集</td>
+<td>576×1024</td>
+<td>14</td>
+<td style="text-align: right;">100K</td>
+</tr>
+<tr>
+<td>3</td>
+<td>四数据集，仅微调 temporal layers</td>
+<td>从576×1024 resize 后 center crop 320×576</td>
+<td>随机14–56</td>
+<td style="text-align: right;">10K</td>
+</tr>
+</tbody>
+</table>
+<p>全训练约32张 A100、4天。附录 B.2 推理 classifier-free guidance weight
+3、25 steps；正文短序列 14 帧约30秒/单 A100。Cosmos 训练单独见
+§5.7。</p>
+<p><strong>机制与证据</strong></p>
+<p>训练配对机制决定模型实际学习何种泛化：静态真实数据提供新相机下的目标
+GT；驾驶多相机让条件之间具有现实的不一致；合成动态数据提供同步目标与真实几何，使视频模型学会按时刻保留运动。不能把静态缓存复制当作新增监督视角；复制只是重复同一场景。训练中
+GT 是当前目标轨迹，目标与来源不同，监督学习修复不完整投影。</p>
+<p>【补充量级】总 SVD 训练迭代为210K；若32张 GPU 约4天持续占用，则约128
+GPU-days，仅是按论文时间换算，不是云账单、精确 FLOPs
+或单次训练复现成本。推理14/30≈0.47帧/秒，仅表示报告设置，不能推及其他分辨率或
+Cosmos。</p>
+<p>【证据边界】真实动态多视角新轨迹监督不足仍是核心限制。最大训练 V=4
+不证明任意数量和任意相机轨迹的泛化。未报告多数据集独立贡献、精确随机种子和完整训练代码细节。</p>
+<!-- PTH:END EXP-01 -->
+<!-- PTH:BEGIN EXP-02 -->
+<h2 id="实验单视角-nvs域外与相机控制">3.6.2 实验：单视角
+NVS、域外与相机控制</h2>
+<p><strong>核心内容</strong>（§5.2，pp.6–7；Appendix B.3，p.14；Table
+1；Fig.5/13/14）</p>
+<p>【原文事实】从一个输入 RGB
+预测深度创建缓存，给定目标轨迹生成视频。RE10K 与 T&amp;T
+各100测试序列，指标为 PSNR、SSIM、LPIPS，另在 RE10K 报 TSED。基线
+MotionCtrl、CameraCtrl、GenWarp、NVS-Solver；CameraCtrl
+以同训练数据、协议和视频底座复现，缓存渲染替换为 Plücker
+embedding。GenWarp 与 NVS-Solver 共用 DAV2 及全局 shift/scale；附录 B.3
+说明 GenWarp、MotionCtrl 官方 SVD checkpoint，NVS-Solver
+官方无训练代码。</p>
+<p><strong>机制与证据</strong></p>
+<p>Table 1（完整数据已在2.3.1）：GEN3C 在 T&amp;T 达18.66/.67/.20，在
+RE10K 达19.88/.78/.20，TSED .9143。相比同底座 CameraCtrl，PSNR
+分别提高2.78、1.48 dB；TSED .8033→.9143。最强其他 T&amp;T PSNR 为
+NVS-Solver 16.95。Fig.5 和13 提供细结构与布局的定性对照，Fig.14
+显示输入投影缺陷及修复；Table 1
+是系统质量证据。作者将域外优势归因于显式几何：相机到像素位置映射由投影提供，网络不必只依赖训练轨迹先验。</p>
+<p>【背景知识】PSNR
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>10</mn><msub><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mn>10</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>M</mi><mi>A</mi><msup><mi>X</mi><mn>2</mn></msup><mi>/</mi><mi>M</mi><mi>S</mi><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">=10\log_{10}(MAX^2/MSE)</annotation></semantics></math>，对相同动态范围下的单一
+MSE，dB 差
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Δ</mi><annotation encoding="application/x-tex">\Delta</annotation></semantics></math>
+对应 MSE 比
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mi mathvariant="normal">Δ</mi><mi>/</mi><mn>10</mn></mrow></msup><annotation encoding="application/x-tex">10^{-\Delta/10}</annotation></semantics></math>；若表中为逐图
+PSNR 的均值，不应直接把均值差换算为全数据集 MSE 改善。SSIM
+局部结构、LPIPS 深层特征；TSED 由 [69]
+引用，本文未展开精确公式与阈值，不将其改称真实相机轨迹误差。</p>
+<p>【证据边界】比较支持指定设置下条件表示优势，但不证明精确位姿误差为零或所有域外相机轨迹有效；T&amp;T
+无
+TSED，且域内/域外差异还包含场景分布。无误差条、重复训练或显著性报告。</p>
+<!-- PTH:END EXP-02 -->
+<!-- PTH:BEGIN EXP-03 -->
+<h2 id="实验双视角稀疏-nvs-插值与外推">3.6.3 实验：双视角稀疏 NVS
+插值与外推</h2>
+<p><strong>核心内容</strong>（§5.3，p.7；Appendix B.4，pp.14–15；Table
+2；Fig.6）</p>
+<p>【原文事实】从视频随机选两帧输入，分别估深并建立两个缓存来源。插值目标位于两输入之间，外推在两输入范围外。RE10K、T&amp;T
+各40测试序列。PixelSplat [6]、MVSplat [8] 官方代码及
+checkpoint（PixelSplat 为 RE10K 训练版），从带姿态图像预测 3D Gaussian
+splats，再沿目标轨迹渲染。GEN3C 从两个独立点云渲染视频、融合生成。</p>
+<p><strong>机制与证据</strong></p>
+<p>Table 2：T&amp;T GEN3C PSNR 22.22/20.51，RE10K 24.08/21.56；LPIPS
+分别 .14/.16、.11/.15。外推相对 PixelSplat PSNR
++3.06/+4.61dB（T&amp;T/RE10K），显示在该测试设置中生成先验优势更明显。Fig.6
+第一行重叠较小，重建式方法缺少可匹配观测约束，独立投影与扩散可以补全新露区域。这里并非证明更精确的点云深度，而是显示从相同稀疏输入合成的新视角图像质量改善。</p>
+<p>【补充计算】两输入约束的外推损失：GEN3C T&amp;T PSNR
+22.22−20.51=1.71dB，RE10K 24.08−21.56=2.52dB，LPIPS
+亦上升。说明极端观察仍增加未知区域；与 Table 5
+噪声敏感性互补，区分未覆盖与错误覆盖。</p>
+<p>【证据边界】本文称任意 V 推理，但定量 Table 2
+为双视角，不可推出所有视角数。重建方法的目标可包括显式几何，而本文比较的是输出
+RGB；未知区域视觉合理性与真实几何恢复不是同一证据。</p>
+<!-- PTH:END EXP-03 -->
+<!-- PTH:BEGIN EXP-04 -->
+<h2 id="实验驾驶模拟及三维编辑">3.6.4 实验：驾驶模拟及三维编辑</h2>
+<p><strong>核心内容</strong>（§5.4，pp.7–8；Appendix B.5，p.15；Table
+3；Fig.7–8）</p>
+<p>【原文事实】Waymo 验证集筛选18个静态场景；以原 FRONT
+相机轨迹横移构造目标轨迹，Nerfacto 与 3DGS
+用三相机全部训练帧优化，官方代码（B.5）。推理驾驶视频对每帧 DAV2 深度和
+LiDAR 尺度对齐后反投影，沿时间维形成 3D
+cache（可存在动态对象）；使用新轨迹渲染和生成。注意“18个静态场景”的定量设置不代表动态编辑示例均被量化。</p>
+<p><strong>机制与证据</strong></p>
+<p>Table 3：横移 y±0/1/2/4m，GEN3C FID 7.93/18.19/25.11/35.33；3DGS
+34.81/53.85/61.78/81.26；Nerfacto 48.34/67.77/80.41/112.40。Fig.7
+另展示左移及上移视角，Fig.8 通过修改 cache
+移除/改变车辆轨迹。道路重建沿原轨迹观察足够，但远离轨迹暴露此前不可见区域，生成先验补全有助于改善外观。编辑后缓存投影缺失的背景由网络补全。</p>
+<p>【背景知识】FID 比较真实与生成图像深层特征的均值及协方差：常见形式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>μ</mi><mi>r</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>g</mi></msub><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>+</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi mathvariant="normal">Σ</mi><mi>r</mi></msub><mo>+</mo><msub><mi mathvariant="normal">Σ</mi><mi>g</mi></msub><mo>−</mo><mn>2</mn><mo stretchy="false" form="prefix">(</mo><msubsup><mi mathvariant="normal">Σ</mi><mi>r</mi><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msubsup><msub><mi mathvariant="normal">Σ</mi><mi>g</mi></msub><msubsup><mi mathvariant="normal">Σ</mi><mi>r</mi><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msubsup><msup><mo stretchy="false" form="postfix">)</mo><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\|\mu_r-\mu_g\|^2+\mathrm{Tr}(\Sigma_r+\Sigma_g-2(\Sigma_r^{1/2}\Sigma_g\Sigma_r^{1/2})^{1/2})</annotation></semantics></math>（一般定义，论文仅引用
+[18]）。低 FID 不意味着某一目标帧的像素、姿态或对象位置正确。</p>
+<p>【证据边界】目标新轨迹无
+GT，因此表格只支持分布相似度；不具备安全驾驶验证所需真实几何、交通行为、碰撞等指标。Fig.8
+编辑定性，缺对象跟踪和动态物理评估。</p>
+<!-- PTH:END EXP-04 -->
+<!-- PTH:BEGIN EXP-05 -->
+<h2 id="实验单目动态新视角生成">3.6.5 实验：单目动态新视角生成</h2>
+<p><strong>核心内容</strong>（§5.5，p.8；Appendix B.6，p.15；Table
+4；Fig.9、15）</p>
+<p>【原文事实】输入单目动态视频，目标是按用户新相机轨迹重新观察同一场景。每帧估深、反投影并沿时间维拼接，逐时刻渲染。Kubric
+由 GCD 发布的20个 held-out 测试场景；GCD 公开 checkpoint
+在256×384训练，其预测上采样至相同评估分辨率。Sora 与 MovieGen
+的动态视频仅域外定性展示（Fig.9），补充 Fig.15 为 Kubric 细节。</p>
+<p><strong>机制与证据</strong></p>
+<p>Table 4：GCD 19.37/.67/.48/150.64，GEN3C
+19.41/.63/.29/98.58（PSNR/SSIM/LPIPS/FID）。作者称对象细节和动态保留更好，感知指标支持这一主张的部分内容；PSNR
+近似、SSIM 反而差。动态时空 cache 的关键是源视频中运动状态随 t
+已知；改变的是观察相机，而非学习完整的运动生成机制。Fig.9
+河马环绕/远离，Fig.15 同一帧号对比
+GCD、GT；没有将不同时间的状态直接融合。</p>
+<p>【补充量化】LPIPS 降0.19，FID 降52.06，PSNR 增0.04dB，SSIM
+减0.04；因无重复运行方差，不能说微小 PSNR 差具有统计显著性。</p>
+<p>【证据边界】合成动态测试与真实动态泛化不同；Sora/MovieGen
+视频无真实目标相机帧。分辨率差异和上采样可能影响指标。作者 §6
+明确依赖预先生成动态视频提供对象运动，文本运动条件属未来方向。</p>
+<!-- PTH:END EXP-05 -->
+<!-- PTH:BEGIN EXP-06 -->
+<h2 id="实验融合深度噪声和掩码消融">3.6.6
+实验：融合、深度噪声和掩码消融</h2>
+<p><strong>核心内容</strong>（§5.6，pp.8–9；Appendix C.1，p.15；Tables
+5–6；Fig.10、16）</p>
+<p>【原文事实】§5.6 在 §5.3 双视角设定中分析融合和深度噪声。Table 6
+比较显式点云融合 vs Ours；Table 5 对估计深度添加分位数尺度高斯扰动；附录
+C.1 Fig.16 比较 mask concat 与 element-wise multiply。必须区分 Fig.4(b)
+的多视角 latent concat 和 Fig.16 左的 mask channel concat。</p>
+<p><strong>机制与证据</strong></p>
+<p>融合：Table 6 PSNR 21.81/19.87→24.08/21.56，SSIM
+.79/.75→.86/.83，LPIPS .21/.28→.11/.15，Fig.10
+展示未对齐深度和不一致照明导致显式融合伪影。独立渲染保存来源信息、共享首层和
+max-pool 增强协调能力。深度噪声：0%、3%、10%、30%
+对三项指标单调退化，说明几何是有效条件而非可忽略输入。0%
+并非真实深度；3% 插值下降1.69dB，不宜一概称可忽略。Fig.16 mask
+乘法相对新增 mask 通道定性伪影少，作者解释是新增参数对 OOD mask
+泛化不足。</p>
+<p>【数学关联】Eq.2 的 mask 乘法保持 C 通道，Eq.3 跨 V 聚合；噪声
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>s</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mn>.95</mn></msub><mo>−</mo><msub><mi>d</mi><mn>.05</mn></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathcal N(0,s(d_{.95}-d_{.05}))</annotation></semantics></math>
+原文未定义第二参数约定，详见 MATH-05。Table 5 0% 插值 LPIPS .12 与 Table
+2/6 .11 不一致，按表保留。</p>
+<p>【证据边界】只有两种融合策略定量；没有 latent concat
+单独行、无真实深度
+oracle、没有独立控制深度/光照冲突或长序列缓存消融。mask
+策略仅定性，不能将机制解释当因果隔离。</p>
+<!-- PTH:END EXP-06 -->
+<!-- PTH:BEGIN EXP-07 -->
+<h2 id="实验更强基础模型-cosmos">3.6.7 实验：更强基础模型 Cosmos</h2>
+<p><strong>核心内容</strong>（§5.7，p.9；Fig.11–12）</p>
+<p>【原文事实】Cosmos1.0Diffusion-7BVideo2World 底座，rendered frames 经
+tokenizer，与 noisy latent concat；RE10K 与 DL3DV 10,000 steps、batch
+size64。Fig.11 定性比较 SVD vs Cosmos，四个新相机；Fig.12
+单输入左右大旋转。作者说更强底座提供更真实结果和更少伪影，题注承认分辨率造成轻微未对齐。</p>
+<p><strong>机制与证据</strong></p>
+<p>这一实验验证几何渲染条件接口并非只能使用
+SVD；在部分观测下，生成底座能力影响未知区域外观。它与缓存的作用不同：cache
+提供已有空间结构，底座先验负责未知内容和不完整投影修正。大旋转图显示潜力，但没有
+GT 或具体角度。</p>
+<p>【数值范围】10K steps×batch64=640,000 个批内样本位次（若步数与 batch
+size 按常规全局定义；不代表独立训练样本数）。不能用这个数字推定 GPU
+时间或与 SVD 的算力公平比较。</p>
+<p>【证据边界】未报告 Cosmos 在 Tables 1–6
+的同协议数值，未报告分辨率统一、随机种子、模型大小或训练计算控制。不存在可直接据此验证的总体
+SOTA 数值。</p>
+<!-- PTH:END EXP-07 -->
+<!-- PTH:BEGIN SYNTHESIS-01 -->
+<h2 id="贡献再评价创新究竟在哪里">4.1 贡献再评价：创新究竟在哪里？</h2>
+<p><strong>核心内容</strong>（§2–6、Appendix A–C 与全部图表）</p>
+<p>【独立评价】论文最重要的技术贡献不是新型三维基元、深度模型或扩散方程，而是将显式可投影的三维历史作为视频生成条件，并协调多源信息、跨片段记忆和动态场景。逐项复核如下。</p>
+<table>
+
+<thead>
+<tr>
+<th>内容</th>
+<th>性质</th>
+<th>证据强度与限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>历史遗忘与相机控制困难</td>
+<td>已知问题的统一刻画</td>
+<td>Fig.2、§2；未首次证明困难存在</td>
+</tr>
+<tr>
+<td>时空点云缓存引导视频生成</td>
+<td>核心方法设计</td>
+<td>Fig.3、§4.1–4.4、Table1–4；继承深度反投影与点云渲染，非新三维理论</td>
+</tr>
+<tr>
+<td>独立渲染+共享首层+max-pool</td>
+<td>具体融合创新</td>
+<td>Eq.2–3、Fig.4/10、Table6；相较显式融合有定量证据，未完整比较
+concat</td>
+</tr>
+<tr>
+<td>掩码乘法与 min-pool</td>
+<td>条件注入设计</td>
+<td>§4.3、Fig.16；定性支持 OOD 泛化，未量化不同掩码条件</td>
+</tr>
+<tr>
+<td>自回归缓存更新</td>
+<td>长视频机制</td>
+<td>§4.5、Appendix A、Fig.1/2；深度仿射对齐合理，缺长序列专门消融</td>
+</tr>
+<tr>
+<td>3D 编辑与动态新视角</td>
+<td>应用能力</td>
+<td>Fig.8/9/15、Table4；运动由输入给定，编辑仅定性</td>
+</tr>
+<tr>
+<td>SVD→Cosmos</td>
+<td>框架可迁移证据</td>
+<td>§5.7、Fig.11/12；没有同指标比较</td>
+</tr>
+</tbody>
+</table>
+<p>理论上，Eq.3 的置换不变性可从 max 操作直接得到，Eq.4–5
+属于仿射深度最小二乘对齐。没有新的可识别性定理、生成一致性上界或全局最优保证；作者没有声称推导新的物理渲染理论。</p>
+<p><strong>机制与证据</strong></p>
+<p>把三维缓存视为可直接寻址的几何条件，区别于纯相机数值条件；把生成模型视为能够处理不完整观测的概率先验，区别于仅对已建模表面进行确定性渲染。这个混合设计的意义在于让两类能力互补，而非把生成结果当作完整三维重建。独立渲染的关键不仅是减少配准前处理，也是把多个不一致候选保留到网络内部，让学习过程有机会协调。</p>
+<p>【数学关联】Eq.1 是继承的潜空间去噪目标，Eq.2–3 规定注入/聚合，Eq.4–5
+规定记忆写回前深度对齐。它们之间形成“几何条件→扩散训练/采样→历史扩展”的因果信息流，但并不合起来构成世界一致性证明。</p>
+<p>【尚未证实】与完整引用文献的优先权/新颖性未外部核验；本报告仅依照本篇作者叙述与其自身对比进行评价。</p>
+<!-- PTH:END SYNTHESIS-01 -->
+<!-- PTH:BEGIN SYNTHESIS-02 -->
+<h2 id="结论再评价哪些成立哪些尚待验证">4.2
+结论再评价：哪些成立，哪些尚待验证？</h2>
+<p><strong>核心内容</strong>（§4.5–6、Appendix A–C、Table1–6）</p>
+<p><strong>支持较强的结论</strong>：在报告的单视角及双视角协议中，GEN3C
+的图像重合度和感知指标全面优于所列基线；与 CameraCtrl
+同底座同训练设置比较支持几何条件对相机控制和域外表现的价值。Table 6
+对多视角显式融合替代方案提供定量支持。Table 5
+随深度扰动退化说明几何条件并非可忽略。</p>
+<p><strong>有条件成立的结论</strong>：驾驶偏移下 FID
+较低说明分布外观更接近参考，但没有真实目标轨迹图像；动态 Kubric 的
+LPIPS、FID 改善，SSIM 下降，不支持全部指标更优。Cosmos
+迁移和编辑是定性能力展示。Fig.2
+说明往返场景一致性改善的实例，不是严格回环闭合实验。</p>
+<p><strong>作者明示限制</strong>：动态视频生成依赖已有视频提供运动，文本提示运动属于未来工作（§6）。</p>
+<p><strong>独立技术边界</strong>：</p>
+<ul>
+<li>输入深度和相机错误：大基线/近距离误差可放大到目标像素，显式独立渲染不能保证修复。</li>
+<li>稀疏视角歧义：可见表面约束不唯一决定不可见面，生成先验可能产生可信但错误内容。</li>
+<li>缓存的长程风险：新生成错误可能成为历史；仿射对齐不能解决局部错位，重叠不足时退化。未说明缓存冲突管理或可扩展上限。</li>
+<li>动态限制：逐帧时空缓存保存给定运动，不是显式场景流、材质/物理模型或可自由推断新运动。</li>
+<li>实验可比性：输出图像的比较不等于统一几何重建指标；分辨率和预训练底座会影响感知指标。</li>
+</ul>
+<p><strong>机制与证据</strong></p>
+<p>潜在替代解释：强视频底座本身可能改善
+LPIPS/FID；独立融合的增益可能部分来自训练和保留来源信息；深度对齐准确程度、输入覆盖大小、相机轨迹难度可能共同影响域外结果。因此进一步实验应在相同底座/分辨率/训练预算下分别关闭
+cache、写回、融合、掩码，并用不同覆盖率、真实深度与估计深度、长程回访对照。作者已有的同底座
+CameraCtrl 比较能减少部分混杂，但不能隔离所有机制。</p>
+<p>【数学关联】MATH-03 的投影误差特例与 MATH-04
+对齐可解条件解释何时几何会不可靠；Eq.1
+只优化条件去噪目标，不含强制真实几何的约束。因此质量指标和真实场景一致性不应画等号。</p>
+<p>【证据边界】上面的补充实验均为独立评价与建议，未实际开展。原文差异（Table
+5 LPIPS、正文/附录写回帧数、Fig.13
+定性/定量措辞）已保留，不由猜测修正。</p>
+<!-- PTH:END SYNTHESIS-02 -->
+<!-- PTH:BEGIN SYNTHESIS-03 -->
+<h2 id="知识内化与开放问题">4.3 知识内化与开放问题</h2>
+<p><strong>核心内容</strong>（全文综合，§3–6、Appendix A–C）</p>
+<p>读完后应能用以下技术链条独立重述 GEN3C：输入带相机的图像/视频 →
+估计深度/对齐尺度 → 反投影成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="script">𝒫</mi><mrow><mi>t</mi><mo>,</mo><mi>v</mi></mrow></msup><annotation encoding="application/x-tex">\mathcal P^{t,v}</annotation></semantics></math>
+→ 按目标
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>C</mi><mi>t</mi></msup><annotation encoding="application/x-tex">C^t</annotation></semantics></math>
+独立渲染 RGB 与 coverage mask → 冻结编码 → latent mask 乘法 → 与同一
+noisy latent 拼接 → 共享首层/跨视角 max-pool → 条件去噪 → 解码 RGB →
+长视频时按重叠 chunk 写回对齐深度的历史。</p>
+<p>关键辨析：</p>
+<table>
+
+<thead>
+<tr>
+<th>概念</th>
+<th>GEN3C 中的含义</th>
+<th>不应混淆为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3D cache</td>
+<td>独立有色点云的时空数组及增量历史</td>
+<td>精确全局 3DGS/mesh、完整 4D 场</td>
+</tr>
+<tr>
+<td>Pose control</td>
+<td>目标相机用于几何投影</td>
+<td>网络预测目标轨迹，或数学硬约束</td>
+</tr>
+<tr>
+<td>V / L</td>
+<td>来源空间视角数 / 时刻数</td>
+<td>单一序列全部帧无条件静态融合</td>
+</tr>
+<tr>
+<td>max-pool</td>
+<td>共享首层后跨来源逐元素最大</td>
+<td>深度最小遮挡、空间下采样、置信度平均</td>
+</tr>
+<tr>
+<td>coverage mask</td>
+<td>投影覆盖，min-pool 后抑制未知 latent</td>
+<td>真值物体分割或精确置信度</td>
+</tr>
+<tr>
+<td>conditional generation</td>
+<td>学习不完整条件下的目标视频分布</td>
+<td>唯一真实三维世界恢复</td>
+</tr>
+<tr>
+<td>scale/offset</td>
+<td>旧缓存覆盖区域深度仿射对齐</td>
+<td>相机 pose 优化或全局回环闭合</td>
+</tr>
+<tr>
+<td>world consistency</td>
+<td>希望相机回访与动态状态相容</td>
+<td>已证明所有帧和几何都严格一致</td>
+</tr>
+</tbody>
+</table>
+<p>开放问题：如何显式区分已观测区域的可信保留与未知区域的可控生成？如何建立多视角/时间的几何与外观置信度？如何防止缓存污染并处理冲突、尺度漂移和长程回访？如何将动态运动状态从观察轨迹中进一步解耦？在无
+GT 的真实极端视角下如何评价真实性而非只评价生成画面质量？</p>
+<p><strong>机制与证据</strong></p>
+<p>自检问题：如果把多视角点云先求并集会失去哪种信息？答：来源身份及独立候选，错位已发生在投影前。若只有一个视角，max-pool
+是否仍有效？答：跨 V
+聚合退化为恒等于该视角首层特征，其余条件生成仍成立。若目标相机大幅移开，缓存全未覆盖会怎样？答：mask
+抑制条件，输出更依赖其他条件和预训练生成先验，不能验证真实世界；自回归对齐也可能无约束。为什么动态视频需要不同
+t 的
+cache？答：时间表示不同场景状态，不能将运动物体不同位置当成同一静态物体。为什么
+FID 低不能说明几何正确？答：其比较特征分布而非逐点三维对应。</p>
+<p>数学自检：Eq.1 target 是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">E(x)</annotation></semantics></math>，不是必然噪声；Eq.2
+拼接沿 channel，Eq.3 沿 view；Eq.4 若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>a</mi><mi>i</mi></msub><mo>−</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\sum_iw_i(a_i-\bar a)^2=0</annotation></semantics></math>，尺度不唯一；Eq.5
+将全局仿射应用到整个新深度，包括无真实目标值区域。由这些关系可解释模型的实际机制及失效条件。</p>
+<p>【证据边界】以上开放问题与自检属于阅读后独立知识内化，非作者列出的新实验结论。跨论文继承关系和水下迁移尚未验证，留待后续研究笔记；不将本文生成结果外推为真实水下视觉恢复。</p>
+<!-- PTH:END SYNTHESIS-03 -->
+<hr />
+<h1 id="第二部分学习与研究笔记">第二部分：学习与研究笔记</h1>
+<h1 id="gen3c-学习与研究笔记">GEN3C 学习与研究笔记</h1>
+<blockquote>
+<p>精读报告
+SHA-256：cdb2b2330787909ce7d5e666cd44c954dec074def3c4f97d65c62da256e2aff6
+原文事实、背景知识、推断、独立评价与未证实内容分开；后续讨论按单元追加。</p>
+</blockquote>
+<h2
+id="concepts关键概念与反事实理解">CONCEPTS：关键概念与反事实理解</h2>
+<h3 id="三维缓存不是三维真值">三维缓存不是三维真值</h3>
+<p><strong>锚点</strong>：精读
+§3.4.1–2、§3.5.3、Fig.3、14。原文将深度反投影的有色点云作为缓存，而非要求训练一个高精度场景函数。把缓存看作“能按目标相机检索的带坐标历史”比称为“重建结果”更准确。</p>
+<p>【补充推理】同一源像素可以由多个真实世界解释。例如针孔相机中心相同、沿该像素射线上的两个不同深度点具有同一颜色时，单幅输入无法区分两点。平移相机
+b 后，二者目标投影相差
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>b</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mi>/</mi><msub><mi>d</mi><mn>1</mn></msub><mo>−</mo><mn>1</mn><mi>/</mi><msub><mi>d</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">fb(1/d_1-1/d_2)</annotation></semantics></math>
+的绝对值；因此观测歧义在新视角显现。假设 f=500 px、b=0.2 m，d=1 m 或2
+m，两种深度的视差分别100 px与50
+px。两个世界在源视角同样正确，却在目标图差50
+px。这是教学特例，并非本文数据。DAV2 选出其中某个预测，GEN3C
+再条件生成；先验选择不能增加真实观测。</p>
+<h3 id="几何条件与生成先验分工">几何条件与生成先验分工</h3>
+<p><strong>反事实
+A</strong>：没有缓存，直接使用相机参数。模型仍可能从训练视频学会视差，但目标几何位置不是确定的条件；这与
+Table 1 的 CameraCtrl 比较相关。<strong>反事实
+B</strong>：没有扩散，只渲染缓存。已知表面可以重投影，却存在空洞和错误投影（Fig.14）。<strong>反事实
+C</strong>：将估计点云强行合并再渲染。深度冲突会在网络看到输入之前产生混杂，Fig.10/Table
+6 说明实际代价。GEN3C
+的设计并非让几何或扩散单独解决问题，而是将几何可确定部分和数据驱动补全分开。A/B/C
+中只有部分有专门实验，不能宣称所有反事实已经被同条件验证。</p>
+<p>【补充形式化】记观测为 O，世界潜变量为 W，目标相机 C，渲染函数 g，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>C</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>O</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo>∫</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>C</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>W</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">)</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="prefix">|</mo><mi>O</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">p(X_C|O,C)=\int p(X_C|W,C)p(W|O)\,dW</annotation></semantics></math>。观测稀疏时后验
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="prefix">|</mo><mi>O</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(W|O)</annotation></semantics></math>
+可能多模态；GEN3C
+并未显式表示该后验，而以估计缓存及条件扩散近似目标视频分布。这一抽象帮助分清真实世界歧义与网络随机性：同一模型多次采样差异大可能反映未知信息，也可能只反映扩散模型不稳定，不能直接当作可靠校准的不确定性。</p>
+<h3 id="最大聚合遮挡与可信度">最大聚合、遮挡与可信度</h3>
+<p><strong>锚点</strong>：精读 §3.4.3、§3.5.2、Eq.2–3。max-pool
+是特征聚合，不是 z-buffer。例：两个来源对同一 latent 单元分别产生
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,4)</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,2)</annotation></semantics></math>，max
+为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,4)</annotation></semantics></math>，可组合来源，但没有将深度正确性作为显式变量。若错误来源产生强激活，max
+仍可能选择它。替代设计包括置信度加权、跨视角注意力或显式几何一致性过滤；这些可能更稳健，也会引入更多可训练参数、依赖校准及训练分布。应在相同底座与预算下对比，不能仅因某设计更复杂就断言优越。</p>
+<h3 id="记忆写回与反馈风险">记忆写回与反馈风险</h3>
+<p><strong>锚点</strong>：精读 §3.4.5、§3.5.4。缓存可视为状态
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>k</mi></msub><annotation encoding="application/x-tex">S_k</annotation></semantics></math>，段生成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>k</mi></msub><annotation encoding="application/x-tex">Y_k</annotation></semantics></math>（以下记
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>k</mi></msub><annotation encoding="application/x-tex">Y_k</annotation></semantics></math>）与更新
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>S</mi><mi>k</mi></msub><mo>,</mo><msub><mi>Y</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">S_{k+1}=U(S_k,Y_k)</annotation></semantics></math>。在已有覆盖区域对齐深度能够减少尺度不一致，但新未覆盖区域的几何和颜色来自模型预测。若错误写回并在后续目标中被重投影，原先一次生成偏差可变成持久条件。一个自检思路是保留不同来源的
+provenance（真实观测、生成观测及其置信度），分别衡量回访时真实内容保持和生成内容自洽。它们分别回答“是否真实”和“是否内部一致”，二者可分离。</p>
+<p><strong>边界</strong>：上述概率、误差例子与反馈抽象是教学拓展；论文并没有显式后验、置信度校准或可靠性分层模块。未开展替代实验。</p>
+<h2
+id="cross-paper潜在跨文献关联索引">CROSS-PAPER：潜在跨文献关联索引</h2>
+<h3 id="topic-problem-task稀疏观测下的生成式-nvs">Topic: Problem &amp;
+Task（稀疏观测下的生成式 NVS）</h3>
+<ul>
+<li><strong>Keywords:</strong> Sparse-view NVS; Conditional Video
+Generation; View Extrapolation; Camera Control</li>
+<li><strong>Highlight:</strong>
+将已有表面重投影为目标相机下的二维条件，并由视频先验补全未知区；输出为
+RGB 视频，不等价于显式重建。</li>
+<li><strong>Evidence:</strong> §1、§4.1–4.4、§5.2–5.3、Tables 1–2；精读
+§3.1。</li>
+<li><strong>Connection Points:</strong>
+观测数量、已知相机依赖、目标轨迹、输出表示、外推覆盖。</li>
+<li><strong>Open Questions:</strong> 何种覆盖范围下生成式 NVS
+的图像优势伴随可靠的三维几何？</li>
+</ul>
+<h3 id="topic-scene-representation时空三维缓存">Topic: Scene
+Representation（时空三维缓存）</h3>
+<ul>
+<li><strong>Keywords:</strong> Colored Point Cloud; Spatiotemporal 3D
+Cache; RGB-D Unprojection; World Coordinates</li>
+<li><strong>Highlight:</strong> L×V
+个独立点云区分时间状态与空间来源，静态沿时间复制，动态逐时刻渲染，支持显式空间编辑。</li>
+<li><strong>Evidence:</strong> §4.1–4.2、Figures 3、8；精读
+§3.4.1–2。</li>
+<li><strong>Connection Points:</strong>
+三维表示形式、时间建模、点云与场景参数的关系、可编辑性。</li>
+<li><strong>Open Questions:</strong>
+相比其他几何条件，独立点云缓存的存储成本、遮挡处理与几何准确性如何权衡？</li>
+</ul>
+<h3 id="topic-observation-prior几何条件与生成先验">Topic: Observation
+&amp; Prior（几何条件与生成先验）</h3>
+<ul>
+<li><strong>Keywords:</strong> Depth Reprojection; Disocclusion;
+Conditional Diffusion; Image-to-Video</li>
+<li><strong>Highlight:</strong>
+目标相机投影提供位置锚点，扩散模型修正投影缺陷、补全未观测区域；条件是近似而非硬约束。</li>
+<li><strong>Evidence:</strong> §3、§4.2–4.4、Eq.1–3、Figures
+3、14。</li>
+<li><strong>Connection Points:</strong>
+软硬约束、条件生成、已覆盖与未知区域、目标定义、真实几何验证。</li>
+<li><strong>Open Questions:</strong>
+怎样定量拆分可靠证据遵循与生成先验补全？</li>
+</ul>
+<h3 id="topic-geometry-inference深度错位与融合">Topic: Geometry
+Inference（深度错位与融合）</h3>
+<ul>
+<li><strong>Keywords:</strong> Independent Rendering; Shared Input
+Layer; View-wise Max Pooling; Permutation Invariance</li>
+<li><strong>Highlight:</strong>
+不先合并不一致点云，而在独立投影编码后共享首层、跨视角
+max-pool，固定融合后形状；对来源顺序不敏感。</li>
+<li><strong>Evidence:</strong> §4.3、Eq.2–3、Figures 4、10、Table
+6；精读 §3.5.2。</li>
+<li><strong>Connection Points:</strong> 融合阶段、参数量、来源保留、可变
+V、计算成本、置信度。</li>
+<li><strong>Open Questions:</strong>
+最大激活是否与真实几何可靠性相符？对于系统性错位，何种融合更稳健？</li>
+</ul>
+<h3 id="topic-generalization掩码及深度噪声">Topic:
+Generalization（掩码及深度噪声）</h3>
+<ul>
+<li><strong>Keywords:</strong> Coverage Mask; Min Pooling; Element-wise
+Multiplication; Out-of-Distribution; Depth Perturbation</li>
+<li><strong>Highlight:</strong> 掩码乘法避免新增 mask
+通道参数；人工深度噪声增加时质量退化，说明几何仍是重要条件。</li>
+<li><strong>Evidence:</strong> §4.3、§5.6、Table 5、Appendix C.1、Figure
+16。</li>
+<li><strong>Connection Points:</strong>
+掩码分布、噪声类型、预训练参数、遮挡与误差、鲁棒性测试。</li>
+<li><strong>Open Questions:</strong>
+局部边缘误差或尺度系统误差是否具有与独立噪声不同的影响？</li>
+</ul>
+<h3 id="topic-inference-optimization持久历史与深度对齐">Topic: Inference
+&amp; Optimization（持久历史与深度对齐）</h3>
+<ul>
+<li><strong>Keywords:</strong> Autoregressive Inference; Cache Update;
+Depth Scale and Shift; Loop Consistency</li>
+<li><strong>Highlight:</strong> 长序列按一帧重叠的 chunk
+生成，以旧缓存渲染深度为参考对齐新深度再追加；可能同时保留历史和传播错误。</li>
+<li><strong>Evidence:</strong> §4.5、Appendix A.1、Eq.4–5、Figure
+2；精读 §3.5.4。</li>
+<li><strong>Connection Points:</strong>
+更新规则、重叠条件、缓存增长、漂移、回环评价、真实/生成来源分离。</li>
+<li><strong>Open Questions:</strong>
+有哪些可以区分真实历史与生成历史的写回策略，能否校准长期误差？</li>
+</ul>
+<h3 id="topic-training-supervision静态真实与动态合成互补">Topic:
+Training &amp; Supervision（静态真实与动态合成互补）</h3>
+<ul>
+<li><strong>Keywords:</strong> Paired Data Curation; RE10K; DL3DV; Waymo
+Open Dataset; Kubric4D; Progressive Finetuning</li>
+<li><strong>Highlight:</strong>
+用静态真实视频模拟目标视角，三相机驾驶及合成同步动态视频补足多源/时间监督；训练
+V≤4。</li>
+<li><strong>Evidence:</strong> §5.1、Appendix B.1；精读 §3.6.1。</li>
+<li><strong>Connection Points:</strong>
+训练配对、真实/合成域、运动条件、视角数、数据依赖。</li>
+<li><strong>Open Questions:</strong>
+真实动态配对缺失时，如何评估合成监督的迁移及不确定性？</li>
+</ul>
+<h3 id="topic-technical-limitations视觉质量与几何真实性">Topic:
+Technical Limitations（视觉质量与几何真实性）</h3>
+<ul>
+<li><strong>Keywords:</strong> FID; LPIPS; TSED; Geometric Fidelity;
+Dynamic NVS; Missing Ground Truth</li>
+<li><strong>Highlight:</strong> 驾驶新轨迹无 GT 用 FID，动态 Kubric 的
+LPIPS/FID 优而 SSIM 低；不同指标不能互相替代，动态输入已提供运动。</li>
+<li><strong>Evidence:</strong> §5.4–5.5、Tables 3–4、§6
+Limitations；精读 §4.2。</li>
+<li><strong>Connection Points:</strong> 可见区域评价、几何
+GT、感知质量、动态状态、域外验证。</li>
+<li><strong>Open Questions:</strong> 如何为真实无 GT
+极端视角建立可证伪的几何/运动验证协议？</li>
+</ul>
+<h2
+id="research-direction研究定位与可迁移性">RESEARCH-DIRECTION：研究定位与可迁移性</h2>
+<p>本次输入只指定论文，未给本篇独立研究主线。以下首先按本篇开放问题做一般研究分析；领域扩展只是公开可讨论的假设，不绑定任何未公开项目或既有实验。</p>
+<table>
+
+<thead>
+<tr>
+<th>层次</th>
+<th>对本篇的定位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Field</td>
+<td>3D Vision、Video Generation、Computer Graphics</td>
+</tr>
+<tr>
+<td>Task</td>
+<td>给定目标相机的视频/NVS，兼顾时空一致性</td>
+</tr>
+<tr>
+<td>Task Setting</td>
+<td>单/稀疏/多视图，源/目标位姿，静态或给定动态，极端外推</td>
+</tr>
+<tr>
+<td>Research Problem</td>
+<td>稀疏、噪声或不完整几何观测下如何利用证据与生成先验实现可靠新视角推断，并维护长程世界一致性？（研究抽象，不是作者的逐字
+RP）</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>时空 point cache、目标投影、mask、共享首层跨视图
+max、扩散生成、仿射对齐写回</td>
+</tr>
+</tbody>
+</table>
+<p><strong>直接联系</strong>：GEN3C
+展示一种把观测转成显式几何条件的混合路线。对稀疏观测研究，首先应明确真实未知与重建失败的区别：空洞可能因为观测缺失，错位可能因为深度估计错误，两者不能以同一种置信度处理。Table
+5 对误差敏感性提供直接证据，Table 2
+外推结果说明生成先验有补全潜力；但不能从这里得到真实三维恢复能力。</p>
+<p><strong>领域扩展假设：水下稀疏观测</strong>。水下相机空间外观变化可同时来自几何、光照、介质吸收/散射与相机响应。如果简单将源像素颜色附在三维点上，在新相机距离变化时，不同路径长度的传播效应可能使正确几何点的外观仍不一致；此时
+Fig.10
+所示跨来源颜色冲突不再仅是光照/ISP/估计误差，而可能有系统性的路径依赖。一个待验证的问题是能否把真实几何证据与外观/介质导致的观测不一致分开，而不强制使用某种特定渲染或扩散结构。该判断是通用成像知识与本篇机制结合的假设，GEN3C
+未做水下验证，也没有水下介质传输模型。</p>
+<p><strong>迁移条件</strong>：可靠源位姿/尺度，合适的深度先验，能区分已观测与遮挡的可见性，目标相机或相机估计，足够领域配对数据或可验证合成数据。若介质导致深度先验偏移，则几何条件可能系统性错误；若训练数据不足，生成模型可能把水下外观变化解释为对象或几何改变。是否采用生成式
+NVS、几何恢复、深度推断或其他任务是后续选择，不能预先当成研究结论。</p>
+<p><strong>评价要求</strong>：至少分开观测内的真实几何/外观保持、未观测部分不确定性、视角变换一致性与生成质量。已知
+GT 的合成可控场景与少量真实验证应互补；仅用 FID/LPIPS
+无法证明恢复真实几何或介质。</p>
+<h2
+id="research-problems从技术现象形成可证伪问题">RESEARCH-PROBLEMS：从技术现象形成可证伪问题</h2>
+<p>以下不是已验证创新，也不是全面文献调研；仅依据 GEN3C
+证据形成值得探索的候选。优先考虑能够区分真实几何证据与生成先验、且有可控数据验证的问题，不将具体网络结构当作科学问题。</p>
+<h3 id="rp-a-稀疏观测中如何校准几何条件的可靠性">RP-A ·
+稀疏观测中如何校准几何条件的可靠性？</h3>
+<p><strong>现象与科学未知</strong>：Table 5 显示深度误差增加时 NVS
+性能退化；Fig.10/Table 6
+显示独立渲染比显式合并稳健。未知是网络是否能够识别错误几何及可靠观测，而非仅以强生成先验掩饰错误。本文
+max-pool 没有明确置信度输出。</p>
+<p><strong>可证伪假设</strong>：在已知 GT
+几何和相机的稀疏观测下，若区分缺失（mask=0）、错误覆盖（mask=1
+但位置不可靠）和多源颜色冲突，并利用可校准的可靠性信号约束融合，则已覆盖区域的真实几何保持/新视图一致性优于无可靠性融合，同时不必显著降低未覆盖区域的感知质量。失败情形是只提高
+LPIPS/FID，真实几何误差不减或校准失效。</p>
+<p><strong>验证设计</strong>：固定视频底座、训练/测试集、目标轨迹、采样步骤与输入视角数。由同一
+GT 几何生成 ①真深度
+oracle，②实际估计深度，③控制全局尺度/偏移、局部边缘错位、随机噪声，④独立颜色变化，⑤组合扰动；按可见性和深度误差分组。比较独立渲染+max、显式融合、置信度加权/过滤候选以及无几何条件；不默认某种方案有效。分别报告已覆盖区
+reprojection/深度误差、GT 图像指标，未知区 LPIPS
+与多样性、置信度—真实误差校准曲线。若降低置信度只来自拒绝困难像素，要同时报告覆盖率与风险，不能靠减少输出区域“提高”准确率。每种扰动独立控制、重复随机种子。</p>
+<p><strong>可行性与限制</strong>：合成已知几何场景可生成真深度和遮挡标签；真实数据几何
+GT
+不足，需独立校准。潜空间置信度和像素置信度并非天然对应。应先核查现有可靠融合及
+uncertainty 工作，不能宣称候选原创。</p>
+<h3 id="rp-b-长视频的显式记忆如何防止生成误差固化">RP-B ·
+长视频的显式记忆如何防止生成误差固化？</h3>
+<p><strong>现象与未知</strong>：Fig.2 提示回访一致性；Appendix A.1
+将生成帧的深度仿射对齐后写回。旧 cache
+既是约束也可能包含先前幻觉。未知：不同长度和覆盖范围下，生成历史能否提升真实一致性而不是只提升对自身幻觉的一致性？</p>
+<p><strong>可证伪假设</strong>：区分原始观测与生成观测的来源、写回置信度和冲突检测，可降低长程回访误差随片段数增加的斜率，并在相同新区域覆盖量下优于无条件追加。若仅因拒绝写回导致新区域完全丢失、生成质量明显退化或真实回访误差无改善，则假设不成立。</p>
+<p><strong>验证设计</strong>：静态场景用已知环形轨迹及真实几何、固定初始视图与
+chunk
+长度；改变回访间隔、重叠比例和生成片段数。对比不写回、原方法仿射写回、只使用真实来源、可靠性门控/冲突回收、真值
+RGB-D 追加上限。量化重复位姿相对 GT
+的像素及几何误差、重复观测一致性、已知与新生成区分别误差、覆盖率、存储与推理时间。固定底座和去噪随机种子，多次重复；记录回访误差随时间曲线，区分“相同假象被再现”与“真实场景保持”。</p>
+<p><strong>条件与限制</strong>：对齐 Eq.4
+需要非退化的覆盖深度；重叠不足时应单独分组。动态场景不能直接把旧时刻 GT
+用于新时刻比较，需保持运动状态一致；可先在静态可控环境证伪再扩展。</p>
+<h3 id="rp-c-外观变化与几何不一致如何在跨域稀疏观测中解耦">RP-C ·
+外观变化与几何不一致如何在跨域稀疏观测中解耦？</h3>
+<p><strong>现象与未知</strong>：Fig.10 包含深度错位和照明差异，WOD
+的多相机 ISP
+差异由训练学习协调。在介质参与成像场景中，即使几何正确也可存在随视线/距离的系统性外观变化。未知：跨视角特征不一致是否可分解为真实几何错位与成像变化，且能否提升可靠推断？这是领域扩展假设，未在本文验证。</p>
+<p><strong>可证伪假设</strong>：在几何、位姿已知的受控模拟中，显式区分成像变化和几何误差的可靠性机制，能在不同介质/外观条件下保持正确对应的识别能力，减少几何误判。若只在训练介质分布内有效，或只改善图像外观而错误几何无法区分，则不支持假设。</p>
+<p><strong>验证设计</strong>：固定场景几何、相机与照明初值，分别改变传播/颜色成像参数以及深度错误；用真深度、同光照对照、无成像变化条件、不同错误深度建立可辨识基线。比较直接
+RGB/latent
+一致性、条件化特征、可靠性模型、必要的物理先验候选；对真/伪对应计算
+ROC、校准、几何误差和最终
+NVS/深度任务质量。保持视图数和视角轨迹相同，先验证同一表面正确匹配而非优化最终
+RGB
+指标。合成到真实迁移需要独立测量或可信参照；不能将生成模型视觉去雾当作真实介质恢复。</p>
+<p><strong>优先级</strong>：RP-A 最直接由 Table 5/6
+支撑、可用真深度构造因果对照；RP-B
+与论文记忆机制直接相关，但长程计算及动态控制成本更高；RP-C
+跨领域意义明确但数据与介质参数可辨识性风险更高。排序仅基于当前证据、可证伪性和初始实验成本，未做外部研究查新，不能作为正式选题决定。</p>
+<h2
+id="internalization独立复述与知识地图">INTERNALIZATION：独立复述与知识地图</h2>
+<p><strong>一句话复述</strong>：GEN3C
+用预测深度产生可投影的显式三维历史，在目标相机下把已有内容转换成不完整二维条件，借预训练视频扩散修复错误及生成未知区域；它在多来源特征层聚合、在长序列中更新缓存，以改善相机控制和世界一致性。</p>
+<p><strong>三条相互区别的链</strong>：研究逻辑＝欠约束观测/隐式历史不足
+→ 显式几何约束与数据先验分工 →
+相机控制/补全/一致性；信息流＝RGB-D→P<sup>{t,v}→I</sup>v,M^v→E→masked
+latent→与 noisy latent concat→共享首层→view
+max→denoise→D→RGB；监督流＝同一目标轨迹的 GT latent E(x) 与预测 latent
+的 denoising
+objective，配对数据来源于真实静态/驾驶、合成动态。监督流不是推理输入。</p>
+<p><strong>可迁移知识地图</strong>：几何投影（坐标、深度、遮挡）连接表示（时空缓存、源/目标相机）；表示连接融合（来源独立、max、mask）；融合连接生成（条件分布、潜空间、去噪）；生成与表示通过写回形成反馈。评价应沿同一图谱分别检查
+geometry fidelity、perceptual quality、temporal consistency、OOD、cache
+reliability。学习目标是掌握这一分工，而非把特定视频底座当作科学问题。</p>
+<p><strong>自测</strong>：</p>
+<ol type="1">
+<li>给定两张图，先拼接所有点云和先独立投影有何差别？前者要求几何对齐且冲突可能在投影前发生，后者保留各来源候选，网络内部协调。后者仍不保证正确。</li>
+<li>max-pool
+是否能选出最准确的深度？不能直接推出；它作用于共享首层的特征数值，未显式计算深度置信度。</li>
+<li>mask=1
+是否等同可靠观测？不等同。它表示点云覆盖，预测深度可能错误。mask=0
+则是没有覆盖而不是“真实黑色”。</li>
+<li>单目动态 NVS 是否从文字生成物体动作？不是。运动来自源视频（§6
+明示限制），新相机仅改变观察过程。</li>
+<li>已知位姿、预测深度与目标新图之间的映射为什么可解释？目标投影由针孔变换确定；深度误差传播到像素，扩散对缺失和错误条件学习修正，不能保证真实几何。</li>
+<li>为什么更低的 FID 不足以证明真实世界一致性？FID
+只比较集合特征分布，不能检验每个物体坐标或回环一致。</li>
+<li>长程写回是否一定改善？不一定。无重叠、常深度时对齐欠定，错误 RGB-D
+可能成为持久历史。</li>
+</ol>
+<p><strong>下一轮阅读重点</strong>：辨析不同方法何时直接重建、何时生成新视角；先验如何进入模型、是否有置信度；评价是否独立验证几何真实性。后续跨论文对比须读取各自原文，本笔记索引只提供待比较维度。</p>
+<h2 id="glossary术语表">GLOSSARY：术语表</h2>
+<table>
+
+<thead>
+<tr>
+<th>English</th>
+<th>中文</th>
+<th>技术含义/相近概念辨析</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novel View Synthesis (NVS)</td>
+<td>新视角合成</td>
+<td>给定观测与新相机生成目标图；不必输出显式三维重建</td>
+</tr>
+<tr>
+<td>Sparse-view NVS</td>
+<td>稀疏视角新视角合成</td>
+<td>少量输入造成欠约束，插值/外推难度不同</td>
+</tr>
+<tr>
+<td>Interpolation / Extrapolation</td>
+<td>插值 / 外推</td>
+<td>目标在输入范围内 / 外；Table 2 分列</td>
+</tr>
+<tr>
+<td>World Consistency</td>
+<td>世界一致性</td>
+<td>相机回访同一世界的内容相容，不等于短时平滑或已证明真实性</td>
+</tr>
+<tr>
+<td>Spatiotemporal 3D Cache</td>
+<td>时空三维缓存</td>
+<td>L×V 个独立有色点云，时间对应状态，视角对应来源 (§4.1)</td>
+</tr>
+<tr>
+<td>Colored Point Cloud</td>
+<td>有色点云</td>
+<td>三维位置与颜色样本；不等同 3DGS 的高斯参数和体渲染</td>
+</tr>
+<tr>
+<td>RGB-D Unprojection</td>
+<td>RGB-D 反投影</td>
+<td>由像素深度和相机得三维点，深度约定须一致 (MATH-03)</td>
+</tr>
+<tr>
+<td>Camera Intrinsics / Extrinsics</td>
+<td>相机内参 / 外参</td>
+<td>成像参数 / 相机坐标变换；Dolly Zoom 同时改变两者</td>
+</tr>
+<tr>
+<td>Plücker Embedding</td>
+<td>Plücker 射线嵌入</td>
+<td>射线几何条件，不直接提供表面颜色和深度</td>
+</tr>
+<tr>
+<td>Disocclusion</td>
+<td>去遮挡 / 新暴露区域</td>
+<td>新视角原来被遮挡的区域，无已知点不等于黑色物体</td>
+</tr>
+<tr>
+<td>Coverage Mask</td>
+<td>覆盖掩码</td>
+<td>表示投影覆盖，不直接代表深度置信度</td>
+</tr>
+<tr>
+<td>VAE</td>
+<td>变分自编码器</td>
+<td>E 编码 RGB，D 解码 latent；本文冻结 E</td>
+</tr>
+<tr>
+<td>Latent Diffusion</td>
+<td>潜空间扩散</td>
+<td>在压缩空间加噪去噪，本文回归 clean latent (Eq.1)</td>
+</tr>
+<tr>
+<td>Denoising Score Matching</td>
+<td>去噪分数匹配</td>
+<td>原文 Eq.1 的一般训练目标；实际 y=z0</td>
+</tr>
+<tr>
+<td>SVD / Stable Video Diffusion</td>
+<td>稳定视频扩散</td>
+<td>本文主要预训练 image-to-video 底座，空间压缩 8 倍</td>
+</tr>
+<tr>
+<td>Cosmos</td>
+<td>Cosmos 视频基础模型</td>
+<td>§5.7 更强底座，用 tokenizer 与条件拼接；非直接等同 SVD</td>
+</tr>
+<tr>
+<td>View-wise Max Pooling</td>
+<td>跨视角最大池化</td>
+<td>Eq.3 共享首层后的逐位置最大值，非空间降采样</td>
+</tr>
+<tr>
+<td>Permutation Invariance</td>
+<td>排列不变性</td>
+<td>共享首层+max 对视角输入顺序不敏感，不等于任意 V 效果不变</td>
+</tr>
+<tr>
+<td>Min Pooling</td>
+<td>最小池化</td>
+<td>对覆盖 mask 保守降采样，任一无覆盖则抑制对应 latent</td>
+</tr>
+<tr>
+<td>Latent Concatenation</td>
+<td>潜变量拼接</td>
+<td>沿 channel；多视角拼接与额外 mask 通道拼接是两种不同策略</td>
+</tr>
+<tr>
+<td>CLIP Embedding</td>
+<td>CLIP 嵌入</td>
+<td>首帧语义/外观额外条件，不是逐像素几何约束</td>
+</tr>
+<tr>
+<td>Classifier-free Guidance (CFG)</td>
+<td>无分类器引导</td>
+<td>条件/无条件预测组合引导；附录 B.2 weight=3</td>
+</tr>
+<tr>
+<td>Autoregressive Inference</td>
+<td>自回归推理</td>
+<td>分 chunk 依次生成，邻段一帧重叠</td>
+</tr>
+<tr>
+<td>Scale and Shift Alignment</td>
+<td>尺度与偏移对齐</td>
+<td>Eq.4–5 在覆盖处最小二乘对齐深度，非相机位姿优化</td>
+</tr>
+<tr>
+<td>DROID-SLAM</td>
+<td>DROID-SLAM 位姿估计</td>
+<td>源相机缺失时的估计工具；真实训练数据尺度参考</td>
+</tr>
+<tr>
+<td>DAV2 / Depth Anything V2</td>
+<td>深度估计模型</td>
+<td>预测每像素深度，非真值传感器</td>
+</tr>
+<tr>
+<td>LiDAR</td>
+<td>激光雷达</td>
+<td>WOD 提供尺度对齐参考</td>
+</tr>
+<tr>
+<td>ISP</td>
+<td>图像信号处理</td>
+<td>多相机不同响应/处理可能造成颜色冲突</td>
+</tr>
+<tr>
+<td>PSNR</td>
+<td>峰值信噪比</td>
+<td>像素误差对数指标 dB，越高越好</td>
+</tr>
+<tr>
+<td>SSIM</td>
+<td>结构相似性</td>
+<td>局部亮度、对比度与结构相似，越高越好</td>
+</tr>
+<tr>
+<td>LPIPS</td>
+<td>感知相似距离</td>
+<td>深层特征距离，越低越好</td>
+</tr>
+<tr>
+<td>FID</td>
+<td>Fréchet Inception Distance</td>
+<td>集合特征统计距离，越低越好，不直接评价逐帧几何</td>
+</tr>
+<tr>
+<td>TSED</td>
+<td>论文引用的三维一致性评分</td>
+<td>Table 1 越高越好；本篇未详述定义/阈值，不冒充位姿误差</td>
+</tr>
+<tr>
+<td>OOD</td>
+<td>分布外</td>
+<td>与训练分布不同的数据/轨迹/mask；不能由单个案例证明普遍泛化</td>
+</tr>
+<tr>
+<td>Observability / Identifiability</td>
+<td>可观测性 / 可辨识性</td>
+<td>观测是否包含相关信息 /
+观测是否唯一确定未知量，生成先验不能等同新观测</td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用说明</strong>：术语含义结合本篇实际语境；标准背景解释不替代具体实现。详细公式与实验条件见冻结精读报告相应章节。</p>
+<h2
+id="sources来源可追溯性与未证实内容">SOURCES：来源、可追溯性与未证实内容</h2>
+<p><strong>实际来源</strong>：用户提供的 arXiv:2503.03751v1
+PDF（16页），日期2025-03-05，正文§1–6、Appendix A–C、Figures
+1–16、Tables 1–6、Eq.1–5、References [1]–[76]。同下载 ID 的 Source/HTML
+为辅助载体，Source 无独立版本印记、HTML 缺外部装饰资源；PDF
+为最终权威。PDF
+SHA-256：<code>5f2462a60f2bed4f097ea79680de022eec4e5ea2f2a30660af9c2a2e80a067d7</code>。</p>
+<p><strong>冻结报告绑定</strong>：<code>GEN3C_精读报告.md</code> SHA-256
+<code>cdb2b2330787909ce7d5e666cd44c954dec074def3c4f97d65c62da256e2aff6</code>。本笔记的技术定位以该报告为锚，必要时回查同版
+PDF。官方元数据仅核验论文版本和官方项目资源；未读取其他论文、代码/权重、用户私密材料或外部研究全文。</p>
+<p><strong>证据分类</strong>：原文事实指作者确实陈述或图表实际显示，未必等于独立证明；背景知识提供解释；补充推导/合理推断注明假设；独立评价和
+RP 候选是本篇分析延伸；尚未证实事项不得写成论文结论。</p>
+<p><strong>未证实项</strong>：任意 V
+的泛化、长程回环真实几何保证、生成历史可靠性、独立掩码/融合因果、动态自由运动生成、Cosmos
+全任务定量、真实水下领域迁移；研究笔记提出的验证机制均未实际实施。原文
+Table 5 插值 LPIPS 差异、§4.5 与附录 A.1 的写回范围措辞差异、Fig.13
+题注与附录定性/定量表述差异均按原样保留。</p>
+<p><strong>跨文献分析延期</strong>：CROSS-PAPER
+只记录本篇技术节点与未来关联问题，不建立已核实的跨论文比较或创新性/优先权结论。笔记可进入隐藏完整版，隐藏不是私密访问控制；未写入个人路径、未公开研究记录或私人数据。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/Hexo/categories/Paper-Reading/" class="category-chain-item">Paper Reading</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control（完整精读与研究笔记）</div>
+      <div>https://zq111724.github.io/Hexo/GEN3C_Full/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/Hexo/js/events.js" ></script>
+<script  src="/Hexo/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/Hexo/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/Hexo/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/Hexo/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
