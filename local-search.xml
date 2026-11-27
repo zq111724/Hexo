@@ -18,6 +18,26 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Feed-Forward</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Latent Representation</tag>
+      
+      <tag>Inductive Bias</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -36,6 +56,30 @@
       
     </categories>
     
+    
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>Rasterization</tag>
+      
+      <tag>3D Reconstruction</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>3D Consistency</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Image-to-3D</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Diffusion</tag>
+      
+    </tags>
     
   </entry>
   
@@ -56,6 +100,30 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Pose Estimation</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Unposed Images</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Diffusion</tag>
+      
+      <tag>Video Prior</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -74,6 +142,26 @@
       
     </categories>
     
+    
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>3D Consistency</tag>
+      
+      <tag>Depth Estimation</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Diffusion</tag>
+      
+    </tags>
     
   </entry>
   
@@ -94,6 +182,24 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>3D Consistency</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Diffusion</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -112,6 +218,36 @@
       
     </categories>
     
+    
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>Rasterization</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>3D Consistency</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Diffusion</tag>
+      
+      <tag>Video Prior</tag>
+      
+      <tag>Observability</tag>
+      
+      <tag>Uncertainty</tag>
+      
+    </tags>
     
   </entry>
   
@@ -132,6 +268,32 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>3D Consistency</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Diffusion</tag>
+      
+      <tag>Point Cloud</tag>
+      
+      <tag>Video Prior</tag>
+      
+      <tag>Dynamic Scenes</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -150,6 +312,34 @@
       
     </categories>
     
+    
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>3D Consistency</tag>
+      
+      <tag>Geometry Foundation Model</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Point Cloud</tag>
+      
+      <tag>Video Prior</tag>
+      
+      <tag>Observability</tag>
+      
+      <tag>Flow Matching</tag>
+      
+    </tags>
     
   </entry>
   
@@ -170,6 +360,30 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>3D Consistency</tag>
+      
+      <tag>Generative Inference</tag>
+      
+      <tag>Video Prior</tag>
+      
+      <tag>Inductive Bias</tag>
+      
+      <tag>Flow Matching</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -189,6 +403,34 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>3D Reconstruction</tag>
+      
+      <tag>Pose Estimation</tag>
+      
+      <tag>Unposed Images</tag>
+      
+      <tag>Feed-Forward</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>Depth Estimation</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Geometry Foundation Model</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -207,6 +449,32 @@
       
     </categories>
     
+    
+    <tags>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Per-Scene Optimization</tag>
+      
+      <tag>3D Reconstruction</tag>
+      
+      <tag>Pose Estimation</tag>
+      
+      <tag>Unposed Images</tag>
+      
+      <tag>Feed-Forward</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Depth Estimation</tag>
+      
+      <tag>Single-View</tag>
+      
+      <tag>Geometry Foundation Model</tag>
+      
+      <tag>Point Cloud</tag>
+      
+    </tags>
     
   </entry>
   
@@ -229,11 +497,29 @@
     
     <tags>
       
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
       <tag>3D Gaussian Splatting</tag>
       
-      <tag>Novel-view Synthesis</tag>
+      <tag>Per-Scene Optimization</tag>
       
       <tag>3D Reconstruction</tag>
+      
+      <tag>Pose Estimation</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Unposed Images</tag>
+      
+      <tag>Feed-Forward</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>3D Consistency</tag>
       
     </tags>
     
@@ -256,6 +542,30 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>3D Reconstruction</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Feed-Forward</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Learning Prior</tag>
+      
+      <tag>Depth Estimation</tag>
+      
+      <tag>Cost Volume</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -274,6 +584,26 @@
       
     </categories>
     
+    
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>3D Reconstruction</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Feed-Forward</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Cost Volume</tag>
+      
+    </tags>
     
   </entry>
   
@@ -294,6 +624,26 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>3D Reconstruction</tag>
+      
+      <tag>Sparse-View</tag>
+      
+      <tag>Feed-Forward</tag>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Epipolar Geometry</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -313,6 +663,20 @@
     </categories>
     
     
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>Per-Scene Optimization</tag>
+      
+      <tag>Rasterization</tag>
+      
+    </tags>
+    
   </entry>
   
   
@@ -331,6 +695,20 @@
       
     </categories>
     
+    
+    <tags>
+      
+      <tag>Novel View Synthesis</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>Per-Scene Optimization</tag>
+      
+      <tag>NeRF</tag>
+      
+      <tag>Volume Rendering</tag>
+      
+    </tags>
     
   </entry>
   

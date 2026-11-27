@@ -19,17 +19,29 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2511.10647v1（2025-11-13）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code  1. 研究问题与核心技术逻辑 三维视觉中，深度估计、相机位姿估计、点云重建和新视角合成常被设计成不同任务。它们并非相互独立：给定相机与深">
+    <meta name="description" content="以深度与射线作为统一几何表示，利用共享 Transformer 和教师蒸馏实现不同观测数量及相机条件下的空间几何推断，并进一步支持前馈三维高斯重建与新视角合成。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Depth Anything 3：从任意视图恢复视觉空间">
 <meta property="og:url" content="https://zq111724.github.io/Hexo/DA3/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Figure 1  阅读完整精读报告  论文版本： arXiv:2511.10647v1（2025-11-13）；核验时为最新版（2026-11-27）。 官方资源： arXiv | PDF | Project Page | Code  1. 研究问题与核心技术逻辑 三维视觉中，深度估计、相机位姿估计、点云重建和新视角合成常被设计成不同任务。它们并非相互独立：给定相机与深">
+<meta property="og:description" content="以深度与射线作为统一几何表示，利用共享 Transformer 和教师蒸馏实现不同观测数量及相机条件下的空间几何推断，并进一步支持前馈三维高斯重建与新视角合成。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zq111724.github.io/Hexo/DA3/Figures/Figure_01.jpg">
 <meta property="article:published_time" content="2026-11-26T19:53:59.000Z">
-<meta property="article:modified_time" content="2026-11-26T21:48:01.250Z">
+<meta property="article:modified_time" content="2026-11-27T13:32:52.097Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="3D Gaussian Splatting">
+<meta property="article:tag" content="3D Reconstruction">
+<meta property="article:tag" content="Depth Estimation">
+<meta property="article:tag" content="Feed-Forward">
+<meta property="article:tag" content="Geometry Foundation Model">
+<meta property="article:tag" content="Learning Prior">
+<meta property="article:tag" content="Multi-View">
+<meta property="article:tag" content="Novel View Synthesis">
+<meta property="article:tag" content="Pose Estimation">
+<meta property="article:tag" content="Single-View">
+<meta property="article:tag" content="Transformer">
+<meta property="article:tag" content="Unposed Images">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zq111724.github.io/Hexo/DA3/Figures/Figure_01.jpg">
   
@@ -1124,6 +1136,35 @@ benchmark 数字。</p>
 
     </div>
   
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/Hexo/tags/Novel-View-Synthesis/" class="print-no-link">#Novel View Synthesis</a>
+      
+        <a href="/Hexo/tags/Multi-View/" class="print-no-link">#Multi-View</a>
+      
+        <a href="/Hexo/tags/3D-Gaussian-Splatting/" class="print-no-link">#3D Gaussian Splatting</a>
+      
+        <a href="/Hexo/tags/3D-Reconstruction/" class="print-no-link">#3D Reconstruction</a>
+      
+        <a href="/Hexo/tags/Pose-Estimation/" class="print-no-link">#Pose Estimation</a>
+      
+        <a href="/Hexo/tags/Unposed-Images/" class="print-no-link">#Unposed Images</a>
+      
+        <a href="/Hexo/tags/Feed-Forward/" class="print-no-link">#Feed-Forward</a>
+      
+        <a href="/Hexo/tags/Transformer/" class="print-no-link">#Transformer</a>
+      
+        <a href="/Hexo/tags/Learning-Prior/" class="print-no-link">#Learning Prior</a>
+      
+        <a href="/Hexo/tags/Depth-Estimation/" class="print-no-link">#Depth Estimation</a>
+      
+        <a href="/Hexo/tags/Single-View/" class="print-no-link">#Single-View</a>
+      
+        <a href="/Hexo/tags/Geometry-Foundation-Model/" class="print-no-link">#Geometry Foundation Model</a>
+      
+    </div>
   
 </div>
 
