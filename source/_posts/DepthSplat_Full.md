@@ -1,0 +1,1176 @@
+---
+title: "DepthSplat: Connecting Gaussian Splatting and Depth（完整精读与研究笔记）"
+date: 2026-11-26 22:00:01
+index_img: "/DepthSplat/Figures/Figure_01.jpg"
+categories: [Paper Reading]
+hide: true
+---
+
+[返回论文概览](/Hexo/DepthSplat/)
+
+<!-- PAPER-METADATA BEGIN -->
+
+**论文版本：** arXiv:2410.13862v3（2025-03-25）；缓存记录 v3（2025-03-25）；最新版未能确认。核验日期：2026-11-26。
+
+**官方资源：** [arXiv](https://arxiv.org/abs/2410.13862) | [PDF](https://arxiv.org/pdf/2410.13862v3) | [Project Page](https://haofeixu.github.io/depthsplat/) | [Code](https://github.com/cvg/depthsplat) | [Model](https://huggingface.co/haofeixu/depthsplat)
+
+<!-- PAPER-METADATA END -->
+
+# 第一部分：论文精读报告
+
+# DepthSplat: Connecting Gaussian Splatting and Depth — 精读报告
+
+> arXiv:2410.13862v3 · Paper-to-Hexo v0.5.10 · 以原始 PDF 为准。
+
+<!-- PTH:BEGIN INIT -->
+## 0. 论文身份与阅读范围
+
+【原文事实】英文标题：DepthSplat: Connecting Gaussian Splatting and Depth。作者：Haofei Xu、Songyou Peng、Fangjinhua Wang、Hermann Blum、Daniel Barath、Andreas Geiger、Marc Pollefeys。作者单位涉及 ETH Zurich、University of Tübingen/Tübingen AI Center、Microsoft、University of Bonn。依据 PDF p.1 的作者及页边版本标记，本次阅读 arXiv:2410.13862v3（2025-03-25），不混用其他版本。官方入口：https://arxiv.org/abs/2410.13862；项目页：https://haofeixu.github.io/depthsplat；代码：https://github.com/cvg/depthsplat。
+
+### 结构及图表核查
+
+| 内容 | PDF 页码 | 作用 |
+|---|---|---|
+| Abstract、§1 Introduction | 1–2 | 建立深度和 3DGS 的双向关系 |
+| §2 Related Work | 2 | 多视图深度、单目深度、前馈 3DGS、两者结合 |
+| §3 DepthSplat | 3–4 | 共享深度网络和高斯渲染训练 |
+| §4 Experiments | 4–8 | 模型变体、消融、预训练、基准和泛化 |
+| §5 Conclusion | 8 | 结论与限制 |
+| References | 9–11 | 参考文献 |
+| Appendix A–C | 12–15 | 初始化、定性结果、高分辨率训练 |
+
+正文 6 个 Figure、8 个 Table；附录 5 个 Figure、1 个 Table；无独立编号 Algorithm。PDF 15 页可读。HTML 可辅助定位，部分关联资源缺失；LaTeX Source 未获取。11 幅图均以 PDF 区域为依据制作展示 JPEG，不是原生图片文件；四幅图区域回渲染非精确，实际视觉比对无内容缺失、裁切错误或明显失真。客户端显示未验证。原 PDF 保持不变。
+
+本单元只确认身份、目录和资源，不涉及具体机制推导或数学公式。
+
+<!-- PTH:END INIT -->
+
+<!-- PTH:BEGIN TITLE -->
+## 1.1 标题与术语
+
+标题中文：**DepthSplat：连接高斯泼溅与深度估计**（Gaussian Splatting 亦常译高斯溅射）。
+
+【背景知识】Gaussian Splatting 是用空间高斯基元表达场景并投影至图像平面、按可见性进行合成的渲染表示。Depth 指沿相机成像射线的场景几何距离；在针孔投影建模中应区分相机坐标 z 深度与射线欧氏距离，后文以原文定义为准。一个深度图为每个可见像素提供一个几何位置线索，而不是直接提供完整三维表面、颜色或遮挡后的信息。
+
+【原文事实】标题中的 Connecting 不是简单在 3DGS 渲染后输出深度。摘要与 §1 指出两个方向：①利用更可靠的多视图深度确定高斯中心，提高前馈重建质量；②将 3DGS 可微渲染作为深度网络的无深度标注预训练目标。这要求深度估计器是高斯生成过程的组成部分，而非彼此独立的两个任务。
+
+【合理推断】深度→高斯的联系是空间坐标生成，反向联系是训练梯度；因此推理时不必把两个任务理解为循环反复优化。单目先验在这里提供特征而不是直接作为绝对尺度深度。
+
+### 标题不能确定的内容
+
+单凭标题不能确定是否需要相机位姿、输入视图数、是否逐场景优化、训练监督类型、具体网络与渲染速度；这些必须回到 §3、§4。标题本身没有声称单视图 3D 重建，也没有声称消除所有遮挡歧义。本文并非新的高斯物理成像模型。标题分析未涉及具体数学公式，投影、成本体和损失将在数学单元核查。
+
+<!-- PTH:END TITLE -->
+
+<!-- PTH:BEGIN ABSTRACT -->
+## 1.2 摘要的论证链
+
+依据 PDF p.1 Abstract，按论证顺序理解，而不是把摘要中的性能主张直接当成证实事实。
+
+1. **背景**：高斯泼溅与单目深度估计通常分开研究。前者面向新视角合成，后者从单幅图像推断几何；二者之间存在可利用的训练和表示关系。
+2. **第一条技术路线**：把预训练单目深度特征引入多视图深度模型，形成更稳健的深度预测。多视图匹配提供基于已知视角的几何约束，单目特征提供学习到的形状和图像内容先验。§1 补充了遮挡、低纹理、反射等匹配困难；摘要没有逐条解释这些机制。
+3. **深度到重建**：作者将更可靠的深度用于前馈 3DGS。深度经反投影定位高斯中心，附加预测头生成其他高斯属性，因而改善几何具有改善渲染的合理通路。
+4. **第二条技术路线**：3DGS 可作为不依赖真值深度的预训练目标，使用大规模具有相机位姿的多视图数据。此处无监督指没有深度标注，不代表没有目标图像、相机参数或重建损失。
+5. **验证**：摘要声称通过消融及跨任务迁移实验验证两个任务的互益，并报告 ScanNet、RealEstate10K、DL3DV 的深度及新视图合成表现；另报告 12 张 512×960 输入图像的前馈重建耗时 0.6 s。
+
+### 主张与证据边界
+
+【原文事实】上述结果是作者摘要主张。具体对应 Table 1–3（模型和融合）、Table 4（渲染预训练与深度微调）、Table 5–8（基准及泛化）、Table A.1（深度初始化改善渲染）。Figure 1 将双向关系可视化。高分辨率示例还见 Appendix B.4、C。
+
+【独立评价】摘要的“state-of-the-art”应限于论文比较的协议和数据集，不可外推至任意稀疏观测、无位姿或未知介质场景；0.6 s 不能解释为端到端相机位姿估计、任意场景或任意硬件的耗时。摘要未给出公式，数学细节应见 §3。
+
+一句话：DepthSplat 以融合单目先验与多视图几何匹配的深度网络为共同基础，使前馈 3DGS 受益于深度预测，同时让深度网络从可微新视图渲染中获得无真值深度的预训练信号。
+
+<!-- PTH:END ABSTRACT -->
+
+<!-- PTH:BEGIN CONTRIB -->
+## 1.3 核心贡献
+
+【原文事实】§1（p.1–2）以连续叙述呈现贡献，并非作者原有的编号贡献列表。以下是对贡献主张的结构化提取。
+
+**贡献一：稳健多视图深度模型。** 将预训练单目深度特征在成本体回归之前与多视图匹配信息结合。目标是缓解纹理不足、遮挡、非 Lambertian 表面导致的匹配失败，同时保留多视图几何提供的尺度和一致性约束。这里关键在融合时机及互补信息来源，而非单独发明单目深度网络或成本体。§3.1–3.3 展开；Table 2 分别移除单目特征、成本体，Table 3 比较融合方式，Figure 3 提供失败区域的可视化。
+
+**贡献二：深度驱动的前馈 3DGS 及可微训练。** 以预测深度反投影得到高斯中心，利用额外网络预测其余高斯属性。通过 3DGS 渲染新视角。渲染任务不需要为每个场景重新优化一套独立高斯参数，而通过训练好的网络推断。§3.4 是主要机制，Figure 2 是总图，Figure 4、5、6 和 Table 1、6–8 验证渲染与几何效果。Appendix A 比较深度初始化方式，提供深度→3DGS 的进一步证据。
+
+**贡献三：以 3DGS 为无真值深度的预训练途径。** 在具有相机位姿和目标图像的多视图数据上训练渲染，通过可微渲染将梯度传回预测深度的网络；随后在深度数据上微调。Table 4 将预训练/微调作为两个变量，Figure 1 右侧和 Appendix B.1 比较训练效果与局部深度质量。此贡献的重点是复用渲染目标获得几何学习信号，并非证明渲染损失能唯一恢复真实几何。
+
+### 贡献性质与验证路径
+
+| 类型 | 主张及性质 | 对应原文证据 |
+|---|---|---|
+| 问题定位 | 多视图匹配失败与单目尺度歧义是既有问题 | §1–2 |
+| 方法创新 | 预训练单目特征与成本体早期拼接、共享架构 | §3.1–3.4, Fig. 2 |
+| 训练创新 | 用新视图渲染预训练深度模型 | §3.4, §4.3, Table 4 |
+| 实验贡献 | 双向迁移、消融、稀疏视图、高分辨率和泛化 | §4, Appendix A–C |
+
+【独立评价】作者未提出保证几何唯一性的数学定理。相关任务和组件均有前人工作；创新主张应聚焦组合方式、共享表示及双向迁移实验，而不是声称首次连接深度和高斯渲染。数学细节后续逐组分析，本单元不独立推导新公式。
+
+<!-- PTH:END CONTRIB -->
+
+<!-- PTH:BEGIN CONCLUSION -->
+## 1.4 结论及局限
+
+【原文事实】§5（PDF p.8）总结 DepthSplat 连接高斯泼溅与深度，作者在 ScanNet、RealEstate10K、DL3DV 上分别报告两类任务的先进表现。作者特别强调可使用高斯泼溅的渲染损失进行无真值深度预训练，利用大规模有位姿的多视图数据训练更稳健、更具泛化能力的深度模型。注意结论总结的是跨任务共享方法的收益，不是无监督单目绝对尺度估计。
+
+### 适用范围与未来工作
+
+作者明确指出两项局限：
+
+- **位姿依赖**：输入图像必须同时提供相机位姿，极稀疏观测时准确位姿可能难以获得。未来可探索 pose-free 模型。位姿误差会传递至特征重投影和中心反投影，这是基于架构的合理推断，而非本文给出的噪声敏感性实验。
+- **高斯数量**：像素对齐高斯使输入视图较多时基元数量显著增加。未来需要改善几何表示及对大量输入视图的可扩展性。局部匹配优化能减轻网络部分开销，但不能据此断言渲染表示的复杂度不再随输入规模增长。
+
+【独立评价】本文证明了给定训练数据、位姿和评测协议下的互益证据，但没有证明渲染误差与几何误差一一对应，也未验证任意光照/介质条件。高分辨率实验主要提供定性验证，不应替代统一定量评测。本文的训练和推理条件仍须在后文按实际实验区分。本结论单元没有新公式；后续数学单元分析其已定义训练目标。
+
+<!-- PTH:END CONCLUSION -->
+
+<!-- PTH:BEGIN FIG-OVERVIEW -->
+## 2.1 图表功能总览
+
+图表编号及页码源于同版本 PDF；以下为功能索引，不代替逐幅分析。
+
+| Figure | PDF 页 | 功能 |
+|---|---|---|
+| Figure 1 | 1 | 任务互益：深度改善渲染、渲染预训练改善深度 |
+| Figure 2 | 3 | 两分支共享深度架构与高斯预测、渲染监督的完整路径 |
+| Figure 3 | 6 | ScanNet 单目分支消融，低纹理和反射场景的深度及误差 |
+| Figure 4 | 6 | RealEstate10K 单目分支消融，深度错误与新视角错位 |
+| Figure 5 | 7 | RealEstate10K 两输入视图的新视图合成方法对比 |
+| Figure 6 | 8 | DL3DV 重复纹理导致匹配困难的定性比较 |
+| Figure B.1 | 13 | 3DGS 预训练前后深度与误差对照 |
+| Figure B.2 | 13 | RealEstate10K 训练模型直接泛化至 DL3DV 的可视化 |
+| Figure B.3 | 14 | DL3DV 四输入视图合成与 MVSplat 比较 |
+| Figure B.4 | 14 | 六输入视图的高分辨率渲染结果 |
+| Figure B.5 | 15 | 十二输入视图的高分辨率深度结果 |
+
+### Table 功能目录
+
+| Table | PDF 页 | 功能 |
+|---|---|---|
+| Table 1 | 5 | 单目骨干大小、层级匹配、双任务表现、参数和时间 |
+| Table 2 | 5 | 移除单目特征/成本体及单目特征来源消融 |
+| Table 3 | 6 | 不同单目融合策略的深度结果 |
+| Table 4 | 7 | 有无渲染预训练、有无深度微调的四组对照 |
+| Table 5 | 7 | ScanNet 双视图深度估计基准 |
+| Table 6 | 7 | RealEstate10K 双视图 3DGS 基准 |
+| Table 7 | 8 | DL3DV 输入视图数、质量与时间对比 |
+| Table 8 | 8 | RealEstate10K 训练模型直接泛化至 DL3DV 和 ACID |
+| Table A.1 | 12 | 深度模型不同初始化对渲染质量的影响 |
+
+【原文事实】图表覆盖架构、消融、迁移、基准、泛化、高分辨率。Figure 1 提供整体主张，Figure 2 提供机制，其他图多提供局部或定性证据；Table 则用于区分对照条件、指标和定量变化。此索引不从图表推导具体数学结论。
+
+<!-- PTH:END FIG-OVERVIEW -->
+
+<!-- PTH:BEGIN FIG-1 -->
+### Figure 1：原图与题注
+
+![Figure 1](DepthSplat/Figures/Figure_01.jpg)
+
+来源：PDF p.1，区域坐标 [56.880001068115234, 219.83999633789062, 555.1199951171875, 370.0799865722656]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.1，抽取文本换行合并）：**
+
+Figure 1. DepthSplat enables cross-task interactions between Gaussian splatting and depth. Left: Better depth leads to improved Gaussian splatting reconstruction. Right: Unsupervised depth pre-training with Gaussian splatting leads to reduced depth prediction error.
+
+**Caption 中文：**
+
+DepthSplat 在高斯泼溅与深度之间实现跨任务交互。左：更好的深度带来更好的高斯泼溅重建。右：以高斯泼溅进行无监督深度预训练降低深度预测误差。
+
+#### Figure 1：视觉观察、正文关联与边界
+
+左侧以两张输入图像及目标视图真值为参照，下面两行比较 MVSplat 与 DepthSplat 的两张深度图和新视角。场景中的栏杆、亭子等细结构在 MVSplat 深度图中有不连贯区域，渲染中出现结构变形；DepthSplat 的深度和渲染在这些位置更接近输入场景结构。注意顶行并非逐像素深度真值图。中央两条箭头分别表示 Depth→3DGS（更好的几何与渲染）和 3DGS→Depth（无监督预训练），表达的是跨任务信息流，不表示推理期交替迭代。
+
+右图横轴为训练步数（千步），纵轴为验证深度预测误差 Abs Rel，越小越好；带 3DGS 预训练的红线低于不带预训练的蓝线，说明初始化不仅可能改变收敛过程，也改善图示验证区间内误差。原图无完整逐点表，不读取虚构精确数值。§4.3 Table 4 提供可量化的预训练/微调对照。
+
+【合理推断】左侧几何改变会影响高斯中心及投影重合关系，因此能够传导到颜色合成；右侧深度模型可经渲染误差收到梯度。图示关联不等于证明所有渲染改善均由深度改善单独造成，也不表示无真值深度预训练可以完全恢复真实几何。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-1 -->
+
+<!-- PTH:BEGIN FIG-2 -->
+### Figure 2：原图与题注
+
+![Figure 2](DepthSplat/Figures/Figure_02.jpg)
+
+来源：PDF p.3，区域坐标 [79.91999816894531, 68.87999725341797, 533.0399780273438, 211.1999969482422]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.3，抽取文本换行合并）：**
+
+Figure 2. DepthSplat connects depth estimation and 3D Gaussian splatting with a shared architecture, which enables cross-task transfer. In particular, DepthSplat consists of a multi-view branch to model feature-matching information and a single-view branch to extract monocular features. The per-view cost volumes and monocular features are concatenated for depth regression with a 2D U-Net architecture. For the depth estimation task, we train the depth model with ground truth depth supervision. For the Gaussian splatting task, we first unproject all depth maps to 3D as the Gaussian centers, and in parallel, we use an additional head to predict the remaining Gaussian parameters. Novel views are rendered with the splatting operation. The full model for novel view synthesis is trained with the photometric rendering loss, which can also be used as an unsupervised pre-training stage for the depth model.
+
+**Caption 中文：**
+
+DepthSplat 通过共享架构连接深度估计和三维高斯泼溅，实现跨任务迁移。它包含多视图分支以建模特征匹配信息，并包含单视图分支提取单目特征。逐视图成本体与单目特征拼接后由二维 U-Net 回归深度。对深度任务，以真值深度监督训练。对高斯泼溅任务，先将所有深度图反投影至三维空间作为高斯中心，并行地通过额外预测头估计其余高斯参数。通过泼溅操作渲染新视图。用于新视图合成的完整模型以光度渲染损失训练，这也可作为深度模型的无监督预训练阶段。
+
+#### Figure 2：视觉观察、正文关联与边界
+
+从左至右看，两条上游路径接受有位姿的输入图像。多视图分支先获得共享图像特征，再经多视图 Transformer 交换信息和成本体构造，显式记录候选深度匹配程度；单视图分支用预训练 ViT 独立提取每张图像的单目特征。单目特征不是直接输出绝对深度再去校准，而是与对应参考视图的成本体在通道维拼接。图示 2D U-Net 处就是两类信息相互影响的位置。
+
+中间的深度估计输出是每个输入视图的深度图。在深度任务下，真实深度提供监督，参见 Eq. (1)。在 3DGS 任务下，深度与相机内外参确定三维高斯中心；另一预测头从图像、深度和特征估计剩余高斯属性（§3.4：不透明度、协方差、颜色）。渲染器把这些基元投影到目标相机，合成目标 RGB，与真实目标图比较得到 Eq. (2) 渲染损失。
+
+【合理推断】反向梯度可从损失经 splatting、中心坐标及反投影进入深度网络；其他高斯参数头也接收梯度。因此深度任务和 NVS 任务复用同一深度结构，但并非要求每一步同时有深度真值和渲染真值。图中没有显式相机位姿优化模块。图未给出候选深度数、详细张量尺寸、全局可见性处理等全部实现，须结合 §3.1–3.4，不从图形块数量猜层数。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-2 -->
+
+<!-- PTH:BEGIN FIG-3 -->
+### Figure 3：原图与题注
+
+![Figure 3](DepthSplat/Figures/Figure_03.jpg)
+
+来源：PDF p.6，区域坐标 [56.880001068115234, 69.83999633789062, 555.1199951171875, 214.0800018310547]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.6，抽取文本换行合并）：**
+
+Figure 3. Effect of monocular features for depth on ScanNet. The monocular feature greatly improves challenging situations like texture-less regions (e.g., the wall in the first example) and reflective surfaces (e.g., the refrigerator in the second example).
+
+**Caption 中文：**
+
+ScanNet 深度任务中的单目特征作用。单目特征显著改善低纹理区域（首个例子的墙）和反射表面（第二个例子的冰箱）等困难情形。
+
+#### Figure 3：视觉观察、正文关联与边界
+
+图中左右是两个场景组；各组显示输入图像及带/不带单目特征的深度预测和对应误差图。第一组墙面/帘幕附近缺少判别纹理，第二组冰箱反射会让跨视图外观不一致；红框强调局部差异。不带单目特征时这些位置出现深度结构偏差和明显误差，带单目特征时视觉上更完整。应按图中 Image 1/2、Depth 和 Error 的实际标签读图，而不能未经校验就把两张不同输入的像素差当作同一相机的严格逐像素对照。
+
+【背景知识】成本体的相似度依赖正确深度对应的可比较特征。低纹理时多个候选可能近似相似；反射时真实几何对应的像素也可能外观不同。学习到的单目语义、形状和边界线索能补充匹配，但本图没有证明模型显式识别反射或物理反射率。
+
+§4.2 与 Table 2 给出分支移除的定量结果（Table 2 深度列使用 TartanAir，不是图中 ScanNet 的局部数值）。本图支持困难案例的定性解释；误差彩图无可可靠读取的定量刻度，不估计具体误差。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-3 -->
+
+<!-- PTH:BEGIN FIG-4 -->
+### Figure 4：原图与题注
+
+![Figure 4](DepthSplat/Figures/Figure_04.jpg)
+
+来源：PDF p.6，区域坐标 [56.880001068115234, 248.8800048828125, 555.1199951171875, 470.1600036621094]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.6，抽取文本换行合并）：**
+
+Figure 4. Effect of monocular features for 3DGS on RealEstate10K. Without monocular features, the model struggles at predicting reliable depth for pixels that are not able to find correspondences (e.g., the lounger chair highlighted with the read rectangle), which subsequently causes misalignment in the rendered image due to the incorrect geometry.
+
+**Caption 中文：**
+
+RealEstate10K 中单目特征对 3DGS 的作用。不使用单目特征时，无法找到对应关系的像素（例如红框中的躺椅）难以获得可靠深度；错误几何进一步导致渲染图像错位。
+
+#### Figure 4：视觉观察、正文关联与边界
+
+按行查看两张输入视图及各自的深度预测；右侧为目标视图真值、渲染结果及误差。图示包括泳池边躺椅等仅在某个输入中可见的区域。去掉单目特征时，这些部位的深度可能与周围表面粘连或不连续，目标视图合成发生位置错位；保留单目特征后，椅子及周边结构在深度与渲染图中更连贯。第二例建筑局部也展示同样的几何到外观传播现象。
+
+【背景知识】像素深度 z 误差会沿参考相机射线移动高斯中心。在不同目标相机观察时，错误中心产生不同的视差，投影位置不再正确；颜色参数即使可以拟合某些输入视图，也难同时消除新视角的几何错位。§3.4 的中心反投影把这种误差链变得直接。
+
+§4.2 将该例归因为匹配缺失，Table 2 在 RealEstate10K 的 Full 26.84 dB 对比 w/o mono 26.04 dB 提供整体支持。本图只支持特定可视案例，未量化所有遮挡像素，也不意味着网络恢复完全未被任何输入观察的表面。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-4 -->
+
+<!-- PTH:BEGIN FIG-5 -->
+### Figure 5：原图与题注
+
+![Figure 5](DepthSplat/Figures/Figure_05.jpg)
+
+来源：PDF p.7，区域坐标 [313.9200134277344, 223.9199981689453, 555.1199951171875, 343.20001220703125]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.7，抽取文本换行合并）：**
+
+Figure 5. Novel view synthesis on RealEstate10K. Our Depth- Splat performs significantly better than pixelSplat [7] and MVS- plat [9] in challenging regions.
+
+**Caption 中文：**
+
+RealEstate10K 上的新视图合成。DepthSplat 在困难区域表现明显优于 pixelSplat [7] 与 MVSplat [9]。
+
+#### Figure 5：视觉观察、正文关联与边界
+
+图有两个场景行，每行左侧小图为两张输入，随后为 GT、pixelSplat、MVSplat、DepthSplat 的目标视图。室内门框及物体边缘、雕塑和反光地面等区域中，对照方法可能出现模糊、重影或形状断裂；DepthSplat 的边缘和可见结构更接近 GT。读图时先确认相同目标视角，再比较局部几何结构而非仅看锐度。
+
+§4.4 和 Table 6 对应双视图 RealEstate10K 定量基准。pixelSplat 直接从图像特征预测高斯，MVSplat 引入成本体，DepthSplat 进一步融合单目特征；结构区别来自 §2，不由视觉外观反推。图上渲染改善可能与深度、外观预测等因素共同有关，无真实深度对照不能仅凭该图证明几何误差绝对更低。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-5 -->
+
+<!-- PTH:BEGIN FIG-6 -->
+### Figure 6：原图与题注
+
+![Figure 6](DepthSplat/Figures/Figure_06.jpg)
+
+来源：PDF p.8，区域坐标 [56.880001068115234, 221.75999450683594, 297.1199951171875, 367.20001220703125]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.8，抽取文本换行合并）：**
+
+Figure 6. Visual comparisons on DL3DV. Our DepthSplat per- forms significantly better than MVSplat [9] on regions that hard to match (e.g., repeated patterns).
+
+**Caption 中文：**
+
+DL3DV 定性比较。DepthSplat 在较难进行匹配的区域（例如重复纹理）明显优于 MVSplat [9]。
+
+#### Figure 6：视觉观察、正文关联与边界
+
+图布局与 Figure 1 左部一致：顶行为输入/GT，下两行为 MVSplat、DepthSplat，并列两张深度图和新视图渲染。可见条纹遮阳棚等重复纹理在 MVSplat 的深度图中产生不一致结构，目标合成有模糊和变形；DepthSplat 的深度表面及渲染条纹连续性更好。顶行输入/GT 指图像参照，不是提供真实深度图。
+
+【背景知识】规则重复图案可能使错误深度投影到相似外观，成本体出现多峰；单目上下文先验能帮助排除部分不合理候选，但无法保证唯一匹配。§4.4 以 Table 7 比较 2、4、6 输入视图的 DL3DV 结果。本图展示其中困难场景，不从单个样例推断所有视图数的性能差。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-6 -->
+
+<!-- PTH:BEGIN FIG-B-1 -->
+### Figure B.1：原图与题注
+
+![Figure B.1](DepthSplat/Figures/Figure_B01.jpg)
+
+来源：PDF p.13，区域坐标 [56.880001068115234, 92.87999725341797, 555.1199951171875, 334.0799865722656]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.13，抽取文本换行合并）：**
+
+Figure B.1. Effect of unsupervised depth pre-training. We observe that the unsupervised pre-training leads to improved performance for texture-less regions.
+
+**Caption 中文：**
+
+无监督深度预训练的作用。无监督预训练改善了低纹理区域的表现。
+
+#### Figure B.1：视觉观察、正文关联与边界
+
+三组示例包含立面、地面和天花板等纹理不足的结构。各行比较输入图像、不经 3DGS 预训练的深度/误差、经预训练的深度/误差；后者在部分大面积平坦区域的深度和误差视觉上更合理。由于无定量误差刻度，不从颜色直接推导数值。
+
+Appendix B.1 将结果解释为预训练可能为困难场景提供正则化，这是作者假设而非被独立证明的机制。Table 4 使用相同架构比较不同权重，并区分是否进一步深度微调；本图提供定性补充，不能替代四组实验，也不能把无监督理解为无目标图像或无位姿。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-B-1 -->
+
+<!-- PTH:BEGIN FIG-B-2 -->
+### Figure B.2：原图与题注
+
+![Figure B.2](DepthSplat/Figures/Figure_B02.jpg)
+
+来源：PDF p.13，区域坐标 [56.880001068115234, 420.9599914550781, 555.1199951171875, 666.0]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.13，抽取文本换行合并）：**
+
+Figure B.2. Generalization from RealEstate10K to DL3DV.
+
+**Caption 中文：**
+
+从 RealEstate10K 到 DL3DV 的泛化。
+
+#### Figure B.2：视觉观察、正文关联与边界
+
+四个场景行分别给出 Image 1、Image 2、GT、MVSplat、DepthSplat，可见沙发/咖啡区、教室、商店及亭子等场景。对照目标视图中有明显的模糊、重影及不稳定结构，DepthSplat 在这些例子中保留了更多可见空间结构和清晰边缘。每行两张输入与 GT 的角色不同：GT 不参与该次推理。
+
+Appendix B.2 与 §4.4 Table 8 对应，训练使用 RealEstate10K，直接测试 DL3DV；与 Table 7 在 DL3DV 训练场景微调的协议不同。定性可见的改善支持跨数据集迁移的可能性，不证明适用于任意数据分布，特别不是无位姿迁移实验。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-B-2 -->
+
+<!-- PTH:BEGIN FIG-B-3 -->
+### Figure B.3：原图与题注
+
+![Figure B.3](DepthSplat/Figures/Figure_B03.jpg)
+
+来源：PDF p.14，区域坐标 [55.91999816894531, 68.87999725341797, 555.1199951171875, 371.0400085449219]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.14，抽取文本换行合并）：**
+
+Figure B.3. View synthesis from 4 input views on DL3DV.
+
+**Caption 中文：**
+
+DL3DV 上从四张输入视图进行新视图合成。
+
+#### Figure B.3：视觉观察、正文关联与边界
+
+四个场景行的左列为四张小输入图，右列依次给出 GT、MVSplat 与 DepthSplat。场景包含玻璃建筑、室外桌椅栏杆、雕塑/树木以及室内货架等结构。DepthSplat 在可见的细结构、边界及布局方面更接近 GT，而 MVSplat 出现部分模糊或错位。四张输入为相同方法比较条件。
+
+Appendix B.3 补充 Table 7 的四输入视图实验，后者 MVSplat 21.63 dB、DepthSplat 23.12 dB。该图的功能不是单独证明输入越多越好，而是在固定四输入条件下比较方法；不同输入数的趋势只能由 Table 7 同协议定量比较支持。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-B-3 -->
+
+<!-- PTH:BEGIN FIG-B-4 -->
+### Figure B.4：原图与题注
+
+![Figure B.4](DepthSplat/Figures/Figure_B04.jpg)
+
+来源：PDF p.14，区域坐标 [56.880001068115234, 395.760009765625, 555.1199951171875, 703.2000122070312]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.14，抽取文本换行合并）：**
+
+Figure B.4. View synthesis at 512 × 960 resolutions from 6 input views.
+
+**Caption 中文：**
+
+从六张输入视图进行 512×960 分辨率的新视图合成。
+
+#### Figure B.4：视觉观察、正文关联与边界
+
+每组展示六张小输入以及三个不同目标视图的渲染输出，涉及沙发、拖拉机、楼房和雕塑等场景。可见输出场景具有较一致的外观和空间布局；但图没有对应 GT、MVSplat 结果或误差图，不能称为严格定量优越性证明，也不能把渲染视角当作额外输入。
+
+Appendix B.4 报告 MVSplat 在 6/12 输入 512×960 时显存不足，DepthSplat 利用较低的初始特征分辨率（1/8 对 1/4）和局部跨视图注意力提高效率。§3.1 解释最近视图局部匹配，Appendix C 给出高分辨率训练配置。此例仅表明六输入高分辨率生成可行；不据图推断速度、真实几何或实际显存用量。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-B-4 -->
+
+<!-- PTH:BEGIN FIG-B-5 -->
+### Figure B.5：原图与题注
+
+![Figure B.5](DepthSplat/Figures/Figure_B05.jpg)
+
+来源：PDF p.15，区域坐标 [56.880001068115234, 105.83999633789062, 555.1199951171875, 651.1199951171875]；B2 经核验的 300 DPI JPEG 展示副本，保真 PDF 独立归档。
+
+**Caption 原文（PDF p.15，抽取文本换行合并）：**
+
+Figure B.5. Depth predictions on DL3DV with 12 input views. The image resolutions are 512 × 960.
+
+**Caption 中文：**
+
+DL3DV 上使用十二张输入视图预测深度，图像分辨率为 512×960。
+
+#### Figure B.5：视觉观察、正文关联与边界
+
+图展示三个场景组，每组包含十二张输入图像及相应深度图。随着相机观察方向变化，深度着色体现物体、地面及背景之间的相对结构；多视图对应的视觉几何具有一定连续性。各图深度色彩不能在没有统一标尺说明时直接比较为绝对距离；图中无 GT 深度和误差图。
+
+Appendix B.4–C 将该图作为高分辨率、多输入扩展能力示例，与 Figure B.4 的六输入新视角渲染属于不同输出。作者摘要报告 12 张 512×960 输入前馈重建 0.6 秒，但不能将此图本身当作延迟测量。§5 仍指出像素对齐高斯数量随输入增加，故有限规模成功不等于无限可扩展。
+
+本图没有独立编号数学公式；相应数学机制在后文公式单元展开。
+
+<!-- PTH:END FIG-B-5 -->
+
+<!-- PTH:BEGIN TABLE-1 -->
+### Table 1：题注与完整数据
+
+来源：PDF p.5，4.1 Model Variants。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 1. DepthSplat model variants. We evaluate different monoc- ular backbones and different multi-view models (1-scale and 2- scale features for hierarchical matching as described in Sec. 3.3), where both larger monocular backbones and 2-scale hierarchical models lead to consistently improved performance for both depth and view synthesis tasks. The inference time is measured on a single A100 GPU for two input views at 256 × 256 resolutions.
+
+**中文：** DepthSplat 模型变体。比较不同单目骨干和多视图模型（§3.3 的单尺度与双尺度层级匹配）；更大的骨干和双尺度层级模型均改善深度和视图合成。推理时间使用单张 A100 GPU、两个 256×256 输入视图测量。
+
+| Mono | MV | Abs Rel ↓ | δ1 ↑ | PSNR ↑ | SSIM ↑ | LPIPS ↓ | Param (M) | Time (s) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| ViT-S | 1-scale | 8.46 | 93.02 | 26.84 | 0.878 | 0.122 | 38 | 0.050 |
+| ViT-B | 1-scale | 6.94 | 94.46 | 27.06 | 0.882 | 0.119 | 115 | 0.053 |
+| ViT-L | 1-scale | 6.07 | 95.52 | 27.23 | 0.885 | 0.116 | 347 | 0.061 |
+| ViT-S | 2-scale | 7.01 | 94.56 | 27.12 | 0.884 | 0.119 | 41 | 0.062 |
+| ViT-B | 2-scale | 6.22 | 95.31 | 27.34 | 0.887 | 0.116 | 120 | 0.070 |
+| ViT-L | 2-scale | 5.57 | 96.07 | 27.47 | 0.889 | 0.114 | 354 | 0.079 |
+
+#### Table 1：对照分析与证据边界
+
+深度列是 TartanAir，3DGS 列是 RealEstate10K；Abs Rel 越低越好，δ1 越高越好，PSNR/SSIM 越高越好，LPIPS 越低越好；参数量 M 表示百万参数。Small/Base/Large 分别为 ViT-S 1-scale、ViT-B 2-scale、ViT-L 2-scale。
+
+固定 ViT-S，从单尺度到双尺度：Abs Rel 8.46→7.01，PSNR 26.84→27.12，时间 0.050→0.062 s，参数 38→41 M。固定单尺度，从 ViT-S 到 ViT-L：Abs Rel 8.46→6.07，PSNR 26.84→27.23，参数 38→347 M，时间增加 0.011 s。两类变化均支持更强深度架构与更强渲染表现有关。选择 Large 的代价是参数量和时延提升；小型模型在受限资源下仍有用途。此表不同任务在不同数据集、分别训练/评价，不是同一测试场景内深度精度与渲染精度的因果回归。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-1 -->
+
+<!-- PTH:BEGIN TABLE-2 -->
+### Table 2：题注与完整数据
+
+来源：PDF p.5，4.2 Ablation and Analysis。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 2. Ablations. We evaluate the contribution of the monocular feature branch and the cost volume branch (1st group of exper- iments), as well as different monocular features (2nd group of experiments). Our results indicate that the monocular feature and cost volume are complementary, with large performance drops when removing either one. The pre-trained Depth Anything V2 model weights achieve the best view synthesis results.
+
+**中文：** 消融实验。第一组比较单目特征分支和成本体分支的贡献，第二组比较不同单目特征。结果说明两类信息互补，移除任一均有明显下降。Depth Anything V2 预训练权重获得最佳视图合成结果。
+
+| Components | Abs Rel ↓ | δ1 ↑ | PSNR ↑ | SSIM ↑ | LPIPS ↓ |
+|---|---:|---:|---:|---:|---:|
+| Full | 8.46 | 93.02 | 26.84 | 0.878 | 0.122 |
+| w/o mono feature | 12.25 | 88.00 | 26.04 | 0.864 | 0.134 |
+| w/o cost volume | 11.34 | 90.02 | 23.24 | 0.766 | 0.184 |
+| ConvNeXt-T | 10.50 | 91.13 | 26.11 | 0.865 | 0.134 |
+| Midas | 9.53 | 91.61 | 26.46 | 0.872 | 0.128 |
+| DINO V2 | 8.93 | 92.49 | 26.76 | 0.877 | 0.123 |
+| Depth Anything V1 | 8.38 | 93.23 | 26.76 | 0.877 | 0.124 |
+| Depth Anything V2 | 8.46 | 93.02 | 26.84 | 0.878 | 0.122 |
+
+#### Table 2：对照分析与证据边界
+
+深度 TartanAir、3DGS RealEstate10K，Full 使用 ViT-S、Depth Anything V2。移除单目分支使 Abs Rel 增加 3.79、PSNR 下降 0.80 dB；移除成本体使 Abs Rel 增加 2.88、PSNR 下降 3.60 dB。两个因素对两个任务的重要性不相同：仅单目特征的渲染损失尤为明显，符合几何尺度与跨视图一致性对重建的重要性。注意 w/o cost volume 是移除成本体，不能据此声称模型只剩某个具体单目预测头。
+
+不同特征中，Depth Anything V1 的深度指标（8.38、93.23）略好于 V2（8.46、93.02），V2 的渲染指标最佳；DINO V2 也接近。因此不能写 V2 在所有指标最好，也不应推断深度精度单独决定渲染质量。Fig. 3、4 给出分支移除的困难场景定性观察。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-2 -->
+
+<!-- PTH:BEGIN TABLE-3 -->
+### Table 3：题注与完整数据
+
+来源：PDF p.6，4.2 Ablation and Analysis。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 3. Monocular fusion strategy. Our simple concatenation performs surprisingly good compared to other alternatives.
+
+**中文：** 单目融合策略。简单拼接与其他方案相比取得出色表现。
+
+| Method | Abs Rel ↓ | δ1 ↑ |
+|---|---:|---:|
+| Cost volume from ViT | 11.26 | 90.84 |
+| Explicit scale align | 9.13 | 90.21 |
+| Attention fusion | 8.40 | 92.95 |
+| Concatenation (Ours) | 8.46 | 93.02 |
+
+#### Table 3：对照分析与证据边界
+
+§4.2 中第一种将单目 ViT 特征用于成本体，形成单分支；第二种先用多视图深度对齐单目深度尺度，再融合两张深度图；第三种使用注意力自适应融合；本文拼接的是特征与成本体而非两个深度输出。单分支 Abs Rel 11.26，高于拼接 8.46，符合作者关于将匹配特征和单目先验解耦更易学习的解释（该解释是可能机制）。注意力 8.40 优于拼接 8.46 的 Abs Rel，δ1 则拼接 93.02 高于 92.95。作者选择拼接是因为效果相近且结构简单，而不是全部指标严格最优。该表没有推理耗时和渲染结果，不得据表直接声称拼接比注意力更快或渲染最好。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-3 -->
+
+<!-- PTH:BEGIN TABLE-4 -->
+### Table 4：题注与完整数据
+
+来源：PDF p.7，4.3 Unsupervised Depth Pre-Training with Gaussian Splatting。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 4. Unsupervised Depth Pre-Training with Gaussian Splat- ting. We evaluate the same architecture but with different weights. The pre-training is performed on RealEstate10K, and fine-tuning is performed on TartanAir and VKITTI2. Unsupervised pre-training (2nd row) produces improved depth predictions compared to ran- dom initialization (1st). The performance can be further improved with additional fine-tuning (4th), where the benefit of pre-training is especially significant on challenging datasets like TartanAir and KITTI compared to training from random initialization (3rd).
+
+**中文：** 使用高斯泼溅进行无监督深度预训练。相同架构比较不同权重。RealEstate10K 上预训练，TartanAir 与 VKITTI2 上微调。无监督预训练（第二行）比随机初始化（第一行）改善深度预测；额外微调（第四行）进一步提升。在 TartanAir 和 KITTI 等困难数据集上，相比随机初始化后微调（第三行），预训练收益尤其明显。
+
+| Pre-train | Fine-tune | TartanAir Abs Rel ↓ | δ1 ↑ | ScanNet Abs Rel ↓ | δ1 ↑ | KITTI Abs Rel ↓ | δ1 ↑ |
+|---|---|---:|---:|---:|---:|---:|---:|
+| ✗ | ✗ | 76.22 | 3.43 | 39.97 | 22.56 | 90.69 | 0.00 |
+| ✓ | ✗ | 29.53 | 53.16 | 21.51 | 76.09 | 56.83 | 46.26 |
+| ✗ | ✓ | 10.86 | 90.55 | 6.70 | 96.14 | 11.56 | 87.27 |
+| ✓ | ✓ | 10.20 | 91.10 | 6.60 | 96.27 | 10.68 | 89.92 |
+
+#### Table 4：对照分析与证据边界
+
+这是 2×2 权重训练对照。第 1→2 行不使用深度微调，显示仅渲染预训练可显著改变随机初始化的深度预测；第 3→4 行都做有监督微调，隔离预训练的额外价值。TartanAir Abs Rel 10.86→10.20（下降 0.66），KITTI 11.56→10.68（下降 0.88），ScanNet 6.70→6.60（下降 0.10）。后者收益较小，不能称三者效果同等显著。TartanAir 是微调域内测试；ScanNet、KITTI 是零样本跨域测试（本表的微调混合数据不含它们）。Table 5 使用另一个 ScanNet 基准训练协议，数值不能直接替换。
+
+【独立评价】无监督在本文指未使用 GT 深度，仍有有位姿目标图像、光度监督和预训练骨干背景。渲染预训练的益处不代表完全替代 GT 深度，因为第二行与第四行存在显著差距。作者对更好优化极小值/正则化的解释是推测，没有损失地形或唯一几何证明。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-4 -->
+
+<!-- PTH:BEGIN TABLE-5 -->
+### Table 5：题注与完整数据
+
+来源：PDF p.7，4.4 Benchmark Comparisons。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 5. Two-view Depth Estimation on ScanNet. Our Depth- Splat outperforms all prior methods by clear margins.
+
+**中文：** ScanNet 双视图深度估计。DepthSplat 以明显优势优于此前方法。
+
+| Method | Abs Rel ↓ | RMSE ↓ | RMSElog ↓ |
+|---|---:|---:|---:|
+| DeMoN [54] | 23.1 | 0.761 | 0.289 |
+| BA-Net [50] | 16.1 | 0.346 | 0.214 |
+| DeepV2D [52] | 5.7 | 0.168 | 0.080 |
+| NeuralRecon [47] | 4.7 | 0.164 | 0.093 |
+| DRO [26] | 5.3 | 0.168 | 0.081 |
+| UniMatch [65] | 5.9 | 0.179 | 0.082 |
+| DepthSplat (w/o GS pre-train) | 4.5 | 0.125 | 0.061 |
+| DepthSplat (w/ GS pre-train) | 3.8 | 0.114 | 0.055 |
+
+#### Table 5：对照分析与证据边界
+
+三个指标均越小越好；RMSE 是深度误差的均方根，RMSElog 衡量对数深度误差（背景知识，具体 mask/聚合协议本文未细列）。未用 GS 预训练的 Base 已达到 Abs Rel 4.5、RMSE 0.125、RMSElog 0.061，带预训练进一步达到 3.8、0.114、0.055；表内最优。§4.4 指出此处 Base（ViT-B、两尺度），预训练使用混合 RealEstate10K 和 DL3DV 数据；与 Table 4 的预训练和微调设置不同。相同架构下预训练额外收益明确；不同方法横向比较不单独控制参数量或数据规模，不能推断每个组件因果贡献。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-5 -->
+
+<!-- PTH:BEGIN TABLE-6 -->
+### Table 6：题注与完整数据
+
+来源：PDF p.7，4.4 Benchmark Comparisons。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 6. Two-view 3DGS on RealEstate10K. Our DepthSplat achieves the best performance.
+
+**中文：** RealEstate10K 双视图 3DGS。DepthSplat 达到最佳性能。
+
+| Method | PSNR ↑ | SSIM ↑ | LPIPS ↓ |
+|---|---:|---:|---:|
+| pixelNeRF [75] | 20.43 | 0.589 | 0.550 |
+| GPNR [46] | 24.11 | 0.793 | 0.255 |
+| AttnRend [17] | 24.78 | 0.820 | 0.213 |
+| MuRF [66] | 26.10 | 0.858 | 0.143 |
+| pixelSplat [7] | 25.89 | 0.858 | 0.142 |
+| MVSplat [9] | 26.39 | 0.869 | 0.128 |
+| TranSplat [76] | 26.69 | 0.875 | 0.125 |
+| DepthSplat | 27.47 | 0.889 | 0.114 |
+
+#### Table 6：对照分析与证据边界
+
+两个输入视图、RealEstate10K 基准。DepthSplat 三指标均优于表内方法；相对 MVSplat，PSNR 增加 1.08 dB，SSIM 增加 0.020，LPIPS 降低 0.014；相对 TranSplat PSNR 增加 0.78 dB，SSIM 增加 0.014，LPIPS 降低 0.011。作者以 §2 中早期拼接与后期深度细化的差异解释优势，Table 3/2 为融合和分支的直接实验，而本表为完整方法对比，不是单独融合机制的严格控制。Figure 5 提供定性结果。表中没有真实深度指标，不能将 PSNR 直接解释为更小的真实几何误差。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-6 -->
+
+<!-- PTH:BEGIN TABLE-7 -->
+### Table 7：题注与完整数据
+
+来源：PDF p.8，4.4 Benchmark Comparisons。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 7. Comparisons on DL3DV. Our DepthSplat not only con- sistently outperforms MVSplat on different number of input views, but also scales more efficiently to more input views.
+
+**中文：** DL3DV 对比。DepthSplat 在不同输入视图数下持续优于 MVSplat，并能更高效地扩展到更多输入视图。
+
+| Method | #Views | PSNR ↑ | SSIM ↑ | LPIPS ↓ | Time (s) |
+|---|---:|---:|---:|---:|---:|
+| MVSplat [9] | 2 | 17.54 | 0.529 | 0.402 | 0.072 |
+| DepthSplat | 2 | 19.31 | 0.615 | 0.310 | 0.083 |
+| MVSplat [9] | 4 | 21.63 | 0.721 | 0.233 | 0.146 |
+| DepthSplat | 4 | 23.12 | 0.780 | 0.178 | 0.107 |
+| MVSplat [9] | 6 | 22.93 | 0.775 | 0.193 | 0.263 |
+| DepthSplat | 6 | 24.19 | 0.823 | 0.147 | 0.132 |
+
+#### Table 7：对照分析与证据边界
+
+两方法先在 RealEstate10K 预训练，再在 DL3DV 训练场景微调（§4.4），不同于 Table 8。分别在 2/4/6 个输入视图下，DepthSplat PSNR 优势 1.77/1.49/1.26 dB；两视图时增益最大，说明该协议下稀疏观测的补益较明显。DepthSplat 2→6 视图耗时 0.083→0.132 s，MVSplat 0.072→0.263 s；两视图 DepthSplat 反而更慢，四/六视图较快。可见扩展效率优势不等于任何规模都更快。§3.1 对每参考图选择最近两邻居而非全对交互，降低视图匹配增长率，Appendix B.4 另讨论分辨率。不能由三个输入规模点拟合或宣称严格复杂度，更不能将时间与 Table 1 不同分辨率条件直接比较。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-7 -->
+
+<!-- PTH:BEGIN TABLE-8 -->
+### Table 8：题注与完整数据
+
+来源：PDF p.8，4.4 Benchmark Comparisons。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table 8. Cross-dataset generalization. When generalizing to DL3DV and ACID with RealEstate10K pre-trained models, our DepthSplat is consistently better than MVSplat, especially on the more challenging DL3DV dataset.
+
+**中文：** 跨数据集泛化。在 RealEstate10K 预训练后泛化至 DL3DV 与 ACID，DepthSplat 持续优于 MVSplat，尤其在较具挑战的 DL3DV 上。
+
+| Method | DL3DV PSNR ↑ | SSIM ↑ | LPIPS ↓ | ACID PSNR ↑ | SSIM ↑ | LPIPS ↓ |
+|---|---:|---:|---:|---:|---:|---:|
+| MVSplat [9] | 24.14 | 0.808 | 0.149 | 28.15 | 0.841 | 0.147 |
+| DepthSplat | 27.66 | 0.895 | 0.096 | 28.37 | 0.847 | 0.141 |
+
+#### Table 8：对照分析与证据边界
+
+§4.4 说明直接将 RealEstate10K 预训练模型用于两个目标数据集，不在目标数据上微调。DL3DV PSNR 改善 3.52 dB、SSIM +0.087、LPIPS -0.053；ACID PSNR +0.22 dB、SSIM +0.006、LPIPS -0.006。DL3DV 受益更大，作者解释为复杂真实场景更具挑战。Figure B.2 对应 DL3DV 定性结果。Table 7 与 Table 8 的 DL3DV 数值不能简单比较：两个表的训练/评估协议不同，本文未在本表给出全部可用于重现的采样条件。没有结果证明这种泛化适用于未知水下介质等新域。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-8 -->
+
+<!-- PTH:BEGIN TABLE-A-1 -->
+### Table A.1：题注与完整数据
+
+来源：PDF p.12，Appendix A。
+
+**Caption 原文（合并 PDF 换行）：**
+
+Table A.1. Depth pre-training for Gaussian splatting. We com- pare different weight initializations for the depth model when train- ing our full DepthSplat model for view synthesis. Compared to 1) only initializing the monocular feature (mono features) and 2) initializing the monocular and multi-view features (mono & mv fea- tures), our pre-trained full depth model (full depth model) achieves the best view synthesis results.
+
+**中文：** 用于高斯泼溅的深度预训练。训练完整 DepthSplat 进行视图合成时，比较深度模型的不同权重初始化：仅单目特征、单目和多视图特征、预训练完整深度模型。完整深度模型取得最佳合成表现。
+
+| Initialization | PSNR ↑ | SSIM ↑ | LPIPS ↓ |
+|---|---:|---:|---:|
+| mono features | 26.59 | 0.874 | 0.1256 |
+| mono & mv features | 26.76 | 0.877 | 0.1234 |
+| full depth model | 26.81 | 0.878 | 0.1225 |
+
+#### Table A.1：对照分析与证据边界
+
+Appendix A 三组初始化不同：1）单目特征用 Depth Anything V2；2）再以 UniMatch 初始化多视图特征；3）深度模型整体在 TartanAir 上预训练。第二组比第一组 PSNR +0.17 dB，第三组比第二组 +0.05 dB；SSIM、LPIPS 同向改善。说明不仅架构变化（Table 1），更好的深度权重初始化也可以帮助后续渲染。这是 depth→3DGS 的证据，不是 Table 4 的 3DGS→depth。第三组使用有深度数据的预训练，不能称为无深度监督的实验。表未给出方差、重复训练次数，不能断言 0.05 dB 的统计显著性。
+
+本表没有独立编号数学公式；指标定义和训练目标在后续对应单元说明。
+
+<!-- PTH:END TABLE-A-1 -->
+
+<!-- PTH:BEGIN FIG-TABLE-RELATIONS -->
+## 2.4 图表证据链
+
+| 论证问题 | 机制解释 | 定性证据 | 定量证据 |
+|---|---|---|---|
+| 单目先验为何能帮助多视图匹配？ | Fig. 2 两分支早期融合 | Fig. 3 低纹理/反射；Fig. 4 无对应区域；Fig. 6 重复纹理 | Table 2 分支及特征来源消融、Table 3 融合方式 |
+| 深度能否帮助高斯重建？ | Fig. 2 反投影中心 | Fig. 1 左、Fig. 4、5、6 | Table 1 架构变化、Table A.1 初始化、Table 6–7 方法比较 |
+| 渲染能否帮助深度？ | Fig. 2 渲染损失连接深度模型 | Fig. 1 右、Fig. B.1 | Table 4 四组训练权重对照、Table 5 ScanNet 基准 |
+| 是否能适应更复杂场景和更多视图？ | §3.1 局部视图匹配与可调分辨率 | Fig. B.2–B.5 | Table 7 多视图数、Table 8 跨数据集 |
+
+### 因果与相关的区别
+
+【独立评价】Figure 2 解释可实现的信息流，不等同于性能证明；Table 2 的分支移除更接近针对互补信息的干预；Table A.1 在权重初始化上提供同架构的支持；Table 4 通过 2×2 设计区分渲染预训练和深度微调。Table 1 同时比较不同深度网络容量/尺度，不等于只改变几何误差而保持其他参数完全不变。Table 6–8 对完整模型做对比，证实特定基准效果而非单一原因。B.4/B.5 是定性可行性，不是高分辨率精度或显存的系统对照。
+
+这种层级关系避免将概念图、单个案例和定量实验视为同样强度的证据。图表关系分析无新增数学公式。
+
+<!-- PTH:END FIG-TABLE-RELATIONS -->
+
+<!-- PTH:BEGIN PROBLEM -->
+## 3.1 研究问题
+
+【原文事实】§1、§3（p.1–3）：论文关注如何在有位姿的多视图图像条件下，实现更稳健的稠密深度估计及前馈式三维高斯重建，并利用两者共同的空间表示和训练信号促进对方。任务不是从零恢复相机位姿，也不是针对每场景优化的原始 3DGS。
+
+### 输入输出与约束
+
+设输入视图数为 $N$，图像 $I^i\in\mathbb R^{H\times W\times 3}$，相机投影矩阵 $P^i\in\mathbb R^{3\times4}$ 由内参和外参构成。网络对每个视图预测稠密深度 $D^i\in\mathbb R^{H\times W}$，并为每像素预测一组高斯属性：$\{(\mu_j,\alpha_j,\Sigma_j,c_j)\}_{j=1}^{HWN}$（原文 §3）。其中 $\mu$ 为三维中心，$\alpha$ 为不透明度，$\Sigma$ 为协方差，$c$ 为颜色。给定目标相机参数后，渲染器输出该相机的新视图图像。深度任务无需高斯属性预测头；完整 NVS 任务同时生成深度和高斯。
+
+【背景知识】稠密深度可将每个像素定位至世界坐标，从而提供不同视角的公共三维表示；这不能恢复所有未见表面。像素对齐设计使初始基元数量按 $HWN$ 增长。给定相机参数、可重投影的共同内容、网络先验以及训练样本是解决该问题的约束。本文没有假定所有像素都存在跨视图匹配，恰恰为匹配缺失而引入单目特征。
+
+【合理推断】深度估计与新视角合成任务可独立训练但具有共享网络：深度监督优化深度本身；渲染监督经高斯中心提供间接几何信号。深度任务的输出不是已经建立全局一致表面模型；跨视图一致性是学习目标和实验表现，而非硬约束证明。
+
+<!-- PTH:END PROBLEM -->
+
+<!-- PTH:BEGIN MOTIVATION -->
+## 3.2 研究动机
+
+§1–2 的矛盾并非“传统 3DGS 无法表示复杂场景”，而是稀疏输入下从图像前馈推断高斯位置时，几何线索不足。MVSplat 通过成本体显式建立多视图匹配，依赖跨视角可匹配内容；单目大模型可学习强先验但通常缺乏统一尺度。作者将两个已有困难结合，而非新提出遮挡或尺度歧义本身。
+
+### 匹配歧义与尺度歧义
+
+【背景知识】给定参考像素 p，在候选深度 $d$ 下可以通过相机投影计算邻居图像位置 $q(d)$。若真实表面在两个视图都可见且特征稳定，正确候选的相关性通常更高；但至少有四种失效模式：
+
+- 遮挡或单视图可见：邻居图像不存在同一可见表面，对应本身缺失；
+- 低纹理：相邻位置的特征近似，很多候选都能匹配，缺少深度判别信号；
+- 镜面反射/非 Lambertian：同一三维点从不同方向看可能产生不同外观，正确候选也未必匹配；
+- 重复图案：错误候选也能获得高相似度，产生多个竞争峰。
+
+单目估计可借助边界、形状、语义等从训练数据习得的线索补充判别，但没有跨相机的显式几何匹配来确定同一空间尺度。对单张图像，针孔投影 $u=f_x X/Z+c_x$ 对将 $X,Z$ 同乘正数的变换不变，表明仅由投影无法唯一识别绝对尺度；训练先验可以缩小解空间，不等于从观测中唯一求得尺度。
+
+【原文事实】作者选择在成本体深度回归前融合单目特征，而不是先得到一个可能错误的粗多视图深度，再让单目特征修正。双分支通过共同回归输出利用两类信息。Figure 3、4、6 说明失效情形，Table 2 比较两分支移除，Table 3 对比融合策略。第二重动机来自深度标注难获取：大量 posed 多视图图像可以提供新视图渲染目标，通过可微渲染预训练深度网络（Table 4）。
+
+【独立评价】匹配与单目先验互补的动机具有清晰机制和消融支持，但不能从当前证据推出强先验能解决所有不可辨识情况。作者没有建立输入稀疏度与估计误差的解析界限。
+
+<!-- PTH:END MOTIVATION -->
+
+<!-- PTH:BEGIN RELATED -->
+## 3.3 相关工作
+
+根据 §2（p.2），作者按四类讨论。以下仅依据本文对引用工作的描述，不额外读取其他论文；不将作者的比较描述当作独立核验。
+
+| 类别 | 本文提及的代表工作 | 已有能力和作者指出的不足 |
+|---|---|---|
+| 多视图深度估计 | MVS 学习方法 [6,15,18,25,56,57,71]、UniMatch [65] | 多视图特征对应提供几何，遮挡、低纹理和非 Lambertian 使匹配不稳 |
+| 单目深度估计 | MiDaS [40]、Depth Anything V2 [70] 等 | 跨域单目先验强，但绝对尺度和跨视图一致性存在歧义 |
+| 前馈高斯重建 | pixelSplat [7]、Splatter Image [48]、MVSplat [9]；LGM [51]、GRM [68]、GS-LRM [77] | 由图像特征直接推断高斯；MVSplat 显式成本体提高几何；另一些方法更依赖大规模数据/算力和学习先验 |
+| 深度与高斯泼溅结合 | Flash3D [49]、TranSplat [76]、深度损失正则逐场景 3DGS [12,53] | Flash3D 单图重建；TranSplat 单目特征细化成本体粗深度；逐场景方法增加深度损失，与前馈设定正交 |
+
+### 本文与既有方法的区别
+
+【原文事实】MVSplat 是直接相关的稀疏多视图前馈 3DGS，利用匹配定位高斯。DepthSplat 不放弃匹配，而引入单目特征独立分支。与作者描述的 TranSplat 后期细化相比，DepthSplat 在回归前拼接成本体及单目特征，避免让单目分支只能在已有粗深度上修正。与 MVSFormer 的单目 ViT 特征直接构建成本体相比，双分支保留独立的匹配和先验角色。与显式尺度对齐的深度图融合相比，本文不先依赖单目深度图的数值尺度（§4.2, Table 3）。
+
+【独立评价】本文并未提供逐个相关方法的全部实现或公平性验证，不能仅凭 §2 断言所有对照皆不具备类似机制。Table 3 的具体融合对比支持拼接与注意力相近，Table 6 完整方法结果支持性能优势但存在其他架构差别。作者在 §2 举出 GS-LRM 64 A100 GPU 训练两天、本文 4 GPU 两天的规模比较；不是严格等任务、等训练协议的成本实验。相关工作综述本身没有新数学公式，后续按实际方法推导。
+
+<!-- PTH:END RELATED -->
+
+<!-- PTH:BEGIN METHOD-MV -->
+## 3.4.1 多视图分支
+
+【原文事实】§3.1（p.3），多视图分支目标不是直接预测深度，而是为每张输入图形成逐像素、逐候选深度的匹配信息。输入 $\{I^i,P^i\}_{i=1}^N$，输出每个视图的成本体 $C^i\in\mathbb R^{H/s\times W/s\times D}$。
+
+第一步：共享权重的轻量 ResNet 独立提取各图像特征。通过控制 stride-2 的 3×3 卷积数量调节空间下采样因子 $s$：两层对应 4，三层对应 8。此处共享的是网络参数，不是把所有视图图像压成一个特征图。第二步：多视图 Swin Transformer 由六个堆叠的 self/cross-attention 层构成，获得跨视图感知特征 $F^i\in\mathbb R^{H/s\times W/s\times C}$。self-attention 交换同视图信息，cross-attention 交换参考视图与邻居信息。$N>2$ 时，每个参考视图只与相机距离最近的两邻居进行 cross-attention；$N=2$ 时仅另一个视图。
+
+### 候选深度与成本体构造
+
+对参考视图 i，在近远深度范围均匀采样 $D$ 个候选 $\{d_m\}_{m=1}^D$（论文未给此处具体 D）。利用相机投影矩阵和每个候选深度，把邻居 j 的特征 warp 到参考图网格得到 $F^{j\to i}_{d_m}$。每个候选表示一个几何假设：参考像素沿射线放到该深度后，在邻居图投影到哪里。特征在该位置取样，与参考像素特征点积得到相似性。
+
+【背景知识/公式化】设特征通道数 C，像素 p 的相似性可写为
+
+$S^{i,j}_m(p)=\sum_{k=1}^C F^i_k(p)F^j_k(q_{i\to j}(p,d_m))$。
+
+它是逐像素的标量，沿 m 堆叠就是 $H/s\times W/s\times D$ 的成本体；原文称 feature correlation，而非显式概率或某个 RGB 差值。是否点积归一化、越界 mask、插值实现细节在此未明确，不凭其他工作补全。对多于两个输入时仍只用最近两邻居，相关值平均：$C^i_m(p)=\frac{1}{2}\sum_{j\in\mathcal N_2(i)}S^{i,j}_m(p)$；双视图时直接用唯一邻居。每个 i 作为参考视图执行一次，最终共有 N 个成本体。
+
+【合理推断】如果用所有有序视图对，匹配对数约为 $N(N-1)$；最近两邻居最多 $2N$ 对（仅对匹配/交互数量而言，非整个网络严格复杂度）。s 提高时网格点数量随 $1/s^2$ 缩小，成本体存储量随 $N(HW/s^2)D$ 变化，实际显存还包括特征、Transformer 和渲染器。局部视图选择降低计算但可能忽视远邻提供的强基线/可见对应，文中未对邻居数单独消融。
+
+难匹配情况下成本体可能多峰、平坦或错误高峰，不能直接 argmax 当真实几何。此信息将交给单目分支和 U-Net 联合回归。对应 Table 2（成本体移除）、Table 7（多输入效率）、Fig. 6（重复纹理）。
+
+<!-- PTH:END METHOD-MV -->
+
+<!-- PTH:BEGIN METHOD-MONO -->
+## 3.4.2 单目分支与早期融合
+
+【原文事实】§3.2–3.3（p.4）采用 Depth Anything V2 预训练的 ViT 骨干，而非直接拿其深度图做后处理。其 patch size 14，输出空间分辨率为原图约 1/14 的特征图；对每个输入图独立/并行处理，通过双线性插值使单目特征空间网格与成本体一致，得到 $F^i_{\rm mono}\in\mathbb R^{H/s\times W/s\times C_{\rm mono}}$。此处原文给的是抽象张量尺寸，非整除图像如何 padding/resizing 未详述。
+
+设多视图成本体 $C^i\in\mathbb R^{H/s\times W/s\times D}$。在空间对齐后沿通道拼接：
+
+$U^i=\operatorname{Concat}_{\rm ch}(C^i,F^i_{\rm mono})\in\mathbb R^{H/s\times W/s\times(D+C_{\rm mono})}$。
+
+该张量是 2D U-Net 的输入。深度候选维 D 在这里作为输入通道之一，而非声明用 3D 卷积沿深度维建模。U-Net 学习联合处理局部/全局上下文及各候选相似度。输出 H/s×W/s×D 的 logits 再经 softmax 回归深度。特征维 $C_{\rm mono}$ 依骨干而变化；原文未给具体中间通道与层数。
+
+### 两类信息的互补机制
+
+【合理推断】成本体提供候选几何的证据，单目特征提供图像语义、边界和空间结构先验。若真实深度对应在成本体有清晰峰值，网络可利用匹配锚定几何；若成本体不确定，单目上下文可改变候选 logits 的相对排序。在跨视图匹配不足时，此融合比纯匹配更稳健，但不是数学上固定的置信度门控，本文未声明显式权重公式。相较先估计多视图粗深度再修正，保留所有候选相似信息可以避免把多峰压缩为错误点估计之后再纠正。
+
+§4 实现细节：ViT 预训练骨干 LR $2\times10^{-6}$，其他层 $2\times10^{-4}$，因此是较小学习率微调，不是冻结骨干。Table 2 显示移除任一分支性能下降，V2 渲染最佳但 V1 深度指标略优。Table 3 显示拼接与 attention fusion 效果接近，拼接选择主要基于简洁。本文没有定量分解某个特征通道对应具体语义或反射特性，不能说单目分支显式预测物理属性。
+
+<!-- PTH:END METHOD-MONO -->
+
+<!-- PTH:BEGIN METHOD-DEPTH -->
+## 3.4.3 层级深度估计与 DPT
+
+【原文事实】§3.3（p.4）将拼接特征输入二维 U-Net，对每个参考视图输出候选 logits $L^i\in\mathbb R^{H/s\times W/s\times D}$。对候选维归一化并加权求和：
+
+$w_m^i(p)=\exp(L^i_m(p))/\sum_{n=1}^D\exp(L^i_n(p))$，
+
+$\hat d^i(p)=\sum_{m=1}^D w^i_m(p)d_m$。
+
+这里 softmax 权重为正且和为 1；估计值落在候选范围内（候选为实数时），可在离散深度间连续插值。它不同于硬 argmax，利于反向传播。权重不是经过独立校准的概率置信度。若分布多峰，均值可位于两个峰间不对应任何真实表面，这是软回归的潜在边界，不是原文已验证缺陷。
+
+### 粗到细的信息流
+
+单尺度模型只构造一个尺度的成本体，随后上采样得到完整分辨率预测。双尺度在初始较低分辨率匹配后，先将粗深度 2× 上采样至更高分辨率的特征网格，再仅在粗估计邻域内搜索候选；局部范围比初始全深度范围小，构造更小成本体。单目特征和新成本体执行类似融合、回归；最终由 DPT head（Dense Prediction Transformer 风格的稠密输出头，引用 [41]）上采样到 $H\times W$。
+
+粗级提供大范围搜索和全局结构，细级提供更精细像素位置与边界。§4 指明双尺度为 1/8→1/4 或 1/4→1/2；若低分辨率搜索覆盖正确解附近，局部细搜索避免全域高分辨率成本。对高分辨率 H/s×W/s 增大四倍的网格，候选数若减少才能节省全域搜索开销；文中未给具体候选数和搜索区间，因此不能计算绝对显存。粗估计偏离过大时，局部范围可能不包含真值，属于合理推断。尽管作者针对 TranSplat 强调避免粗深度错误传播，此处两尺度仍依赖粗预测的邻域；优势在首级已融合两类证据，不是完全消除所有粗到细依赖。
+
+Table 1 在三个固定单目骨干下都显示两尺度优于单尺度，伴随参数、时间增加；Appendix C 高分辨率实验反而选择 ViT-S 单尺度以控制开销。DPT 头具体层数、插值参数等原文未给，不从其他工作补写。
+
+<!-- PTH:END METHOD-DEPTH -->
+
+<!-- PTH:BEGIN METHOD-GS -->
+## 3.4.4 高斯参数预测与渲染
+
+【原文事实】§3.4（p.4）对每个像素将预测深度和相机参数直接反投影，得到三维高斯中心 $\mu_j$。单独的 DPT head 接受拼接的 image、depth、feature information，预测剩余属性 $\alpha_j,\Sigma_j,c_j$。这与用深度图只作为损失正则的逐场景优化不同，几何深度直接决定中心生成；所有 N 个输入视图的像素对齐基元组成场景表示。
+
+【背景知识】三维高斯可用中心和正定协方差描述空间尺度与方向，颜色和不透明度影响目标图像的合成。标准 3DGS 按目标相机投影得到二维高斯并进行可见性/透明度合成。以沿视线排序的简化模型说明：若第 k 个投影基元在目标像素的有效 alpha 为 $a_k(p)$、颜色为 $c_k$，合成 $\hat I(p)=\sum_k T_k(p)a_k(p)c_k$，$T_k(p)=\prod_{j<k}(1-a_j(p))$。这不是本文新增编号公式，而是理解其引用 splatting 操作 [29] 的背景形式。原文没有给出颜色是否某阶 SH、协方差参数化、激活约束或具体 rasterizer 参数，不推定。
+
+### 渲染监督的反向传播路径
+
+给定目标相机，把高斯集合渲染为 $I_{\rm render}^m$，与真实图像 $I_{\rm gt}^m$ 比较，通过 Eq. (2) 的 MSE+LPIPS 优化完整网络。几何中心取决于输入像素深度；中心变化导致目标视图位置、覆盖/遮挡关系变化，因此光度误差能为深度网络提供间接梯度。以链式法则说明（不考虑排序切换等非光滑细节）：$\frac{\partial L}{\partial\theta_d}\supset\sum_j\frac{\partial L}{\partial\mu_j}\frac{\partial\mu_j}{\partial d_j}\frac{\partial d_j}{\partial\theta_d}$。此外其余属性头也以深度和特征为输入，所以梯度路径不只经过中心。
+
+【独立评价】光度渲染误差可能同时由几何、颜色、不透明度、协方差解释，优化所得中心不保证等于真实表面。3DGS 预训练价值是为深度提供跨视角训练信号，而不是严格消除逆渲染不可辨识性。Table 4 预训练后仍需要有监督深度微调取得最佳结果。像素对齐高斯数量随分辨率和 N 增加（§5 局限）。
+
+<!-- PTH:END METHOD-GS -->
+
+<!-- PTH:BEGIN MATH-PROJECTION -->
+## 3.5.1 投影与反投影
+
+原文 §3、§3.1（p.3）给出投影矩阵、候选 warp、点积成本体；§3.4（p.4）说明深度反投影作为中心。原文未展开完整投影公式，以下为标注的【背景知识/补充推导】，用相机 z 深度、世界到相机外参约定解释信息流，不声称作者实现的符号约定完全相同。
+
+### 坐标、候选与相关性推导
+
+定义参考 i 的内参 $K_i\in\mathbb R^{3\times3}$，外参 $R_i,t_i$ 满足 $X_i=R_iX_w+t_i$，则 $P_i=K_i[R_i\mid t_i]$。像素齐次向量 $\tilde p=(u,v,1)^\mathsf T$。针孔成像 $z\tilde p=K_i X_i$，故在相机 z 深度候选 $d_m>0$ 下，$X_i(d_m)=d_m K_i^{-1}\tilde p$。
+
+反投影回世界坐标：
+
+$X_w(d_m)=R_i^\mathsf T(d_mK_i^{-1}\tilde p-t_i)$。
+
+邻居相机 j 的坐标为 $X_j=R_jX_w+t_j$；齐次投影 $\tilde q'=K_jX_j$，归一化 $q=(\tilde q'_x/\tilde q'_z,\tilde q'_y/\tilde q'_z)$。要求投影深度为正且位于有效图像区域、未被遮挡才能形成真实对应。成本体在下采样特征网格上使用对应尺度的坐标，论文未提供具体归一化或越界细节。若深度实际定义为沿单位射线的距离而非 z 深度，应将反投影改成单位方向乘距离；不把二者混为一谈。
+
+把不同 $d_m$ 的邻居特征取样记为 $F^{j\to i}_{d_m}(p)=F^j(q(p,d_m))$。利用特征点积得到 $S^{i,j}_m(p)=\langle F^i(p),F^{j\to i}_{d_m}(p)\rangle$，按深度候选堆叠 C；邻居有两个时平均。候选方向的不同深度对应不同重投影位置；若同一平坦外观在所有位置近似，则相关值可能接近，导致不能判别。一个平行相机的简化例子（背景推导）：焦距 f、基线 b、视差 $\Delta u=fb/z$，同一像素深度由匹配视差决定。若 b 很小、z 很大或视差不可靠，深度敏感性 $|\partial z/\partial\Delta u|=fb/(\Delta u)^2$ 增大；学习先验可辅助但无唯一解保证。
+
+深度网络输出 $\hat d$ 后以同样反投影得到中心 $\mu=R_i^\mathsf T(\hat d K_i^{-1}\tilde p-t_i)$。因此 $\partial\mu/\partial\hat d=R_i^\mathsf T K_i^{-1}\tilde p$，中心误差沿射线移动；目标相机投影改变产生错位，解释 Figure 4 及几何→渲染关系。训练反向传播经该导数回深度网络。此推导不证明实际渲染中所有梯度都连续或非零，遮挡、透明度和可见性仍影响信号。
+
+<!-- PTH:END MATH-PROJECTION -->
+
+<!-- PTH:BEGIN MATH-LOSS -->
+## 3.5.2 训练目标 Eq. (1)–(2)
+
+【原文事实】§3.5（PDF p.4）分别给出监督深度和新视角合成目标。以下按 PDF 数学含义规范排版；Eq. (1) 的 PDF 末尾多一个右括号，记录为排版问题，不凭此改动损失含义。注意原文 §3 中 $D^i$ 指深度图，Eq. (1) 前明确说明比较的是**逆深度**。以下以 $\mathbf D_{\rm pred},\mathbf D_{\rm gt}$ 表示原公式的逆深度变量，避免混淆。
+
+**公式 (1)：深度监督损失**
+
+$L_{\mathrm{depth}}=\alpha|\mathbf D_{\rm pred}-\mathbf D_{\rm gt}|+\beta|\partial_x\mathbf D_{\rm pred}-\partial_x\mathbf D_{\rm gt}|+\beta|\partial_y\mathbf D_{\rm pred}-\partial_y\mathbf D_{\rm gt}|$。
+
+$\partial_x,\partial_y$ 分别为空间横、纵梯度；$\alpha=20,\beta=20$，沿用 UniMatch。原文未明确像素 reduction、有效深度 mask、边缘差分算子等细节。式中绝对值按原文表示 ℓ1 误差。深度训练移除高斯预测头，使用真值深度，不含 Eq. (2) 的渲染损失。
+
+**公式 (2)：高斯新视图合成损失**
+
+$L_{\rm gs}=\sum_{m=1}^{M}(\operatorname{MSE}(I^m_{\rm render},I^m_{\rm gt})+\lambda\operatorname{LPIPS}(I^m_{\rm render},I^m_{\rm gt}))$。
+
+$M$ 为一次前向过程渲染的新视图数，$\lambda=0.05$。MSE 比较像素颜色均方差；LPIPS 比较学习的感知特征距离（背景知识）。不是要求用目标图像作为输入。原公式是对 M 个目标的求和，不任意改为平均。
+
+### 损失、变量及梯度解释
+
+【背景知识/推导】正深度 z 对应逆深度 $D=1/z$，小深度扰动 $\delta z$ 下 $\delta D\approx-\delta z/z^2$，同样的绝对 z 误差在较近处产生较大逆深度误差；z→0 时需要有效范围控制，但具体实现不见原文。逐像素逆深度 L1 锚定数值，梯度 L1 约束局部空间变化，强调表面结构和深度边缘；若两图逆深度差为常数，梯度项为零但 L1 项仍约束偏移。因此两类项不能互相替代。梯度损失不是直接惩罚预测深度自身的总变分，而是与 GT 梯度比较，不应称为简单平滑正则。
+
+对 Eq. (2)，令 $\theta_d$ 为深度网络权重，$\theta_g$ 为其余高斯头权重。渲染器 $\mathcal R$ 将 $\mu(\theta_d)$ 和其余参数变成 $I^m_{\rm render}$；其对深度的链式导数包含 $\partial L/\partial I^m_{\rm render}\cdot\partial I^m_{\rm render}/\partial\mu\cdot\partial\mu/\partial\hat d\cdot\partial\hat d/\partial\theta_d$，另有通过其他属性头及共享特征的路径。可微渲染让无 GT 深度的数据也能学习几何相关表征。颜色损失对深度提供间接约束，尤其多目标视角约束能减少部分歧义，但参数补偿或无纹理仍可能导致弱梯度和多解。
+
+训练顺序见 §4.3：先仅以 Eq. (2) 在 posed 图像预训练完整模型，再取深度网络以 Eq. (1) 监督微调；不是默认把 Eq. (1) 与 Eq. (2) 合为单个联合损失。Table 4 对照这两阶段。Eq. (1) 的 $\alpha$ 是损失权重，和 §3 高斯不透明度 $\alpha_j$ 符号重用但含义不同。
+
+<!-- PTH:END MATH-LOSS -->
+
+<!-- PTH:BEGIN EXP-SETUP -->
+## 3.6.1 实验设置
+
+【原文事实】§4（p.4–5）使用 PyTorch、AdamW 和 cosine learning-rate schedule，单目 ViT 使用 xFormers。Depth Anything V2 骨干学习率 2e-6，其余层 2e-4；256×256 RealEstate10K 的多视图特征 s=4，TartanAir、ScanNet、KITTI、DL3DV 等较高分辨率用 s=8。双尺度为 1/4→1/2 或 1/8→1/4。
+
+| 任务/训练 | 数据与分辨率 | 训练配置（原文） |
+|---|---|---|
+| ScanNet 深度 | ScanNet | 4×GH200，100K iterations，总 batch 32 |
+| 深度消融 | TartanAir、VKITTI2 合成数据，提供高质量 GT depth | §4 未单列每组训练迭代和 batch |
+| 低分辨率 NVS | RealEstate10K，256×256 | 4×GH200，150K，总 batch 32；Small 1 天，Large 2 天 |
+| DL3DV NVS | 256×448，RealEstate10K 权重微调 | 4×GH200，100K，总 batch 4，输入数随机 2–6，测试 2/4/6 |
+| 高分辨率 NVS/Depth | Appendix C：Small；RE10K 256×448 两视图→RE10K+DL3DV 448×768 | 150K/batch256→200K/batch64，第二阶段视图数随机 4–10；512×960 测试 6/12 |
+| GS→Depth 迁移 | §4.3：RealEstate10K 渲染预训练→TartanAir+VKITTI2 深度微调 | Table 4 评估 TartanAir、ScanNet、KITTI；Table 5 的额外 GS 预训练为 RE10K+DL3DV，Base |
+
+训练 batch 是原文总 batch；不将其解释为单卡。不同分辨率、不同 GPU 的速度不可直接等价；Table 1 时延为单 A100、双 256×256 输入。原文未统一报告全部随机种子、数据划分和实现超参；本文不另查代码补齐。
+
+### 指标、数据和模型变体
+
+深度：Abs Rel 越小、δ1 越大、RMSE/RMSElog 越小越好。原文定义 Abs Rel 为相对 ℓ1，δ1 为阈值内正确像素比例；背景常用表达（非原文新增公式）：$\mathrm{AbsRel}=\frac1{|V|}\sum_{p\in V}|\hat z_p-z_p|/z_p$；$\delta_1=\frac1{|V|}\sum_{p\in V}\mathbf1[\max(\hat z_p/z_p,z_p/\hat z_p)<1.25]$，V 是有效像素集合，深度为正。表中 Abs Rel 与 δ1 的呈现尺度按原表保留，本文未明确每个协议的 mask 或尺度对齐步骤。$\mathrm{RMSE}=\sqrt{\operatorname{mean}[(\hat z-z)^2]}$，RMSElog 对对数深度进行同样计算。PSNR、SSIM、LPIPS 分别反映像素重建、结构相似度和感知差异，PSNR/SSIM 越大、LPIPS 越小越好；背景形式 $\mathrm{PSNR}=10\log_{10}(L^2/\mathrm{MSE})$，L 为图像最大可能值，本文未指定具体指标实现参数。
+
+Small=ViT-S/单尺度，Base=ViT-B/双尺度，Large=ViT-L/双尺度；Table 1 同时衡量参数与速度。TartanAir 合成数据给出深度真值；RealEstate10K 为有位姿真实多视图视频数据；DL3DV 强调复杂真实三维场景；ScanNet 为深度基准，KITTI 在 Table 4 为零样本测试域。上述角色按论文实验协议而非数据集所有用途定义。
+
+<!-- PTH:END EXP-SETUP -->
+
+<!-- PTH:BEGIN EXP-ABLATION -->
+## 3.6.2 消融实验
+
+§4.1–4.2（p.5–7）回答三个相互关联但不同的问题：网络容量及层级匹配如何影响双任务、两分支各自是否有效、如何融合单目信息。Table 1 是容量/尺度矩阵，Table 2 是组件/特征消融，Table 3 是融合设计对照；完整数据见各表单元。
+
+### 组件和融合方案的证据
+
+1. 固定 ViT-B，1-scale→2-scale 时 Abs Rel 6.94→6.22，PSNR 27.06→27.34；参数 115→120 M，时延 0.053→0.070 s。说明增加层级细匹配存在精度收益，但也有代价。ViT-L 与 ViT-S 的容量差更大，不能简单认为仅多视图模块贡献全部改善。
+2. Table 2：去单目分支的深度误差上升较多（8.46→12.25），去成本体对 NVS 影响更大（26.84→23.24 dB）。符合互补逻辑：单目先验改善对应失败区，多视图几何提供一致性。Figure 3/4 的局部现象解释指标下降可能如何发生。Table 2 不证明任一分支能单独解决真实几何；V1 深度指标略好于 V2 但渲染较差，提示两任务指标相关但不等价。
+3. Table 3：用 ViT 直接建成本体不如双分支；显式尺度对齐后融合深度图也较差。Attention fusion 与简单拼接近似持平（Abs Rel 8.40 vs 8.46；δ1 92.95 vs 93.02）。由此支持早期双分支设计和简洁融合；不存在严格每项最优的结论。
+
+【独立评价】这些对照相对于完整基准更能定位设计收益，但尚未报告重复训练方差、针对低纹理/反射/遮挡的独立定量分组，也未系统对比邻居选择策略、候选采样数和真实几何误差与渲染误差的同场景关系。因此最强可证结论为在报告协议下双分支和层级设计改善性能；不能断言特定内部先验因果机制已经独立识别。具体计算机制及数学已在 §3.4–3.5 分析，本单元不新增公式。
+
+<!-- PTH:END EXP-ABLATION -->
+
+<!-- PTH:BEGIN EXP-TRANSFER -->
+## 3.6.3 双向任务迁移
+
+【原文事实】§4.3 及 Appendix A。两个任务的互益并非同一个实验方向。Depth→GS 可通过更强架构（Table 1）或更好权重初始化（Table A.1）实现；GS→Depth 通过 posed 多视图 RGB 渲染监督预训练共享深度网络（Table 4–5）。
+
+### 初始化、预训练及微调的区别
+
+**方向 A：深度帮助 3DGS。** Appendix A 在 NVS 训练前选择三种深度权重：仅 Depth Anything V2 单目；另加 UniMatch 多视图特征；TartanAir 预训练完整深度网络。三种最终都训练完整 NVS 模型，PSNR 26.59、26.76、26.81，说明初始化有价值。不是把深度网络固定不训练。原文未报告各组深度真值误差，不据此推断渲染精度与几何误差的函数关系。
+
+**方向 B：3DGS 帮助深度。** §4.3 先用 RealEstate10K（原文约 67K YouTube 视频）的多视图位姿和目标图训练全模型，仅 Eq. (2)，不提供 GT depth。随后取深度模型，在混合 TartanAir/VKITTI2 上用 GT depth 微调（Eq. (1)）。Table 4 通过预训练/微调的 2×2 对照，证明预训练不仅改善未微调模型，也改善有监督训练后表现，尤以 TartanAir/KITTI 明显。只预训练不微调的 TartanAir Abs Rel 29.53，双阶段 10.20；渲染预训练尚不等于直接监督的性能。Figure B.1 显示低纹理区改善，作者推测预训练起正则化作用。Table 5 的 ScanNet 基准使用 Base、RE10K+DL3DV 混合预训练，Abs Rel 4.5→3.8，是独立协议的额外证据，不用 Table 4 数值代替。
+
+【合理推断】渲染损失能通过反投影、高斯投影和合成向共享深度网络回传，因此是具有几何结构的自监督信号；光度误差同时受多种高斯属性影响，所以这种预训练主要学习可迁移表示和初始化，而非唯一真实几何保证。原文没有将渲染预训练与所有其他自监督深度目标做等算力比较；不能宣称其普遍最优。本单元仅解释 Eq. (1)–(2) 的训练安排，不新增数学公式。
+
+<!-- PTH:END EXP-TRANSFER -->
+
+<!-- PTH:BEGIN EXP-BENCHMARK -->
+## 3.6.4 基准和泛化
+
+§4.4（p.7–8）先给 ScanNet 双视图深度和 RealEstate10K 双视图 NVS 的基准（Table 5、6），再给复杂 DL3DV 场景的视图数比较（Table 7）及直接跨域泛化（Table 8）。DepthSplat 在各表列出的质量指标优于比较方法。相较 MVSplat，RealEstate10K PSNR 26.39→27.47；相较未 GS 预训练的同架构 Base，ScanNet Abs Rel 4.5→3.8。图 5/6 提供定性支撑，但不等同于新增独立定量证据。
+
+### 稀疏视图、速度与高分辨率
+
+DL3DV 微调设置下，2/4/6 视图 PSNR 为 19.31/23.12/24.19，对应 MVSplat 17.54/21.63/22.93；差距随视图数增加而缩小（1.77/1.49/1.26 dB）。在相同报告设置下更少输入视图的相对优势更明显。两输入时 DepthSplat 0.083 s 略慢于 0.072 s；六输入 0.132 s 比 0.263 s 快。最近两邻居策略只减少特征匹配与跨视图交互增长，Gaussians 总量仍随 N 增长。
+
+跨域直接测试（不在目标域微调）中，DL3DV 27.66 vs 24.14 dB，ACID 28.37 vs 28.15 dB，支持对复杂场景的泛化收益。与 Table 7 不同协议，不能比较绝对 PSNR 得出微调反而变差等结论。
+
+高分辨率是另一个实验：Appendix C 使用 Small 先 256×448 双视图 150K/总 batch 256，再 448×768 混合数据 200K/总 batch64、随机 4–10 views；512×960 下测试 6/12 views。Appendix B.4 指出 MVSplat 在 6 或 12 输入高分辨率时 OOM，而本文以 s=8 和局部注意力降低负担，Figure B.4/5 展示输出。摘要和 §1 报告 12 views 512×960 0.6s；没有与全套 256×256/256×448 定量基准相同协议的高分辨率指标/显存表，因此结论是可行性和作者报告的速度，而不是全面的高分辨率精度保证。
+
+【独立评价】没有极端稀疏无位姿、动态、介质衰减或真正不可见区域的系统实验。本文的速度是前馈重建条件，不含位姿获取或外部数据准备。实验比较的数学指标在前一实验设置单元定义，此处不新增公式。
+
+<!-- PTH:END EXP-BENCHMARK -->
+
+<!-- PTH:BEGIN SYNTHESIS-EVIDENCE -->
+## 4.1 综合证据审查
+
+【原文事实】DepthSplat 的中心思想是把深度网络作为多视图几何和前馈高斯表示的连接点。成本体构造显式跨视图几何证据；预训练单目骨干提供补充特征；早期融合后回归深度；通过反投影把每像素深度变成高斯中心；其他参数由独立 DPT 头预测；可微渲染损失能反馈到深度网络。深度任务直接监督，NVS 任务间接监督，并可将后者迁移至前者。这条链条不依赖假设两个任务在推理时迭代求解。
+
+| 主张 | 证据强度及边界 |
+|---|---|
+| 互补分支有益 | Table 2 移除组件、Fig. 3/4 难例；直接对照支持，未分像素类型定量 |
+| 简单拼接合理 | Table 3 与注意力近似持平，另两种方法较差；并非全部指标最优 |
+| 深度改善 NVS | Table 1、A.1 架构/初始化对照，Fig. 4 位置误差链；有证据但未直接控制真实几何误差作为唯一变量 |
+| NVS 预训练改善深度 | Table 4 四组对照，Table 5 同架构基准，Fig. B.1；不等于无监督就达到微调效果 |
+| 稀疏、复杂及更多视图适应性 | Table 7/8 与 Fig. 6/B.2–5；只覆盖报告的分辨率、视图数和数据分布 |
+
+### 哪些主张尚未充分证明
+
+【独立评价】文章提供的是方法与实验验证，不是对单目歧义、多视图歧义和高斯逆渲染唯一性的数学解法。更好的深度模型往往帮助渲染，但 Table 2 的 V1/V2 深度与渲染指标次序不完全相同，说明不能用单个 depth 指标替代 NVS 指标。渲染预训练也不能由 Eq. (2) 自动推出几何真值，因为可见性、反射、遮挡以及其他高斯属性都可能补偿颜色误差。
+
+证据等级应按原文区分：作者提出的问题和机制来自 §1–3；具体性能来自 §4 和 Appendix A；作者认为预训练起正则化作用是解释性假设；远邻视图可能提供更多几何约束、局部搜索可能错过真值是独立推断；未验证的极端场景不列为已失败或已成功。本文的理论贡献是明确连接两任务的结构和可微路径，而不是新证明。综合单元不新设数学公式。
+
+<!-- PTH:END SYNTHESIS-EVIDENCE -->
+
+<!-- PTH:BEGIN SYNTHESIS-LIMITS -->
+## 4.2 方法边界与术语
+
+术语回顾：3DGS（3D Gaussian Splatting）为空间高斯基元渲染；NVS（Novel View Synthesis）为从已观测视图预测目标相机图像；MVS（Multi-View Stereo）为跨视图几何匹配；cost volume 是参考像素×深度候选的相关性张量；plane sweep 是按候选深度重投影；ViT（Vision Transformer）用 patch token 提取特征；Swin Transformer 以窗口方式交换特征；U-Net 是编码器—解码器形式；DPT（Dense Prediction Transformer）为稠密预测头；GS pre-train 在本文特指以 Eq. (2) 的新视图渲染损失预训练共享深度模型；GT 为 ground truth。Abs Rel/δ1/RMSE/RMSElog、PSNR/SSIM/LPIPS 定义和方向见实验设置单元。
+
+### 尚未解决的问题
+
+【原文事实】§5 明确局限：有位姿多视图输入、像素对齐高斯数量随视图数增长。作者提出 pose-free 模型、更好的几何表示和更多视图扩展作为未来方向。
+
+【独立评价】还应保留以下边界而不替作者补充结论：单目特征的先验依赖训练分布；近邻选择未必是最具几何约束的邻居；局部层级搜索可能无法纠正粗阶段大偏差；渲染 loss 中几何和外观可能耦合；不可见区域仅由先验推断，无法仅凭有限观测确定。论文未在动态、介质变化、相机误差等条件下证明鲁棒性。定性高分辨率结果不能证明真实绝对深度准确。
+
+【尚未证实】能否仅用渲染预训练完全替代 GT depth、如何度量跨视图的显式几何一致性、何种输入选择使成本体最可靠、是否有同等预算更佳预训练目标，均不能从本文直接回答。这些问题为后续研究笔记提供方向，但精读报告不提前建立与其他独立论文的关系或特定研究方案。
+
+来源边界：全部本文事实和数据取自 arXiv:2410.13862v3 PDF p.1–15，官方元数据仅用于身份核验；未读取其他引用论文全文、未使用外部图像、未运行作者训练代码，未独立复现实验。相机公式和渲染背景的补充推导明确标为背景知识或合理推断。综述术语和局限不新增数学公式。
+
+<!-- PTH:END SYNTHESIS-LIMITS -->
+
+
+
+---
+
+# 第二部分：学习与研究笔记
+
+# DepthSplat 学习与研究笔记
+
+> 精读报告 SHA-256：4d4cf472b4ac933f9df7d8c4958ebc54db10605a30f700a034d2d76f8e8f272c
+> 原文事实、背景知识、推断、独立评价与未证实内容分开；后续讨论按单元追加。
+
+## CONCEPTS：核心概念内化与拓展
+
+### 从候选匹配证据到深度推断
+
+精读报告 §3.4.1–3.4.3、原文 §3.1–3.3。Cost Volume 不是深度图，它保留多个候选对应的匹配证据。单目特征不是跨视图观测，也不是直接测得的深度，而是网络从单幅图像中提取的先验线索。若两个深度候选 $d_1=2,d_2=6$（任意统一单位）得到相同 logits，则 softmax 权重各 0.5，期望深度为 4；若实际存在两个竞争假设，4 不一定对应任何物理表面。这一补充例子说明深度回归结果与候选不确定性是不同对象。通过学习融合修正 logits 有潜在优势，但并未显式保留多模态深度分布作为最终输出。
+
+【背景知识/拓展】令 $p(d_m\mid I)$ 是示意性离散后验，$\hat d=\sum_m p_m d_m$ 为平方损失下的 Bayes 点估计；DepthSplat 的 softmax 权重只是网络输出，未经校准不能直接当统计后验。若用熵 $-\sum p_m\log p_m$ 衡量集中度，低熵也可能是错误自信。因此应区分预测分布形状、真实误差及可辨识性。可将候选多峰、单目先验冲突和邻居一致程度作为未来可靠性信号，但需要 GT 几何及校准实验验证。
+
+### 观测约束与学习先验的反事实
+
+精读报告 §3.2、§3.4.2，Table 2–3。假设参考图的白墙在邻居图不可区分，任意候选都可有近似相关值；图像中墙与地板交界、物体遮挡关系仍可能提供单目先验。反过来，若纹理明确且跨视图一致，但单目模型因罕见物体尺度误判，可靠成本体应更重要。早期融合有机会使用这种互补，但固定拼接并不自动保证学习了正确置信度。后期深度融合若已丢弃候选分布，则很难利用潜在备选；若后期保留完整分布并学习联合后验，未必有同样缺陷。原论文只比较指定实现，不排除所有设计替代。
+
+### 渲染质量与几何真实性的区别
+
+精读报告 §3.4.4、§3.5.2、Table 4。考虑一条简化射线，两个基元颜色相同 $c$，有效透明度分别 $a_1,a_2$，则背景为黑时合成 $I=c(a_1+(1-a_1)a_2)$。若只观察一个像素，同一个总 alpha 可由多组参数实现。甚至几何沿射线的变化在单视图下不一定改变该像素。多目标视角使错误位置更可能产生视差，但不排除补偿、遮挡或纹理不足。例子属于补充推导，不是作者证明。渲染预训练应被理解为提供额外的结构化学习信号，不能直接把 PSNR 当几何质量。
+
+### 局部邻居与规模
+
+精读报告 §3.4.1、Table 7。最近两邻居把有序匹配对数上界从 $N(N-1)$ 降到 $2N$；N=12 时对数最多从 132 到 24，但视野覆盖、遮挡、基线与相机距离并不等价。更大基线理论上可能提高深度可分辨性，却也可能减少共视区域；邻居选择需要在二者之间取舍。此拓展仅计算配对数量，不声称实测 FLOPs 或显存比例。像素高斯数量、单目分支和渲染还构成独立开销。
+
+
+## CROSS-PAPER：潜在跨文献关联索引
+
+### Topic: Geometry Inference — Candidate-preserving fusion
+- **Keywords:** Plane Sweep; Cost Volume; Monocular Features; Early Fusion; Softmax Regression
+- **Highlight:** 将多视图成本体与单目特征在深度回归前拼接，保留候选信息而不是先压缩为点估计再修正；两分支移除均降低表现。
+- **Evidence:** §3.1–3.3, Figure 2, Tables 2–3（p.3–7）；精读 §3.4.1–3.4.3。
+- **Connection Points:** 候选采样域、显式几何匹配、先验来源、融合时机、是否保留深度分布。
+- **Open Questions:** 若匹配证据与单目先验冲突，如何量化各自可靠性并校准融合结果？
+
+### Topic: Training & Supervision — Rendering-based depth pre-training
+- **Keywords:** Differentiable Gaussian Splatting; Depth Pre-training; Photometric Supervision; Cross-task Transfer
+- **Highlight:** 预测深度直接决定高斯中心，渲染损失为深度网络提供无 GT depth 的训练信号；有监督微调后仍观察到额外收益。
+- **Evidence:** §3.4–3.5, Eq. (2), §4.3, Tables 4–5, Figure B.1；精读 §3.6.3。
+- **Connection Points:** 深度进入表示的位置、监督信号、预训练数据、迁移协议、冻结/微调策略。
+- **Open Questions:** 与其他不依赖深度标注的目标等预算比较时，渲染预训练的收益来自哪种约束？
+
+### Topic: Observability & Identifiability — Matching failures and priors
+- **Keywords:** Occlusion; Textureless Region; Non-Lambertian Surface; Repeated Pattern; Scale Ambiguity
+- **Highlight:** 多视图特征匹配在上述困难场景可能失效，单目先验改善案例；单目本身存在跨视图尺度一致性困难。文章未给出真实几何唯一性保证。
+- **Evidence:** §1–2, Figures 3–4/6, Table 2, §5；精读 §3.2、§4.1。
+- **Connection Points:** 观测缺失、成像假设、先验强度、可见性、置信度与真实误差。
+- **Open Questions:** 能否区分无匹配证据和匹配存在但外观变化两种失败，并分别评价先验收益？
+
+### Topic: Efficiency & Scalability — Local view matching
+- **Keywords:** Nearest Neighbors; Cross-view Attention; Hierarchical Matching; Pixel-aligned Gaussians
+- **Highlight:** 每参考视图只与最近两邻居交互并平均相关值；高分辨率使用较低特征分辨率和小模型，匹配可扩展而基元数量仍随视图数增长。
+- **Evidence:** §3.1, §3.3, Table 7, §5, Appendix B.4/C；精读 §3.4.1、§3.6.4。
+- **Connection Points:** 邻居选择、覆盖/基线权衡、匹配复杂度、输出表示冗余、运行资源。
+- **Open Questions:** 是否可以用可见性和信息增益选择少量邻居，同时维持对困难像素的几何约束？
+
+### Topic: Generalization — Geometry vs appearance transfer
+- **Keywords:** Zero-shot Generalization; Domain Shift; Multi-view Geometry; Novel View Synthesis
+- **Highlight:** RE10K 训练模型直接迁移 DL3DV 与 ACID 的渲染性能改善不同；Table 4 深度零样本迁移是另一个协议，不能混成同一泛化指标。
+- **Evidence:** Tables 4/8, §4.3–4.4, Figure B.2；精读 §3.6.3–3.6.4。
+- **Connection Points:** 训练/测试域、成像条件、任务指标、是否目标域微调、先验偏置。
+- **Open Questions:** 泛化渲染优势是否在相同场景中对应更可信的真实几何和不确定性？
+
+
+## RESEARCH-DIRECTION：研究方向定位
+
+当前任务只指定论文 ID，没有明确授权将私人研究设想纳入可发布笔记。因此以本文开放问题做一般研究分析，不替读者设定专属研究主线。下述问题均为基于本文的研究线索，不是作者结论或已有新颖性审查。
+
+| 层级 | 本文定位 | 不应混淆的其他层级 |
+|---|---|---|
+| Field | 三维视觉/多视图几何与前馈场景表示 | 不等同于某个具体网络 |
+| Task | 稠密深度、前馈 3DGS 与 NVS | 并非相机位姿估计 |
+| Task Setting | 有位姿的稀疏或多视图 RGB 输入、已训练模型 | 不等同单目无位姿或任意介质 |
+| Research Problem | 匹配证据不足与尺度歧义、渲染监督能否促进深度推断 | 不应只表述“使用 Depth Anything” |
+| Method | 双分支成本体/单目特征融合，反投影高斯中心，渲染预训练 | 具体求解路径而非问题本身 |
+
+### 可迁移机制与条件
+
+精读 §3.4、Table 2–4。第一，观测证据和先验保持独立直到联合回归，可迁移到其他存在匹配缺失的稀疏观测任务，但需要明确观测模型是否仍满足跨视图可匹配假设、先验是否在域内可靠。第二，深度到渲染的可微接口可让弱几何标签的数据提供训练约束；适用前提是相机/成像模型、目标视图和渲染表示能提供有效梯度。若光度变化本身来自未建模成像因素，渲染误差可能被几何错误吸收。第三，局部匹配选择使更多观测的计算可控，但必须兼顾可见覆盖和基线。
+
+这些线索可支持“观测不足时如何可靠融合证据与先验”这样的科学问题，不应预设具体任务、网络或所谓创新已成立。可优先研究真实几何评价、失效类型与可靠性；次级考虑效率与表示压缩。对特定新域的迁移必须用同域训练/测试、成像变量控制与真实几何独立验证，不能只凭论文的 RE10K→DL3DV 结果推断。
+
+
+## RESEARCH-PROBLEMS：可证伪的研究候选
+
+### RP-A｜稀疏匹配证据与学习先验冲突时，如何判断哪一种信息可靠？
+
+现象：Table 2 移除任一分支降低深度与渲染性能；Figure 3/4/6 展示低纹理、遮挡、反射和重复模式。未知：作者没有显式可靠性模型，也没有对失效类型分组给出误差校准。假设：结合成本体峰值形状、邻居一致程度、单目与匹配估计的冲突可预测真实深度误差，且有助于适应证据缺失程度变化。反例：单目与成本体同时错误而一致，或成本体低熵却匹配到重复图案，都会使简单置信度失效。
+
+候选实验：使用已知几何和位姿的同一批场景，固定渲染分辨率、相机数量与训练预算，分别控制纹理、遮挡比例、重复模式和视图外观变化。比较原拼接、单目/多视图独立模型、相同网络预算下的可靠性融合，以及只用熵作置信度的基线。评价全图和受控区域的 Abs Rel/RMSE、误差—置信校准曲线、风险覆盖曲线，NVS 指标只作下游结果。成功：置信度与真值误差在未见失效组合中仍稳定相关，融合改善受控区域几何且不显著损伤容易匹配区域。失败：只在训练分布或渲染指标有效，或相同先验导致系统性错误。可行性取决于获取分区真值和合理的变化控制；还需检索既有不确定性估计和融合工作确认新颖性。
+
+### RP-B｜新视图渲染预训练的几何收益来自何种约束？
+
+现象：Table 4 的渲染预训练改善深度，Table 5 同架构改善基准；B.1 作者提出正则化解释。未知：真实几何约束、训练规模、模型初始化和外观预测分别起何作用。假设：预训练时多目标视图及准确相机几何使中心预测获得比单一目标更强的可迁移几何信号；在低纹理或外观模型错配时，收益可能减弱。验证：同一架构、相同数据、训练步骤和算力，比较无预训练、单目标渲染、多目标渲染、允许深度梯度与阻断中心反投影梯度的对照，单目预训练权重固定初始化。需记录阻断深度路径后其余头对共享特征仍可能回传，设计明确的额外对照避免误判。评价在合成 GT geometry 上的深度、跨视图重投影一致性、NVS 与微调样本效率，多个种子和域外测试。若阻断关键几何路径后深度收益仍相当，则不能支持该路径是主要来源；若多目标只改善渲染不改善深度，也反驳几何收益假设。尚需研究等预算的其他自监督目标，不能称新颖或更优。
+
+### RP-C｜局部邻居选择如何同时保证匹配有效性与计算成本？
+
+现象：Table 7 说明更多视图时局部匹配更快，但 §5 指出像素高斯数量仍大。未知：按相机距离选两邻居是否适合遮挡、多基线及视角变化。假设：在固定每参考视图两邻居预算下，按预测共视性和基线判别力选择邻居可降低深度歧义，而不增加主要匹配对数。对照最近两邻居、随机两邻居、固定更远邻居和自适应两邻居，固定 backbone、特征大小和候选数，分别测试低/高重叠与稀疏基线。指标真实深度、覆盖率、匹配对数、GPU 运行时/峰值显存、NVS；成功条件是复杂场景几何改善且额外选择开销不抵消节省，失败是因估计共视性不准反而损伤或仅提高渲染。需要真实数据与多视图标定；邻居选择可能已被大量工作研究，需后续查新。
+
+**优先级（独立研究建议）：** A 优先，因为直接对应本文最核心的两类信息互补，并可通过控制观测失败形成清晰科学问题；B 次优，机制价值较高但实验设计需隔离共享梯度；C 更偏效率与几何覆盖，适合已有多视图数据及计算约束时验证。优先级取决于具体研究主线、数据和预算，未作跨论文新颖性评估。
+
+
+## INTERNALIZATION：知识内化、自检与概念图
+
+用自己的语言解释：DepthSplat 把每张有位姿输入图像的深度作为高斯中心的生成变量。深度由两类证据共同决定，一类是已知相机下的候选重投影匹配，另一类是单幅图像的预训练特征。它不先让单目深度去替换多视图深度；保留匹配候选到回归时才融合。中心决定高斯的位置，其他参数由另一个预测头产生；渲染目标图像给网络返回几何相关的学习信号。因而深度与渲染任务可以进行方向相反的迁移，而不必在测试时执行循环优化。
+
+概念地图（文本）：观测图像+位姿 → 显式几何证据（候选 warp、相关、成本体） / 学习先验（每视图单目 ViT） → 拼接、U-Net、softmax 深度 → 反投影中心 + 参数头 → 高斯场景 → NVS；监督 GT depth → 深度模型，目标 RGB → 渲染→共享深度模型。对应精读 §3.4–3.5、Figure 2。
+
+### 自检问题
+
+1. 为什么不直接使用 Depth Anything V2 输出的深度？单目深度尺度跨视图可能不一致，本文只利用特征，在成本体回归前共同预测，避免将已有数值尺度当作可信几何。
+2. Cost Volume 是否是三维场景的体素？不是，它按参考像素和候选深度组织匹配相关值，并不等同统一世界坐标场景体素。
+3. 高斯中心如何产生？由预测每像素深度和已知相机参数反投影，其他高斯属性另预测；并非通过原始 3DGS 的场景级迭代增密优化获得。
+4. 为什么没有深度 GT 仍能预训练？可微渲染误差通过中心位置回传，但有目标 RGB 和相机位姿，且不能由光度唯一恢复几何。
+5. 两种融合方案哪个最好？Table 3 attention 在 Abs Rel 略好、拼接 δ1 略好；拼接是简单且效果相近的选择，非所有指标绝对最优。
+6. 为什么多输入扩展更快却仍有局限？局部邻居减少交互，而输出像素高斯仍随输入规模增加。两视图 Table 7 中甚至略慢。
+7. 如何评价迁移？区分 Table 4 零样本深度与 Table 8 渲染跨域，不能混合指标或协议；最好在相同场景同时评估几何真值与渲染。
+
+待研究：可靠性融合是否能识别错误自信；渲染预训练与几何不可辨识关系；邻居与像素高斯的规模控制。均需实验证据，不能写成作者已解决。
+
+
+## GLOSSARY：关键术语辨析
+
+| 英文 | 中文 | 技术含义与易混点 |
+|---|---|---|
+| Feed-forward Reconstruction | 前馈重建 | 训练后通过网络一次前向预测场景，不等于无需训练或无需位姿 |
+| Novel View Synthesis (NVS) | 新视图合成 | 输出目标相机图像，质量不必等同真实几何精度 |
+| Multi-view Stereo (MVS) | 多视图立体 | 利用跨视图几何对应求深度，不等于单目先验 |
+| Plane Sweep | 平面扫描 | 枚举候选深度并按位姿 warp，见精读 §3.5.1 |
+| Cost Volume | 成本体 | 每参考像素/深度候选相关性张量；不是最终深度或世界体素网格 |
+| Feature Correlation | 特征相关 | 特征点积，本文对两个邻居平均；不直接是概率 |
+| Monocular Depth Feature | 单目深度特征 | 预训练模型特征，区别于直接预测深度值 |
+| Scale Ambiguity | 尺度歧义 | 单目成像下整体尺度无法只由投影唯一确定 |
+| Early Fusion | 早期融合 | 在深度回归前拼接特征和成本体；与回归后的深度修正区别 |
+| Softmax Regression | Softmax 加权回归 | 对候选 logits 归一化、加权求深度；区别 argmax/校准后验 |
+| Hierarchical Matching | 层级匹配 | 低分辨率粗搜索、较高分辨率局部搜索；非无条件全域细搜索 |
+| ViT / DPT | 视觉 Transformer / 稠密预测 Transformer | 本文单目特征骨干 / 深度上采样和参数预测头，角色不同 |
+| Pixel-aligned Gaussians | 像素对齐高斯 | 基元中心由像素深度反投影，数量随输入像素增多 |
+| Opacity / Covariance | 不透明度 / 协方差 | 影响高斯透明度、空间尺度及方向，不是水体物理系数 |
+| Unprojection | 反投影 | 像素与深度、内外参生成三维点，见 §3.5.1 |
+| Photometric Rendering Loss | 光度渲染损失 | 本文 MSE+LPIPS，监督目标图像而非真值深度（Eq. 2） |
+| Inverse Depth | 逆深度 | 1/z，Eq. 1 在逆深度和其空间梯度上监督，非直接 z |
+| Pre-training / Fine-tuning | 预训练 / 微调 | 在大规模目标先学权重、后迁移到指定任务；Table 4 区分两阶段 |
+| Zero-shot Generalization | 零样本泛化 | 不在目标测试域微调，区别 DL3DV 微调基准 |
+| Observability / Identifiability | 可观测性 / 可辨识性 | 观测是否提供关于变量的信号、是否足以区分多个解；不等同经验精度 |
+| Abs Rel / δ1 | 相对绝对误差 / 阈值准确率 | 前者越低后者越高，定义见精读实验设置 |
+| PSNR / SSIM / LPIPS | 峰值信噪比 / 结构相似度 / 感知距离 | 分别比较像素、结构、感知差异，前二越高后一越低 |
+
+术语解释以原文使用为锚；一般定义为教学背景，不补充未经原文支持的模型实现。
+
+
+## SOURCES：来源、证据与开放边界
+
+- 原始论文：DepthSplat: Connecting Gaussian Splatting and Depth，arXiv:2410.13862v3（2025-03-25），PDF p.1–15，正文、参考文献及 Appendix A–C。https://arxiv.org/abs/2410.13862
+- 冻结精读报告 SHA-256：`4d4cf472b4ac933f9df7d8c4958ebc54db10605a30f700a034d2d76f8e8f272c`。上述笔记基于该报告与同版原 PDF，必要时回查 §1–5、Eq. (1)–(2)、Table 1–8/A.1 以及附录。
+- 原始材料来自先前上传的同 ID ZIP；HTML 部分附属资源不可用，LaTeX Source 未获取，PDF 完整可读。Figure 使用 PDF 区域派生展示副本，不用于像素级定量。外部官方信息仅核验论文身份和资源；没有确认实时最新版本。
+- 未检索或读取其他引用论文全文、未开展跨论文独立排名或技术继承分析、未运行作者模型或复现实验。潜在关联索引仅作后续研究入口。
+- 原文事实指作者明确陈述及报告数据；背景知识为教学解释；合理推断及独立评价具有条件；研究假设、候选实验和未解决问题均尚未证实。不可把学习先验、置信度、光度损失与真实几何等同。
+- 本笔记为一般研究分析，未纳入私人主线、路径、个人未公开成果。完整版隐藏选项不构成访问控制。
+
+
+

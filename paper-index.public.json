@@ -1,0 +1,279 @@
+{
+  "gh_pages_commit": "92e2263f048954fcafd66d75bee22501e3a75808",
+  "papers": [
+    {
+      "arxiv_id": "2308.04079v1",
+      "created_at": "2026-11-26 00:00:02",
+      "doi": null,
+      "paper_id": "001",
+      "paths": {
+        "full_post": "source/_posts/3DGS_Full.md",
+        "public_post": "source/_posts/3DGS.md"
+      },
+      "post_sha256": {
+        "full_post": "68d9d94fd2b13bec5863c2a8fbd5323d2b577ae7c373d9f8ecb68720a54f837e",
+        "public_post": "f419d2a18f266c709bd05e7249ccd06b9fef97764af4f6706ac636a2ce553410"
+      },
+      "slug": "3DGS",
+      "title": "3D Gaussian Splatting for Real-Time Radiance Field Rendering"
+    },
+    {
+      "arxiv_id": "2003.08934v2",
+      "created_at": "2026-11-26 00:00:01",
+      "doi": null,
+      "paper_id": "002",
+      "paths": {
+        "full_post": "source/_posts/NeRF_Full.md",
+        "public_post": "source/_posts/NeRF.md"
+      },
+      "post_sha256": {
+        "full_post": "77e1e652ef97505c60bc33444af4e52a5b7e90996850d68e90a45a8703a28761",
+        "public_post": "6fe581f5420aae2ac120322ef06e36dde2d323b981a332a52bda412fc8a52191"
+      },
+      "slug": "NeRF",
+      "title": "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis"
+    },
+    {
+      "arxiv_id": "2312.12337v4",
+      "created_at": "2026-11-26 00:00:03",
+      "doi": null,
+      "paper_id": "003",
+      "paths": {
+        "full_post": "source/_posts/pixelSplat_Full.md",
+        "public_post": "source/_posts/pixelSplat.md"
+      },
+      "post_sha256": {
+        "full_post": "0bee38138ee348bf003977614d8cba117f577274763c4fb1ae4b1c4828491c1f",
+        "public_post": "26eeb2f1ddb44b71bae06a1bbfeda22bdfac5e3894b2945042ef6fc34c09b00e"
+      },
+      "slug": "pixelSplat",
+      "title": "pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction"
+    },
+    {
+      "arxiv_id": "2403.14627v2",
+      "created_at": "2026-11-26 21:13:55",
+      "doi": null,
+      "paper_id": "004",
+      "paths": {
+        "full_post": "source/_posts/MVSplat_Full.md",
+        "public_post": "source/_posts/MVSplat.md"
+      },
+      "post_sha256": {
+        "full_post": "2951724bc502588b87fb45b87e8dd0eefe2a28927904f14437dc683c990e5e64",
+        "public_post": "b298dcfdd6e7a1560d521d9e2211ad342d876add27610b91e088c29c40231d92"
+      },
+      "slug": "MVSplat",
+      "title": "MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images"
+    },
+    {
+      "arxiv_id": "2410.13862v3",
+      "created_at": "2026-11-26 22:00:01",
+      "doi": null,
+      "paper_id": "005",
+      "paths": {
+        "full_post": "source/_posts/DepthSplat_Full.md",
+        "public_post": "source/_posts/DepthSplat.md"
+      },
+      "post_sha256": {
+        "full_post": "208ca8fc9ce43bc51a2c6b967d09af4c9c913ee6a152a8a2db026ee650b33cd6",
+        "public_post": "c4c4022640cad6731a655a9112a05addf4ed342ae48c2ecaa3f19a747905f0d9"
+      },
+      "slug": "DepthSplat",
+      "title": "DepthSplat: Connecting Gaussian Splatting and Depth"
+    },
+    {
+      "arxiv_id": "2505.23716v2",
+      "created_at": "2026-11-27 00:45:18",
+      "doi": null,
+      "paper_id": "006",
+      "paths": {
+        "full_post": "source/_posts/AnySplat_Full.md",
+        "public_post": "source/_posts/AnySplat.md"
+      },
+      "post_sha256": {
+        "full_post": "eff5724c6d024fab552c577caf9390a47ed28b2c1d08809d114b1fc6ee10be0a",
+        "public_post": "a7d95ce60c6ad9bbb4f3f0e78519eaa4b37a4bdc3ff09bc3918615fb006c0d29"
+      },
+      "slug": "AnySplat",
+      "title": "AnySplat: Feed-forward 3D Gaussian Splatting from Unconstrained Views"
+    },
+    {
+      "arxiv_id": "2503.11651v1",
+      "created_at": "2026-11-27 03:24:16",
+      "doi": null,
+      "paper_id": "007",
+      "paths": {
+        "full_post": "source/_posts/VGGT_Full.md",
+        "public_post": "source/_posts/VGGT.md"
+      },
+      "post_sha256": {
+        "full_post": "6a43c90c7bbed9871eb49066eb5dbb158d109280fa323f74706faee15b9b155a",
+        "public_post": "6e4822be99a06bc7dcab2b1a7cacedd530b512b4380255d8d06a74b817985580"
+      },
+      "slug": "VGGT",
+      "title": "VGGT: Visual Geometry Grounded Transformer"
+    },
+    {
+      "arxiv_id": "2511.10647v1",
+      "created_at": "2026-11-27 03:53:59",
+      "doi": null,
+      "paper_id": "008",
+      "paths": {
+        "full_post": "source/_posts/DA3_Full.md",
+        "public_post": "source/_posts/DA3.md"
+      },
+      "post_sha256": {
+        "full_post": "564b7e3d90195e690cf005fe897af06402be332f867b371bb340db66405adb3f",
+        "public_post": "27f0b8f2002500ce93d23e0c3f606cd13f5e5e9959d5c891857abd60da0c1d10"
+      },
+      "slug": "DA3",
+      "title": "Depth Anything 3: Recovering the Visual Space from Any Views"
+    },
+    {
+      "arxiv_id": "2604.08500v2",
+      "created_at": "2026-11-27 04:08:39",
+      "doi": null,
+      "paper_id": "009",
+      "paths": {
+        "full_post": "source/_posts/FrameCrafter_Full.md",
+        "public_post": "source/_posts/FrameCrafter.md"
+      },
+      "post_sha256": {
+        "full_post": "daafafb568229551ad261417955559a256db09fd496553370842c2dc65be5f70",
+        "public_post": "9eda957bcffce877ba9eacc45fa63a02d6fb793a203c66754f716cb9b907fd20"
+      },
+      "slug": "FrameCrafter",
+      "title": "FrameCrafter: Novel View Synthesis as Video Completion"
+    },
+    {
+      "arxiv_id": "2609.33253v2",
+      "created_at": "2026-11-27 04:29:30",
+      "doi": null,
+      "paper_id": "010",
+      "paths": {
+        "full_post": "source/_posts/VGGT-Diff_Full.md",
+        "public_post": "source/_posts/VGGT-Diff.md"
+      },
+      "post_sha256": {
+        "full_post": "20608c3ef8ec4f39da80576309c57f862b26a6a43662f6cfaf4cb2dba26b07e6",
+        "public_post": "55f8fa1caca29594fc90632af13da6c60663a1f64b2fc5b6fcbb72c7fc13ed2a"
+      },
+      "slug": "VGGT-Diff",
+      "title": "VGGT-Diff: Visual Geometry Meets Diffusion for Sparse-View Novel View Synthesis"
+    },
+    {
+      "arxiv_id": "2503.03751v1",
+      "created_at": "2026-11-27 04:52:07",
+      "doi": null,
+      "paper_id": "011",
+      "paths": {
+        "full_post": "source/_posts/GEN3C_Full.md",
+        "public_post": "source/_posts/GEN3C.md"
+      },
+      "post_sha256": {
+        "full_post": "b05f5fd7b91ff1a1398777d44801c9558fbfa29aeb2ad608329a5d952603a45b",
+        "public_post": "3d3a462bf4d60f1afccbb4451d8cbbb6a2e1e6a7fd646c3249ffc2f751114364"
+      },
+      "slug": "GEN3C",
+      "title": "GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control"
+    },
+    {
+      "arxiv_id": "2603.14965v2",
+      "created_at": "2026-11-27 05:19:57",
+      "doi": null,
+      "paper_id": "012",
+      "paths": {
+        "full_post": "source/_posts/GeoNVS_Full.md",
+        "public_post": "source/_posts/GeoNVS.md"
+      },
+      "post_sha256": {
+        "full_post": "508b9038e671cedb88dbb56a21651b27c60e5158a8c8c77683402ef8b3e379e1",
+        "public_post": "8c33074c53071fcdaccfb8a06bb23c352eef13b66fe5f66e4ad4878145a96cbe"
+      },
+      "slug": "GeoNVS",
+      "title": "GeoNVS: Geometry Grounded Video Diffusion for Novel View Synthesis"
+    },
+    {
+      "arxiv_id": "2503.14489v2",
+      "created_at": "2026-11-27 05:46:52",
+      "doi": null,
+      "paper_id": "013",
+      "paths": {
+        "full_post": "source/_posts/Seva_Full.md",
+        "public_post": "source/_posts/Seva.md"
+      },
+      "post_sha256": {
+        "full_post": "0f5349ce6a9a25be6a84f48fa1602a0e7e34ca4c06a0d068bcf7d0d5a19ca5da",
+        "public_post": "cf2c024a0540e034a1fb54192e8d9cfa02a459053da6aafcc161fe64a5c75214"
+      },
+      "slug": "Seva",
+      "title": "Stable Virtual Camera: Generative View Synthesis with Diffusion Models"
+    },
+    {
+      "arxiv_id": "2501.18804v1",
+      "created_at": "2026-11-27 06:09:39",
+      "doi": null,
+      "paper_id": "014",
+      "paths": {
+        "full_post": "source/_posts/MVGD_Full.md",
+        "public_post": "source/_posts/MVGD.md"
+      },
+      "post_sha256": {
+        "full_post": "c8a9816d59dfc099e2678f08e07bb723be4f9644890784fc928a50a7f6a608b9",
+        "public_post": "3d66b7e92ff70e44d15a7927ac4c99421453bc689e857f90a353af065f800a7a"
+      },
+      "slug": "MVGD",
+      "title": "Zero-Shot Novel View and Depth Synthesis with Multi-View Geometric Diffusion"
+    },
+    {
+      "arxiv_id": "2412.03517v2",
+      "created_at": "2026-11-27 06:32:49",
+      "doi": null,
+      "paper_id": "015",
+      "paths": {
+        "full_post": "source/_posts/NVComposer_Full.md",
+        "public_post": "source/_posts/NVComposer.md"
+      },
+      "post_sha256": {
+        "full_post": "8f46cdd769bb4552af31bc508a8ad428b33444ad4297aad7487de34db767a875",
+        "public_post": "72d542a113bdb8ec6bb8845eee2b7ae3ed8f5d31c48ef165830ccbfcd7f24381"
+      },
+      "slug": "NVComposer",
+      "title": "NVComposer: Boosting Generative Novel View Synthesis with Multiple Sparse and Unposed Images"
+    },
+    {
+      "arxiv_id": "2411.14384v6",
+      "created_at": "2026-11-27 06:57:56",
+      "doi": null,
+      "paper_id": "016",
+      "paths": {
+        "full_post": "source/_posts/DiffusionGS_Full.md",
+        "public_post": "source/_posts/DiffusionGS.md"
+      },
+      "post_sha256": {
+        "full_post": "00c9336bfe96acb56c13c51a277749915de03524099b32185f7e031011f79eb8",
+        "public_post": "7279d2f9895fbfa42771afb0c0edfe8b8c739fd7637000b2c8e6da82ab8608a7"
+      },
+      "slug": "DiffusionGS",
+      "title": "Baking Gaussian Splatting into Diffusion Denoiser for Fast and Scalable Single-stage Image-to-3D Generation and Reconstruction"
+    },
+    {
+      "arxiv_id": "2410.17242v2",
+      "created_at": "2026-11-27 07:03:36",
+      "doi": null,
+      "paper_id": "017",
+      "paths": {
+        "full_post": "source/_posts/LVSM_Full.md",
+        "public_post": "source/_posts/LVSM.md"
+      },
+      "post_sha256": {
+        "full_post": "c0e9c049450d0c8af6e81c0112613f817e365719371254dfdc361d916a824844",
+        "public_post": "bd15c4c1b812b880943d4c419b7f940102e6af854627e178b13e4ef4fa4e5f9b"
+      },
+      "slug": "LVSM",
+      "title": "LVSM: A Large View Synthesis Model with Minimal 3D Inductive Bias"
+    }
+  ],
+  "schema_version": 1,
+  "source": "public projection of local paper-index.json"
+}
