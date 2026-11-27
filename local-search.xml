@@ -22,9 +22,9 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
       
       <tag>Feed-Forward</tag>
       
@@ -32,9 +32,9 @@
       
       <tag>Single-View</tag>
       
-      <tag>Latent Representation</tag>
-      
       <tag>Inductive Bias</tag>
+      
+      <tag>Latent Representation</tag>
       
     </tags>
     
@@ -61,19 +61,19 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>3D Gaussian Splatting</tag>
-      
-      <tag>Rasterization</tag>
-      
       <tag>3D Reconstruction</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
       
       <tag>Transformer</tag>
       
       <tag>3D Consistency</tag>
       
-      <tag>Single-View</tag>
+      <tag>Rasterization</tag>
       
       <tag>Image-to-3D</tag>
+      
+      <tag>Single-View</tag>
       
       <tag>Generative Inference</tag>
       
@@ -104,11 +104,11 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
       <tag>Pose Estimation</tag>
       
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
       
       <tag>Unposed Images</tag>
       
@@ -147,9 +147,9 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
       
       <tag>Transformer</tag>
       
@@ -186,9 +186,9 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
       
       <tag>3D Consistency</tag>
       
@@ -223,17 +223,17 @@
       
       <tag>Novel View Synthesis</tag>
       
+      <tag>Sparse-View</tag>
+      
       <tag>Multi-View</tag>
       
       <tag>3D Gaussian Splatting</tag>
       
-      <tag>Rasterization</tag>
-      
-      <tag>Sparse-View</tag>
-      
       <tag>Learning Prior</tag>
       
       <tag>3D Consistency</tag>
+      
+      <tag>Rasterization</tag>
       
       <tag>Single-View</tag>
       
@@ -272,9 +272,9 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
       
       <tag>Learning Prior</tag>
       
@@ -286,9 +286,9 @@
       
       <tag>Diffusion</tag>
       
-      <tag>Point Cloud</tag>
-      
       <tag>Video Prior</tag>
+      
+      <tag>Point Cloud</tag>
       
       <tag>Dynamic Scenes</tag>
       
@@ -317,9 +317,9 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
       
       <tag>Transformer</tag>
       
@@ -327,17 +327,17 @@
       
       <tag>3D Consistency</tag>
       
-      <tag>Geometry Foundation Model</tag>
-      
       <tag>Generative Inference</tag>
       
-      <tag>Point Cloud</tag>
+      <tag>Flow Matching</tag>
       
       <tag>Video Prior</tag>
       
-      <tag>Observability</tag>
+      <tag>Geometry Foundation Model</tag>
       
-      <tag>Flow Matching</tag>
+      <tag>Point Cloud</tag>
+      
+      <tag>Observability</tag>
       
     </tags>
     
@@ -364,9 +364,9 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
       
       <tag>Transformer</tag>
       
@@ -376,11 +376,11 @@
       
       <tag>Generative Inference</tag>
       
+      <tag>Flow Matching</tag>
+      
       <tag>Video Prior</tag>
       
       <tag>Inductive Bias</tag>
-      
-      <tag>Flow Matching</tag>
       
     </tags>
     
@@ -407,15 +407,15 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
-      <tag>3D Gaussian Splatting</tag>
-      
       <tag>3D Reconstruction</tag>
       
       <tag>Pose Estimation</tag>
       
+      <tag>Multi-View</tag>
+      
       <tag>Unposed Images</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
       
       <tag>Feed-Forward</tag>
       
@@ -452,15 +452,15 @@
     
     <tags>
       
-      <tag>Multi-View</tag>
-      
-      <tag>Per-Scene Optimization</tag>
-      
       <tag>3D Reconstruction</tag>
       
       <tag>Pose Estimation</tag>
       
+      <tag>Multi-View</tag>
+      
       <tag>Unposed Images</tag>
+      
+      <tag>Per-Scene Optimization</tag>
       
       <tag>Feed-Forward</tag>
       
@@ -499,19 +499,19 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
-      <tag>3D Gaussian Splatting</tag>
-      
-      <tag>Per-Scene Optimization</tag>
-      
       <tag>3D Reconstruction</tag>
       
       <tag>Pose Estimation</tag>
       
       <tag>Sparse-View</tag>
       
+      <tag>Multi-View</tag>
+      
       <tag>Unposed Images</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
+      
+      <tag>Per-Scene Optimization</tag>
       
       <tag>Feed-Forward</tag>
       
@@ -546,13 +546,13 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
-      <tag>3D Gaussian Splatting</tag>
-      
       <tag>3D Reconstruction</tag>
       
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
       
       <tag>Feed-Forward</tag>
       
@@ -589,13 +589,13 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
-      <tag>3D Gaussian Splatting</tag>
-      
       <tag>3D Reconstruction</tag>
       
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
       
       <tag>Feed-Forward</tag>
       
@@ -628,13 +628,13 @@
       
       <tag>Novel View Synthesis</tag>
       
-      <tag>Multi-View</tag>
-      
-      <tag>3D Gaussian Splatting</tag>
-      
       <tag>3D Reconstruction</tag>
       
       <tag>Sparse-View</tag>
+      
+      <tag>Multi-View</tag>
+      
+      <tag>3D Gaussian Splatting</tag>
       
       <tag>Feed-Forward</tag>
       
