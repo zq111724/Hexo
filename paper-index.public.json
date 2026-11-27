@@ -5,6 +5,7 @@
       "arxiv_id": "2308.04079v1",
       "created_at": "2026-11-26 00:00:02",
       "doi": null,
+      "excerpt": "以可学习的各向异性三维高斯表示场景，结合自适应密度控制与高效可微光栅化，降低传统神经辐射场的渲染开销，实现高质量实时新视角渲染。",
       "paper_id": "001",
       "paths": {
         "full_post": "source/_posts/3DGS_Full.md",
@@ -14,13 +15,108 @@
         "full_post": "68d9d94fd2b13bec5863c2a8fbd5323d2b577ae7c373d9f8ecb68720a54f837e",
         "public_post": "f419d2a18f266c709bd05e7249ccd06b9fef97764af4f6706ac636a2ce553410"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 24,
+          "title": "1. 3DGS 究竟解决了什么问题？"
+        },
+        {
+          "level": 2,
+          "line": 36,
+          "title": "2. 从 NeRF 体渲染到有序 alpha 合成"
+        },
+        {
+          "level": 2,
+          "line": 58,
+          "title": "3. 如何表示一个三维高斯，并让它参与图像生成？"
+        },
+        {
+          "level": 3,
+          "line": 60,
+          "title": "3.1 可学习的局部空间核"
+        },
+        {
+          "level": 3,
+          "line": 78,
+          "title": "3.2 从 3D 协方差到屏幕二维协方差"
+        },
+        {
+          "level": 3,
+          "line": 96,
+          "title": "3.3 像素 alpha、方向颜色与最终合成"
+        },
+        {
+          "level": 2,
+          "line": 116,
+          "title": "4. 学习高斯集合：不仅调整参数，还改变基元数量"
+        },
+        {
+          "level": 3,
+          "line": 118,
+          "title": "4.1 初始化与图像监督"
+        },
+        {
+          "level": 3,
+          "line": 126,
+          "title": "4.2 自适应密度控制（Adaptive Density Control）"
+        },
+        {
+          "level": 2,
+          "line": 153,
+          "title": "5. 为什么渲染能达到实时，而且还能用于训练？"
+        },
+        {
+          "level": 3,
+          "line": 155,
+          "title": "5.1 Tile-based rasterization：将同一排序用于一块像素"
+        },
+        {
+          "level": 3,
+          "line": 176,
+          "title": "5.2 反向传播：复用排序并恢复中间透射率"
+        },
+        {
+          "level": 2,
+          "line": 212,
+          "title": "6. 实验到底验证了什么？"
+        },
+        {
+          "level": 3,
+          "line": 214,
+          "title": "6.1 实景 NVS：高质量与高帧率的联合证据"
+        },
+        {
+          "level": 3,
+          "line": 244,
+          "title": "6.2 各项设计的消融证据"
+        },
+        {
+          "level": 3,
+          "line": 266,
+          "title": "6.3 是否可以不依赖 SfM？以及表示是否紧凑？"
+        },
+        {
+          "level": 2,
+          "line": 276,
+          "title": "7. 技术边界与可迁移的研究启发"
+        }
+      ],
       "slug": "3DGS",
+      "tags": [
+        "Novel View Synthesis",
+        "Multi-View",
+        "3D Gaussian Splatting",
+        "Per-Scene Optimization",
+        "Rasterization"
+      ],
       "title": "3D Gaussian Splatting for Real-Time Radiance Field Rendering"
     },
     {
       "arxiv_id": "2003.08934v2",
       "created_at": "2026-11-26 00:00:01",
       "doi": null,
+      "excerpt": "将静态场景表示为连续神经辐射场，分别建模空间密度与方向相关颜色，通过位置编码、层次采样和可微体渲染，从多视图图像逐场景优化三维表示，实现高质量新视角合成。",
       "paper_id": "002",
       "paths": {
         "full_post": "source/_posts/NeRF_Full.md",
@@ -30,13 +126,133 @@
         "full_post": "77e1e652ef97505c60bc33444af4e52a5b7e90996850d68e90a45a8703a28761",
         "public_post": "6fe581f5420aae2ac120322ef06e36dde2d323b981a332a52bda412fc8a52191"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 26,
+          "title": "1. 问题：如何从有限的照片合成新视图？"
+        },
+        {
+          "level": 2,
+          "line": 34,
+          "title": "2. 连续辐射场：共享空间密度，允许方向相关颜色"
+        },
+        {
+          "level": 3,
+          "line": 49,
+          "title": "网络怎样实现这一分解？"
+        },
+        {
+          "level": 2,
+          "line": 69,
+          "title": "3. 体渲染：如何从三维函数得到像素？"
+        },
+        {
+          "level": 3,
+          "line": 75,
+          "title": "3.1 连续积分与透射率"
+        },
+        {
+          "level": 3,
+          "line": 114,
+          "title": "3.2 从连续积分到离散 Alpha Compositing"
+        },
+        {
+          "level": 2,
+          "line": 156,
+          "title": "4. 位置编码：让普通 MLP 更容易表达细节"
+        },
+        {
+          "level": 2,
+          "line": 181,
+          "title": "5. 层次体积采样：将计算分配给可见内容"
+        },
+        {
+          "level": 3,
+          "line": 185,
+          "title": "5.1 粗网络确定采样分布"
+        },
+        {
+          "level": 3,
+          "line": 208,
+          "title": "5.2 细网络重新求积"
+        },
+        {
+          "level": 2,
+          "line": 216,
+          "title": "6. 训练、推理与无界前向场景"
+        },
+        {
+          "level": 3,
+          "line": 218,
+          "title": "6.1 优化目标"
+        },
+        {
+          "level": 3,
+          "line": 238,
+          "title": "6.2 NDC：在有限域内处理无界深度"
+        },
+        {
+          "level": 2,
+          "line": 279,
+          "title": "7. 实验：哪些结论得到证据支持？"
+        },
+        {
+          "level": 3,
+          "line": 281,
+          "title": "7.1 三类数据与比较"
+        },
+        {
+          "level": 3,
+          "line": 308,
+          "title": "7.2 消融：三项设计分别解决什么？"
+        },
+        {
+          "level": 3,
+          "line": 328,
+          "title": "7.3 表示紧凑不等于实时"
+        },
+        {
+          "level": 2,
+          "line": 332,
+          "title": "8. 从新视图质量到三维推断可靠性"
+        },
+        {
+          "level": 3,
+          "line": 336,
+          "title": "8.1 颜色监督是否足以唯一确定密度？"
+        },
+        {
+          "level": 3,
+          "line": 354,
+          "title": "8.2 区分表示能力、采样能力与观测约束"
+        },
+        {
+          "level": 3,
+          "line": 360,
+          "title": "8.3 物理参数需要一致的坐标与观测方程"
+        },
+        {
+          "level": 2,
+          "line": 370,
+          "title": "9. 总结"
+        }
+      ],
       "slug": "NeRF",
+      "tags": [
+        "Novel View Synthesis",
+        "Multi-View",
+        "NeRF",
+        "Per-Scene Optimization",
+        "Volume Rendering"
+      ],
       "title": "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis"
     },
     {
       "arxiv_id": "2312.12337v4",
       "created_at": "2026-11-26 00:00:03",
       "doi": null,
+      "excerpt": "从两张已知相机位姿的图像直接预测三维高斯，利用尺度感知极线注意力获取跨视图几何线索，并通过概率化深度采样改善高斯位置预测，实现可泛化的前馈三维重建。",
       "paper_id": "003",
       "paths": {
         "full_post": "source/_posts/pixelSplat_Full.md",
@@ -46,13 +262,106 @@
         "full_post": "0bee38138ee348bf003977614d8cba117f577274763c4fb1ae4b1c4828491c1f",
         "public_post": "26eeb2f1ddb44b71bae06a1bbfeda22bdfac5e3894b2945042ef6fc34c09b00e"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 26,
+          "title": "1. 为什么从两张图像直接预测 3D Gaussian？"
+        },
+        {
+          "level": 2,
+          "line": 40,
+          "title": "2. 尺度感知的极线编码"
+        },
+        {
+          "level": 3,
+          "line": 42,
+          "title": "2.1 为什么单图预测无法直接与 SfM 的尺度对齐？"
+        },
+        {
+          "level": 3,
+          "line": 56,
+          "title": "2.2 如何把三角化线索写进图像特征？"
+        },
+        {
+          "level": 2,
+          "line": 88,
+          "title": "3. 概率化的像素对齐高斯预测"
+        },
+        {
+          "level": 3,
+          "line": 90,
+          "title": "3.1 为什么不直接回归高斯中心？"
+        },
+        {
+          "level": 3,
+          "line": 100,
+          "title": "3.2 深度分布、采样位置与 opacity"
+        },
+        {
+          "level": 3,
+          "line": 122,
+          "title": "3.3 如何将渲染误差反传给采样概率？"
+        },
+        {
+          "level": 2,
+          "line": 144,
+          "title": "4. 从原语到训练与推理"
+        },
+        {
+          "level": 3,
+          "line": 146,
+          "title": "4.1 公共坐标中的显式表示"
+        },
+        {
+          "level": 3,
+          "line": 160,
+          "title": "4.2 训练监督及深度正则变体"
+        },
+        {
+          "level": 2,
+          "line": 178,
+          "title": "5. 实验到底证明了什么？"
+        },
+        {
+          "level": 3,
+          "line": 180,
+          "title": "5.1 质量与计算效率"
+        },
+        {
+          "level": 3,
+          "line": 208,
+          "title": "5.2 两个核心设计是否确实有用？"
+        },
+        {
+          "level": 3,
+          "line": 230,
+          "title": "5.3 更多观测能否进一步改善结果？"
+        },
+        {
+          "level": 2,
+          "line": 240,
+          "title": "6. 方法边界与研究启发"
+        }
+      ],
       "slug": "pixelSplat",
+      "tags": [
+        "Novel View Synthesis",
+        "3D Reconstruction",
+        "Sparse-View",
+        "Multi-View",
+        "3D Gaussian Splatting",
+        "Feed-Forward",
+        "Transformer",
+        "Epipolar Geometry"
+      ],
       "title": "pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction"
     },
     {
       "arxiv_id": "2403.14627v2",
       "created_at": "2026-11-26 21:13:55",
       "doi": null,
+      "excerpt": "利用多视图特征匹配构建平面扫掠代价体，通过深度回归与逐级精炼确定三维高斯位置，从稀疏已标定图像快速预测可渲染场景，无需逐场景优化。",
       "paper_id": "004",
       "paths": {
         "full_post": "source/_posts/MVSplat_Full.md",
@@ -62,13 +371,121 @@
         "full_post": "2951724bc502588b87fb45b87e8dd0eefe2a28927904f14437dc683c990e5e64",
         "public_post": "b298dcfdd6e7a1560d521d9e2211ad342d876add27610b91e088c29c40231d92"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题：稀疏视角下，怎样快速确定三维高斯的位置？"
+        },
+        {
+          "level": 2,
+          "line": 49,
+          "title": "2. 整体架构"
+        },
+        {
+          "level": 2,
+          "line": 65,
+          "title": "3. 核心机制：基于候选深度的多视角匹配"
+        },
+        {
+          "level": 3,
+          "line": 67,
+          "title": "3.1 多视角特征提取"
+        },
+        {
+          "level": 3,
+          "line": 75,
+          "title": "3.2 为什么平面扫掠能够提供深度信息？"
+        },
+        {
+          "level": 3,
+          "line": 101,
+          "title": "3.3 构造代价体（Cost Volume）"
+        },
+        {
+          "level": 2,
+          "line": 133,
+          "title": "4. 从匹配分布到深度：两次不同的精炼"
+        },
+        {
+          "level": 3,
+          "line": 135,
+          "title": "4.1 代价体精炼"
+        },
+        {
+          "level": 3,
+          "line": 143,
+          "title": "4.2 Softmax 深度回归"
+        },
+        {
+          "level": 3,
+          "line": 163,
+          "title": "4.3 深度精炼"
+        },
+        {
+          "level": 2,
+          "line": 171,
+          "title": "5. 从深度图到三维高斯"
+        },
+        {
+          "level": 3,
+          "line": 173,
+          "title": "5.1 中心与其他参数"
+        },
+        {
+          "level": 3,
+          "line": 187,
+          "title": "5.2 渲染与训练梯度"
+        },
+        {
+          "level": 2,
+          "line": 211,
+          "title": "6. 实验设置与主要结果"
+        },
+        {
+          "level": 3,
+          "line": 215,
+          "title": "6.1 图像质量与效率"
+        },
+        {
+          "level": 3,
+          "line": 236,
+          "title": "6.2 几何重建质量"
+        },
+        {
+          "level": 3,
+          "line": 244,
+          "title": "6.3 跨数据集与输入数量泛化"
+        },
+        {
+          "level": 2,
+          "line": 267,
+          "title": "7. 消融：为什么代价体是核心？"
+        },
+        {
+          "level": 2,
+          "line": 311,
+          "title": "8. 能力边界与研究启发"
+        }
+      ],
       "slug": "MVSplat",
+      "tags": [
+        "Novel View Synthesis",
+        "3D Reconstruction",
+        "Sparse-View",
+        "Multi-View",
+        "3D Gaussian Splatting",
+        "Feed-Forward",
+        "Transformer",
+        "Cost Volume"
+      ],
       "title": "MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images"
     },
     {
       "arxiv_id": "2410.13862v3",
       "created_at": "2026-11-26 22:00:01",
       "doi": null,
+      "excerpt": "融合预训练单目深度特征与多视图代价体，利用学习先验弥补稀疏观测中的匹配不足，同时借助可微高斯渲染提供深度预训练信号，建立深度估计与新视角合成的双向联系。",
       "paper_id": "005",
       "paths": {
         "full_post": "source/_posts/DepthSplat_Full.md",
@@ -78,13 +495,103 @@
         "full_post": "208ca8fc9ce43bc51a2c6b967d09af4c9c913ee6a152a8a2db026ee650b33cd6",
         "public_post": "c4c4022640cad6731a655a9112a05addf4ed342ae48c2ecaa3f19a747905f0d9"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题：稀疏视图中的几何证据不足"
+        },
+        {
+          "level": 2,
+          "line": 32,
+          "title": "2. 网络总体结构"
+        },
+        {
+          "level": 3,
+          "line": 44,
+          "title": "2.1 多视图分支：将几何假设转化为候选匹配证据"
+        },
+        {
+          "level": 3,
+          "line": 66,
+          "title": "2.2 单目分支：融合的是特征而非深度图"
+        },
+        {
+          "level": 3,
+          "line": 76,
+          "title": "2.3 深度回归与层级匹配"
+        },
+        {
+          "level": 2,
+          "line": 86,
+          "title": "3. 深度如何进入 3D Gaussian Splatting？"
+        },
+        {
+          "level": 2,
+          "line": 104,
+          "title": "4. 训练与双向任务迁移：两类监督如何作用于共享深度网络？"
+        },
+        {
+          "level": 3,
+          "line": 106,
+          "title": "4.1 直接深度监督"
+        },
+        {
+          "level": 3,
+          "line": 114,
+          "title": "4.2 新视图渲染监督"
+        },
+        {
+          "level": 2,
+          "line": 130,
+          "title": "5. 实验：双任务互益是否得到验证？"
+        },
+        {
+          "level": 3,
+          "line": 134,
+          "title": "5.1 两个分支确实互补，但不是所有融合指标都最优"
+        },
+        {
+          "level": 3,
+          "line": 152,
+          "title": "5.2 更好的深度架构与权重有助于新视图合成"
+        },
+        {
+          "level": 3,
+          "line": 158,
+          "title": "5.3 渲染预训练能否改善深度？"
+        },
+        {
+          "level": 3,
+          "line": 175,
+          "title": "5.4 基准性能与更多视图的扩展"
+        },
+        {
+          "level": 2,
+          "line": 201,
+          "title": "6. 局限与研究启发"
+        }
+      ],
       "slug": "DepthSplat",
+      "tags": [
+        "Novel View Synthesis",
+        "3D Reconstruction",
+        "Depth Estimation",
+        "Sparse-View",
+        "Multi-View",
+        "3D Gaussian Splatting",
+        "Feed-Forward",
+        "Transformer",
+        "Cost Volume",
+        "Learning Prior"
+      ],
       "title": "DepthSplat: Connecting Gaussian Splatting and Depth"
     },
     {
       "arxiv_id": "2505.23716v2",
       "created_at": "2026-11-27 00:45:18",
       "doi": null,
+      "excerpt": "从数量灵活、相机位姿未知的多视图图像中联合预测相机参数与三维高斯场景，通过几何知识蒸馏、深度一致性约束和置信度加权体素融合，实现快速前馈重建。",
       "paper_id": "006",
       "paths": {
         "full_post": "source/_posts/AnySplat_Full.md",
@@ -94,13 +601,95 @@
         "full_post": "eff5724c6d024fab552c577caf9390a47ed28b2c1d08809d114b1fc6ee10be0a",
         "public_post": "a7d95ce60c6ad9bbb4f3f0e78519eaa4b37a4bdc3ff09bc3918615fb006c0d29"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 从未知相机的图像到可渲染三维场景"
+        },
+        {
+          "level": 2,
+          "line": 34,
+          "title": "2. 几何与外观如何成为高斯表示？"
+        },
+        {
+          "level": 3,
+          "line": 36,
+          "title": "2.1 联合输出与坐标规范"
+        },
+        {
+          "level": 3,
+          "line": 50,
+          "title": "2.2 跨帧特征与相机预测"
+        },
+        {
+          "level": 3,
+          "line": 56,
+          "title": "2.3 用相机和深度确定基元中心"
+        },
+        {
+          "level": 2,
+          "line": 76,
+          "title": "3. 为什么体素融合能够减少冗余？"
+        },
+        {
+          "level": 2,
+          "line": 100,
+          "title": "4. 如何从 RGB 训练出共同几何？"
+        },
+        {
+          "level": 2,
+          "line": 131,
+          "title": "5. 前馈推理与测试协议"
+        },
+        {
+          "level": 2,
+          "line": 139,
+          "title": "6. 实验究竟验证了哪些设计？"
+        },
+        {
+          "level": 3,
+          "line": 141,
+          "title": "6.1 稀疏和稠密视角下的性能"
+        },
+        {
+          "level": 3,
+          "line": 168,
+          "title": "6.2 教师、几何损失与融合的消融"
+        },
+        {
+          "level": 3,
+          "line": 193,
+          "title": "6.3 后优化的收益与代价"
+        },
+        {
+          "level": 2,
+          "line": 199,
+          "title": "7. 能力边界与值得继续研究的问题"
+        }
+      ],
       "slug": "AnySplat",
+      "tags": [
+        "Novel View Synthesis",
+        "3D Reconstruction",
+        "Pose Estimation",
+        "Sparse-View",
+        "Multi-View",
+        "Unposed Images",
+        "3D Gaussian Splatting",
+        "Per-Scene Optimization",
+        "Feed-Forward",
+        "Transformer",
+        "Learning Prior",
+        "3D Consistency"
+      ],
       "title": "AnySplat: Feed-forward 3D Gaussian Splatting from Unconstrained Views"
     },
     {
       "arxiv_id": "2503.11651v1",
       "created_at": "2026-11-27 03:24:16",
       "doi": null,
+      "excerpt": "利用交替帧内与跨视图注意力联合处理图像集合，在统一参考系中直接预测相机参数、深度、三维点图及跨图对应关系，将多项视觉几何任务整合为通用前馈推断框架。",
       "paper_id": "007",
       "paths": {
         "full_post": "source/_posts/VGGT_Full.md",
@@ -110,13 +699,129 @@
         "full_post": "6a43c90c7bbed9871eb49066eb5dbb158d109280fa323f74706faee15b9b155a",
         "public_post": "6e4822be99a06bc7dcab2b1a7cacedd530b512b4380255d8d06a74b817985580"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 24,
+          "title": "1. 从逐场景几何求解到统一前馈推断"
+        },
+        {
+          "level": 2,
+          "line": 40,
+          "title": "2. 为什么同时预测相机、深度和点图？"
+        },
+        {
+          "level": 3,
+          "line": 42,
+          "title": "2.1 输出的数学定义"
+        },
+        {
+          "level": 3,
+          "line": 59,
+          "title": "2.2 从深度反投影到三维点图"
+        },
+        {
+          "level": 3,
+          "line": 75,
+          "title": "2.3 坐标和尺度规范"
+        },
+        {
+          "level": 2,
+          "line": 85,
+          "title": "3. Alternating-Attention：如何联合处理多视图"
+        },
+        {
+          "level": 3,
+          "line": 91,
+          "title": "3.1 Token 与共享骨干"
+        },
+        {
+          "level": 3,
+          "line": 97,
+          "title": "3.2 两种注意力的区别在信息域"
+        },
+        {
+          "level": 3,
+          "line": 119,
+          "title": "3.3 输出头与点对应"
+        },
+        {
+          "level": 2,
+          "line": 125,
+          "title": "4. 联合几何监督如何起作用？"
+        },
+        {
+          "level": 3,
+          "line": 127,
+          "title": "4.1 总损失"
+        },
+        {
+          "level": 3,
+          "line": 145,
+          "title": "4.2 为什么需要置信权重和梯度损失？"
+        },
+        {
+          "level": 3,
+          "line": 161,
+          "title": "4.3 训练规模与推理路径"
+        },
+        {
+          "level": 2,
+          "line": 167,
+          "title": "5. 实验究竟证明了什么？"
+        },
+        {
+          "level": 3,
+          "line": 169,
+          "title": "5.1 相机位姿：纯前馈与 BA"
+        },
+        {
+          "level": 3,
+          "line": 184,
+          "title": "5.2 点图、深度和匹配"
+        },
+        {
+          "level": 3,
+          "line": 207,
+          "title": "5.3 两个核心设计的消融"
+        },
+        {
+          "level": 3,
+          "line": 223,
+          "title": "5.4 速度随输入规模如何变化？"
+        },
+        {
+          "level": 2,
+          "line": 238,
+          "title": "6. 几何特征能否迁移至其他任务？"
+        },
+        {
+          "level": 2,
+          "line": 254,
+          "title": "7. 能预测不等于可唯一恢复"
+        }
+      ],
       "slug": "VGGT",
+      "tags": [
+        "3D Reconstruction",
+        "Depth Estimation",
+        "Pose Estimation",
+        "Single-View",
+        "Multi-View",
+        "Unposed Images",
+        "Point Cloud",
+        "Per-Scene Optimization",
+        "Feed-Forward",
+        "Geometry Foundation Model",
+        "Transformer"
+      ],
       "title": "VGGT: Visual Geometry Grounded Transformer"
     },
     {
       "arxiv_id": "2511.10647v1",
       "created_at": "2026-11-27 03:53:59",
       "doi": null,
+      "excerpt": "以深度与射线作为统一几何表示，利用共享 Transformer 和教师蒸馏实现不同观测数量及相机条件下的空间几何推断，并进一步支持前馈三维高斯重建与新视角合成。",
       "paper_id": "008",
       "paths": {
         "full_post": "source/_posts/DA3_Full.md",
@@ -126,13 +831,145 @@
         "full_post": "564b7e3d90195e690cf005fe897af06402be332f867b371bb340db66405adb3f",
         "public_post": "27f0b8f2002500ce93d23e0c3f606cd13f5e5e9959d5c891857abd60da0c1d10"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题与核心技术逻辑"
+        },
+        {
+          "level": 2,
+          "line": 38,
+          "title": "2. Depth-Ray：从像素深度到统一三维空间"
+        },
+        {
+          "level": 3,
+          "line": 40,
+          "title": "2.1 为什么深度和射线已经足以描述几何？"
+        },
+        {
+          "level": 3,
+          "line": 58,
+          "title": "2.2 从稠密射线图恢复相机"
+        },
+        {
+          "level": 3,
+          "line": 74,
+          "title": "2.3 表示充分性与观测可辨识性"
+        },
+        {
+          "level": 2,
+          "line": 78,
+          "title": "3. 单个 Transformer 如何实现多视图推断？"
+        },
+        {
+          "level": 3,
+          "line": 84,
+          "title": "3.1 输入自适应跨视图注意力"
+        },
+        {
+          "level": 3,
+          "line": 100,
+          "title": "3.2 Dual-DPT：共享空间重组，分别预测深度和射线"
+        },
+        {
+          "level": 2,
+          "line": 108,
+          "title": "4. 训练：如何兼顾相机、深度和密集几何细节？"
+        },
+        {
+          "level": 3,
+          "line": 110,
+          "title": "4.1 主模型的联合监督"
+        },
+        {
+          "level": 3,
+          "line": 132,
+          "title": "4.2 为什么需要合成数据训练的教师？"
+        },
+        {
+          "level": 3,
+          "line": 156,
+          "title": "4.3 把教师的相对深度对齐到真实场景"
+        },
+        {
+          "level": 3,
+          "line": 172,
+          "title": "4.4 不同模型的训练目标不能混为一谈"
+        },
+        {
+          "level": 2,
+          "line": 180,
+          "title": "5. 从几何基础模型到前馈 3DGS"
+        },
+        {
+          "level": 3,
+          "line": 182,
+          "title": "5.1 Pose-conditioned Gaussian 模型"
+        },
+        {
+          "level": 3,
+          "line": 194,
+          "title": "5.2 Pose-adaptive 扩展"
+        },
+        {
+          "level": 2,
+          "line": 200,
+          "title": "6. 实验：哪些设计得到了支持？"
+        },
+        {
+          "level": 3,
+          "line": 202,
+          "title": "6.1 位姿与几何重建"
+        },
+        {
+          "level": 3,
+          "line": 224,
+          "title": "6.2 表示与架构消融"
+        },
+        {
+          "level": 3,
+          "line": 251,
+          "title": "6.3 单图能力与教师的细节收益"
+        },
+        {
+          "level": 3,
+          "line": 269,
+          "title": "6.4 前馈新视角合成"
+        },
+        {
+          "level": 3,
+          "line": 283,
+          "title": "6.5 效率与可扩展性"
+        },
+        {
+          "level": 2,
+          "line": 287,
+          "title": "7. 局限与研究启发"
+        }
+      ],
       "slug": "DA3",
+      "tags": [
+        "Novel View Synthesis",
+        "3D Reconstruction",
+        "Depth Estimation",
+        "Pose Estimation",
+        "Single-View",
+        "Multi-View",
+        "Unposed Images",
+        "3D Gaussian Splatting",
+        "Feed-Forward",
+        "Geometry Foundation Model",
+        "Transformer",
+        "Learning Prior"
+      ],
       "title": "Depth Anything 3: Recovering the Visual Space from Any Views"
     },
     {
       "arxiv_id": "2604.08500v2",
       "created_at": "2026-11-27 04:08:39",
       "doi": null,
+      "excerpt": "研究如何将预训练视频生成先验迁移至无序稀疏视图合成，通过独立视图编码、查询中心射线条件和去除时间位置偏置，以较低的下游训练成本实现流匹配式新视角生成。",
       "paper_id": "009",
       "paths": {
         "full_post": "source/_posts/FrameCrafter_Full.md",
@@ -142,13 +979,123 @@
         "full_post": "daafafb568229551ad261417955559a256db09fd496553370842c2dc65be5f70",
         "public_post": "9eda957bcffce877ba9eacc45fa63a02d6fb793a203c66754f716cb9b907fd20"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 为什么将稀疏视角合成视为视频补全？"
+        },
+        {
+          "level": 3,
+          "line": 34,
+          "title": "核心技术逻辑"
+        },
+        {
+          "level": 2,
+          "line": 50,
+          "title": "2. 保留逐视图潜变量与几何对应"
+        },
+        {
+          "level": 3,
+          "line": 52,
+          "title": "2.1 逐视图独立 VAE 编码"
+        },
+        {
+          "level": 3,
+          "line": 84,
+          "title": "2.2 以查询相机为中心的射线条件"
+        },
+        {
+          "level": 2,
+          "line": 110,
+          "title": "3. 从视频 DiT 到无序视图条件生成器"
+        },
+        {
+          "level": 3,
+          "line": 112,
+          "title": "3.1 输入张量与跨视图信息交互"
+        },
+        {
+          "level": 3,
+          "line": 126,
+          "title": "3.2 为什么移除时间 RoPE？"
+        },
+        {
+          "level": 2,
+          "line": 144,
+          "title": "4. 训练与推理：监督的是目标速度，而非直接像素回归"
+        },
+        {
+          "level": 2,
+          "line": 163,
+          "title": "5. 实验：哪些设计真正有效？"
+        },
+        {
+          "level": 3,
+          "line": 165,
+          "title": "5.1 六视图生成质量与视频先验"
+        },
+        {
+          "level": 3,
+          "line": 193,
+          "title": "5.2 结构消融：逐视图编码是最关键的改变"
+        },
+        {
+          "level": 3,
+          "line": 208,
+          "title": "5.3 输入排列稳定性：近似不变而非严格证明"
+        },
+        {
+          "level": 3,
+          "line": 222,
+          "title": "5.4 低数据量适配能否成立？"
+        },
+        {
+          "level": 2,
+          "line": 228,
+          "title": "6. 泛化、计算成本与三维一致性"
+        },
+        {
+          "level": 3,
+          "line": 230,
+          "title": "可变输入与多目标生成"
+        },
+        {
+          "level": 3,
+          "line": 245,
+          "title": "推理步数与质量的权衡"
+        },
+        {
+          "level": 3,
+          "line": 249,
+          "title": "生成图像是否有利于三维重建？"
+        },
+        {
+          "level": 2,
+          "line": 264,
+          "title": "7. 技术贡献与能力边界"
+        }
+      ],
       "slug": "FrameCrafter",
+      "tags": [
+        "Novel View Synthesis",
+        "Sparse-View",
+        "Multi-View",
+        "Generative Inference",
+        "Transformer",
+        "Flow Matching",
+        "Video Prior",
+        "Learning Prior",
+        "3D Consistency",
+        "Inductive Bias"
+      ],
       "title": "FrameCrafter: Novel View Synthesis as Video Completion"
     },
     {
       "arxiv_id": "2609.33253v2",
       "created_at": "2026-11-27 04:29:30",
       "doi": null,
+      "excerpt": "结合视觉几何基础模型与视频生成先验，通过三维投影和分层特征路由传递源观测证据，并利用点轨迹残差约束改善跨视图一致性，实现几何引导的稀疏视角生成。",
       "paper_id": "010",
       "paths": {
         "full_post": "source/_posts/VGGT-Diff_Full.md",
@@ -158,13 +1105,135 @@
         "full_post": "20608c3ef8ec4f39da80576309c57f862b26a6a43662f6cfaf4cb2dba26b07e6",
         "public_post": "55f8fa1caca29594fc90632af13da6c60663a1f64b2fc5b6fcbb72c7fc13ed2a"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题：稀疏视角下，如何让生成结果遵循真实观测？"
+        },
+        {
+          "level": 3,
+          "line": 30,
+          "title": "核心技术逻辑"
+        },
+        {
+          "level": 2,
+          "line": 40,
+          "title": "2. 从源图像到多视图扩散模型"
+        },
+        {
+          "level": 3,
+          "line": 44,
+          "title": "2.1 相机、图像与latent视图槽"
+        },
+        {
+          "level": 3,
+          "line": 57,
+          "title": "2.2 线性流匹配与条件注入"
+        },
+        {
+          "level": 2,
+          "line": 81,
+          "title": "3. Visual Geometry Router：怎样把源证据送到目标视角？"
+        },
+        {
+          "level": 3,
+          "line": 87,
+          "title": "3.1 特征、三维点与置信度"
+        },
+        {
+          "level": 3,
+          "line": 101,
+          "title": "3.2 硬锚与分层残差"
+        },
+        {
+          "level": 2,
+          "line": 131,
+          "title": "4. Point-Track Residual Consistency：为什么约束的是预测误差？"
+        },
+        {
+          "level": 3,
+          "line": 135,
+          "title": "4.1 从预测速度得到clean预测及残差"
+        },
+        {
+          "level": 3,
+          "line": 151,
+          "title": "4.2 同一三维点的跨视图轨迹"
+        },
+        {
+          "level": 2,
+          "line": 173,
+          "title": "5. 几何条件正则化与推理引导"
+        },
+        {
+          "level": 3,
+          "line": 175,
+          "title": "5.1 训练：不能把预测几何当作真值"
+        },
+        {
+          "level": 3,
+          "line": 193,
+          "title": "5.2 推理：只增强查询空间几何条件"
+        },
+        {
+          "level": 2,
+          "line": 209,
+          "title": "6. 实验证据：几何条件、残差监督和联合生成分别有何价值？"
+        },
+        {
+          "level": 3,
+          "line": 211,
+          "title": "6.1 训练规模与主结果"
+        },
+        {
+          "level": 3,
+          "line": 243,
+          "title": "6.2 难度不是简单的源图数量"
+        },
+        {
+          "level": 3,
+          "line": 257,
+          "title": "6.3 组件消融与PTRC形式的直接证据"
+        },
+        {
+          "level": 3,
+          "line": 277,
+          "title": "6.4 联合生成与三维一致性：需要区分代理指标和真实几何"
+        },
+        {
+          "level": 2,
+          "line": 292,
+          "title": "7. 视频VAE的时间压缩：定量模型与长轨迹演示不能混为一谈"
+        },
+        {
+          "level": 2,
+          "line": 306,
+          "title": "8. 能力边界与研究启发"
+        }
+      ],
       "slug": "VGGT-Diff",
+      "tags": [
+        "Novel View Synthesis",
+        "Sparse-View",
+        "Multi-View",
+        "Point Cloud",
+        "Generative Inference",
+        "Geometry Foundation Model",
+        "Transformer",
+        "Flow Matching",
+        "Video Prior",
+        "Observability",
+        "Learning Prior",
+        "3D Consistency"
+      ],
       "title": "VGGT-Diff: Visual Geometry Meets Diffusion for Sparse-View Novel View Synthesis"
     },
     {
       "arxiv_id": "2503.03751v1",
       "created_at": "2026-11-27 04:52:07",
       "doi": null,
+      "excerpt": "构建显式时空点云缓存，将观测与生成历史投影至目标相机，为视频扩散提供空间条件，支持静态及动态场景的新视角视频生成，改善相机控制与长程世界一致性。",
       "paper_id": "011",
       "paths": {
         "full_post": "source/_posts/GEN3C_Full.md",
@@ -174,13 +1243,119 @@
         "full_post": "b05f5fd7b91ff1a1398777d44801c9558fbfa29aeb2ad608329a5d952603a45b",
         "public_post": "3d3a462bf4d60f1afccbb4451d8cbbb6a2e1e6a7fd646c3249ffc2f751114364"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题：如何让视频生成真正受到三维场景约束？"
+        },
+        {
+          "level": 3,
+          "line": 32,
+          "title": "1.1 核心技术逻辑"
+        },
+        {
+          "level": 2,
+          "line": 42,
+          "title": "2. 时空三维缓存与目标相机投影"
+        },
+        {
+          "level": 3,
+          "line": 44,
+          "title": "2.1 缓存表示"
+        },
+        {
+          "level": 3,
+          "line": 70,
+          "title": "2.2 渲染缓存：颜色与覆盖掩码"
+        },
+        {
+          "level": 2,
+          "line": 84,
+          "title": "3. 如何在潜空间融合多个不完美的几何条件？"
+        },
+        {
+          "level": 3,
+          "line": 86,
+          "title": "3.1 掩码与共享首层"
+        },
+        {
+          "level": 3,
+          "line": 107,
+          "title": "3.2 为什么使用跨视角最大池化？"
+        },
+        {
+          "level": 2,
+          "line": 132,
+          "title": "4. 从几何条件到视频生成：训练、推理与历史写回"
+        },
+        {
+          "level": 3,
+          "line": 134,
+          "title": "4.1 条件扩散的监督对象"
+        },
+        {
+          "level": 3,
+          "line": 162,
+          "title": "4.2 推理与长视频生成"
+        },
+        {
+          "level": 2,
+          "line": 192,
+          "title": "5. 实验证据：哪些能力得到支持？"
+        },
+        {
+          "level": 3,
+          "line": 194,
+          "title": "5.1 单视角：显式几何条件与相机参数条件"
+        },
+        {
+          "level": 3,
+          "line": 210,
+          "title": "5.2 双视角：生成式 NVS 与前馈重建"
+        },
+        {
+          "level": 3,
+          "line": 227,
+          "title": "5.3 融合方式与深度误差的影响"
+        },
+        {
+          "level": 3,
+          "line": 251,
+          "title": "5.4 驾驶场景与动态视频"
+        },
+        {
+          "level": 3,
+          "line": 284,
+          "title": "5.5 底座模型扩展"
+        },
+        {
+          "level": 2,
+          "line": 292,
+          "title": "6. 技术评价与研究启发"
+        }
+      ],
       "slug": "GEN3C",
+      "tags": [
+        "Novel View Synthesis",
+        "Single-View",
+        "Sparse-View",
+        "Multi-View",
+        "Point Cloud",
+        "Generative Inference",
+        "Diffusion",
+        "Video Prior",
+        "Learning Prior",
+        "3D Consistency",
+        "Dynamic Scenes"
+      ],
       "title": "GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control"
     },
     {
       "arxiv_id": "2603.14965v2",
       "created_at": "2026-11-27 05:19:57",
       "doi": null,
+      "excerpt": "将三维高斯作为跨视角特征传输载体，在视频扩散去噪过程中动态提升和重渲染参考图像特征，并通过自适应门控协调几何先验与生成能力，改善新视角合成的几何一致性。",
       "paper_id": "012",
       "paths": {
         "full_post": "source/_posts/GeoNVS_Full.md",
@@ -190,13 +1365,116 @@
         "full_post": "508b9038e671cedb88dbb56a21651b27c60e5158a8c8c77683402ef8b3e379e1",
         "public_post": "8c33074c53071fcdaccfb8a06bb23c352eef13b66fe5f66e4ad4878145a96cbe"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题：如何让生成式 NVS 遵守三维几何？"
+        },
+        {
+          "level": 3,
+          "line": 28,
+          "title": "1.1 核心技术逻辑"
+        },
+        {
+          "level": 2,
+          "line": 46,
+          "title": "2. 三维高斯作为跨视角特征载体"
+        },
+        {
+          "level": 3,
+          "line": 48,
+          "title": "2.1 几何先验与尺度对齐"
+        },
+        {
+          "level": 3,
+          "line": 62,
+          "title": "2.2 从 RGB 渲染到特征渲染"
+        },
+        {
+          "level": 3,
+          "line": 76,
+          "title": "2.3 Reference Feature Lifting：由二维特征建立三维特征场"
+        },
+        {
+          "level": 3,
+          "line": 88,
+          "title": "2.4 为什么即使几何正确，传递也可能损失细节？"
+        },
+        {
+          "level": 2,
+          "line": 96,
+          "title": "3. Feature Refinement 与 Adaptive Fusion"
+        },
+        {
+          "level": 3,
+          "line": 98,
+          "title": "3.1 利用高斯位置编码补偿特征混合"
+        },
+        {
+          "level": 3,
+          "line": 116,
+          "title": "3.2 为什么还需要自适应融合？"
+        },
+        {
+          "level": 2,
+          "line": 142,
+          "title": "4. 如何嵌入视频扩散模型，以及如何训练？"
+        },
+        {
+          "level": 2,
+          "line": 160,
+          "title": "5. 实验证据：收益来自哪里，边界在哪里？"
+        },
+        {
+          "level": 3,
+          "line": 162,
+          "title": "5.1 不同重叠程度与长轨迹"
+        },
+        {
+          "level": 3,
+          "line": 183,
+          "title": "5.2 几何一致性是否真的改善？"
+        },
+        {
+          "level": 3,
+          "line": 193,
+          "title": "5.3 精炼、门控和训练各自贡献"
+        },
+        {
+          "level": 3,
+          "line": 212,
+          "title": "5.4 效率与无给定位姿的扩展"
+        },
+        {
+          "level": 2,
+          "line": 220,
+          "title": "6. 局限及值得进一步研究的机制"
+        }
+      ],
       "slug": "GeoNVS",
+      "tags": [
+        "Novel View Synthesis",
+        "Single-View",
+        "Sparse-View",
+        "Multi-View",
+        "3D Gaussian Splatting",
+        "Generative Inference",
+        "Diffusion",
+        "Rasterization",
+        "Video Prior",
+        "Observability",
+        "Learning Prior",
+        "Uncertainty",
+        "3D Consistency"
+      ],
       "title": "GeoNVS: Geometry Grounded Video Diffusion for Novel View Synthesis"
     },
     {
       "arxiv_id": "2503.14489v2",
       "created_at": "2026-11-27 05:46:52",
       "doi": null,
+      "excerpt": "通过统一的多视图条件扩散模型处理可变数量的观测与目标视角，结合两阶段锚点采样和空间近邻检索，突破固定生成窗口的限制，支持长轨迹且具有跨视角一致性的新视角合成。",
       "paper_id": "013",
       "paths": {
         "full_post": "source/_posts/Seva_Full.md",
@@ -206,13 +1484,100 @@
         "full_post": "0f5349ce6a9a25be6a84f48fa1602a0e7e34ca4c06a0d068bcf7d0d5a19ca5da",
         "public_post": "cf2c024a0540e034a1fb54192e8d9cfa02a459053da6aafcc161fe64a5c75214"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 问题：如何用同一个生成模型实现自由的新视角合成？"
+        },
+        {
+          "level": 2,
+          "line": 44,
+          "title": "2. 多视图条件扩散：窗口内如何交互？"
+        },
+        {
+          "level": 3,
+          "line": 50,
+          "title": "2.1 多视图注意力与可选时间分支"
+        },
+        {
+          "level": 3,
+          "line": 58,
+          "title": "2.2 相机条件：为什么使用 Plücker 射线？"
+        },
+        {
+          "level": 3,
+          "line": 74,
+          "title": "2.3 训练：固定总长度，变化输入角色"
+        },
+        {
+          "level": 2,
+          "line": 98,
+          "title": "3. 程序化采样：如何跨越训练窗口？"
+        },
+        {
+          "level": 3,
+          "line": 112,
+          "title": "3.1 Set NVS：按空间邻近组织目标"
+        },
+        {
+          "level": 3,
+          "line": 120,
+          "title": "3.2 Trajectory NVS：共享相邻段端点"
+        },
+        {
+          "level": 3,
+          "line": 134,
+          "title": "3.3 长轨迹：空间记忆而非只依赖时间近邻"
+        },
+        {
+          "level": 2,
+          "line": 142,
+          "title": "4. 实验：哪些设计获得了实际支持？"
+        },
+        {
+          "level": 3,
+          "line": 144,
+          "title": "4.1 生成容量与插值能力"
+        },
+        {
+          "level": 3,
+          "line": 164,
+          "title": "4.2 两阶段采样是否真的改善一致性？"
+        },
+        {
+          "level": 3,
+          "line": 187,
+          "title": "4.3 输入规模：观测覆盖比窗口形状更重要"
+        },
+        {
+          "level": 3,
+          "line": 195,
+          "title": "4.4 无显式三维表示，不等于无法得到三维场"
+        },
+        {
+          "level": 2,
+          "line": 201,
+          "title": "5. 局限与研究启发"
+        }
+      ],
       "slug": "Seva",
+      "tags": [
+        "Novel View Synthesis",
+        "Single-View",
+        "Sparse-View",
+        "Multi-View",
+        "Generative Inference",
+        "Diffusion",
+        "3D Consistency"
+      ],
       "title": "Stable Virtual Camera: Generative View Synthesis with Diffusion Models"
     },
     {
       "arxiv_id": "2501.18804v1",
       "created_at": "2026-11-27 06:09:39",
       "doi": null,
+      "excerpt": "无需预先构建显式三维场景，通过场景尺度归一化、循环接口网络和多任务条件扩散，直接生成目标视角的图像与深度，并利用共享学习先验支持异质训练数据和可变视图输入。",
       "paper_id": "014",
       "paths": {
         "full_post": "source/_posts/MVGD_Full.md",
@@ -222,13 +1587,101 @@
         "full_post": "c8a9816d59dfc099e2678f08e07bb723be4f9644890784fc928a50a7f6a608b9",
         "public_post": "3d66b7e92ff70e44d15a7927ac4c99421453bc689e857f90a353af065f800a7a"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 24,
+          "title": "1. 研究问题：不先重建三维场景，能否直接生成一致的 RGB 和深度？"
+        },
+        {
+          "level": 2,
+          "line": 44,
+          "title": "2. 核心方法"
+        },
+        {
+          "level": 3,
+          "line": 46,
+          "title": "2.1 整体设计与模型信息流"
+        },
+        {
+          "level": 3,
+          "line": 62,
+          "title": "2.2 Scene Scale Normalization：统一相机与深度尺度"
+        },
+        {
+          "level": 3,
+          "line": 92,
+          "title": "2.3 RIN：如何高效处理像素级多视角条件"
+        },
+        {
+          "level": 3,
+          "line": 115,
+          "title": "2.4 多任务生成与深度参数化"
+        },
+        {
+          "level": 3,
+          "line": 141,
+          "title": "2.5 扩散训练和推理"
+        },
+        {
+          "level": 3,
+          "line": 163,
+          "title": "2.6 增量条件与 latent 容量扩展"
+        },
+        {
+          "level": 2,
+          "line": 175,
+          "title": "3. 训练数据与协议"
+        },
+        {
+          "level": 2,
+          "line": 191,
+          "title": "4. 实验证据"
+        },
+        {
+          "level": 3,
+          "line": 193,
+          "title": "4.1 新视角合成与新视角深度"
+        },
+        {
+          "level": 3,
+          "line": 222,
+          "title": "4.2 多视角深度估计"
+        },
+        {
+          "level": 3,
+          "line": 235,
+          "title": "4.3 多任务学习和尺度归一化的必要性"
+        },
+        {
+          "level": 3,
+          "line": 254,
+          "title": "4.4 扩容与长序列"
+        },
+        {
+          "level": 2,
+          "line": 273,
+          "title": "5. 技术边界与研究启发"
+        }
+      ],
       "slug": "MVGD",
+      "tags": [
+        "Novel View Synthesis",
+        "Depth Estimation",
+        "Sparse-View",
+        "Multi-View",
+        "Generative Inference",
+        "Transformer",
+        "Diffusion",
+        "3D Consistency"
+      ],
       "title": "Zero-Shot Novel View and Depth Synthesis with Multi-View Geometric Diffusion"
     },
     {
       "arxiv_id": "2412.03517v2",
       "created_at": "2026-11-27 06:32:49",
       "doi": null,
+      "excerpt": "面向输入相机位姿未知的稀疏视角合成，通过图像与位姿双流扩散联合推断目标图像和输入相机关系，并引入几何感知特征蒸馏，减少对外部显式配准的依赖。",
       "paper_id": "015",
       "paths": {
         "full_post": "source/_posts/NVComposer_Full.md",
@@ -238,13 +1691,113 @@
         "full_post": "8f46cdd769bb4552af31bc508a8ad428b33444ad4297aad7487de34db767a875",
         "public_post": "72d542a113bdb8ec6bb8845eee2b7ae3ed8f5d31c48ef165830ccbfcd7f24381"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题：多视角输入为什么不一定更好？"
+        },
+        {
+          "level": 3,
+          "line": 28,
+          "title": "1.1 外部配准的瓶颈"
+        },
+        {
+          "level": 3,
+          "line": 34,
+          "title": "1.2 NVComposer 的核心思路"
+        },
+        {
+          "level": 2,
+          "line": 43,
+          "title": "2. 图像—位姿双流扩散"
+        },
+        {
+          "level": 3,
+          "line": 49,
+          "title": "2.1 将图像与相机编码为统一的 IPB"
+        },
+        {
+          "level": 3,
+          "line": 85,
+          "title": "2.2 共享的视频先验与跨视图交互"
+        },
+        {
+          "level": 3,
+          "line": 93,
+          "title": "2.3 为什么需要双解码头？"
+        },
+        {
+          "level": 2,
+          "line": 101,
+          "title": "3. 几何感知特征对齐：训练时引入三维知识"
+        },
+        {
+          "level": 3,
+          "line": 107,
+          "title": "3.1 从多尺度特征预测成对点图"
+        },
+        {
+          "level": 3,
+          "line": 133,
+          "title": "3.2 联合训练目标"
+        },
+        {
+          "level": 2,
+          "line": 160,
+          "title": "4. 训练与推理：哪些信息是已知的？"
+        },
+        {
+          "level": 2,
+          "line": 174,
+          "title": "5. 实验：各项结果究竟验证了什么？"
+        },
+        {
+          "level": 3,
+          "line": 176,
+          "title": "5.1 真实场景：新增观测是否被有效利用？"
+        },
+        {
+          "level": 3,
+          "line": 199,
+          "title": "5.2 物体：随机无位姿观测能否补充外观信息？"
+        },
+        {
+          "level": 3,
+          "line": 214,
+          "title": "5.3 两个设计分别是否有益？"
+        },
+        {
+          "level": 3,
+          "line": 229,
+          "title": "5.4 联合生成真的能够推断相机位姿吗？"
+        },
+        {
+          "level": 2,
+          "line": 242,
+          "title": "6. 技术意义及研究启发"
+        }
+      ],
       "slug": "NVComposer",
+      "tags": [
+        "Novel View Synthesis",
+        "Pose Estimation",
+        "Single-View",
+        "Sparse-View",
+        "Multi-View",
+        "Unposed Images",
+        "Generative Inference",
+        "Diffusion",
+        "Video Prior",
+        "Learning Prior"
+      ],
       "title": "NVComposer: Boosting Generative Novel View Synthesis with Multiple Sparse and Unposed Images"
     },
     {
       "arxiv_id": "2411.14384v6",
       "created_at": "2026-11-27 06:57:56",
       "doi": null,
+      "excerpt": "将显式三维高斯预测与可微光栅化嵌入图像扩散的每个去噪步骤，使多个生成视角共享三维场景表示，实现从单张图像到三维物体及场景的单阶段生成。",
       "paper_id": "016",
       "paths": {
         "full_post": "source/_posts/DiffusionGS_Full.md",
@@ -254,13 +1807,108 @@
         "full_post": "00c9336bfe96acb56c13c51a277749915de03524099b32185f7e031011f79eb8",
         "public_post": "7279d2f9895fbfa42771afb0c0edfe8b8c739fd7637000b2c8e6da82ab8608a7"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 研究问题：生成的新视图必须对应同一个三维世界"
+        },
+        {
+          "level": 2,
+          "line": 32,
+          "title": "2. 核心框架：将 3DGS 融入去噪器"
+        },
+        {
+          "level": 2,
+          "line": 48,
+          "title": "3. 每一步如何预测并渲染三维高斯？"
+        },
+        {
+          "level": 3,
+          "line": 50,
+          "title": "3.1 扩散在图像域，去噪预测在三维域"
+        },
+        {
+          "level": 3,
+          "line": 64,
+          "title": "3.2 像素对齐高斯：让三维候选具有固定输出形状"
+        },
+        {
+          "level": 3,
+          "line": 77,
+          "title": "3.3 同一三维表示提供多个干净图像预测"
+        },
+        {
+          "level": 3,
+          "line": 101,
+          "title": "3.4 推理：三维渲染与图像采样交替"
+        },
+        {
+          "level": 2,
+          "line": 109,
+          "title": "4. 为什么需要场景与物体混合训练？"
+        },
+        {
+          "level": 3,
+          "line": 113,
+          "title": "4.1 控制训练视角分布"
+        },
+        {
+          "level": 3,
+          "line": 125,
+          "title": "4.2 RPPC：将射线力矩改写为参考点坐标"
+        },
+        {
+          "level": 3,
+          "line": 143,
+          "title": "4.3 双高斯解码器与对象预热"
+        },
+        {
+          "level": 2,
+          "line": 159,
+          "title": "5. 实验：共享三维约束是否有效？"
+        },
+        {
+          "level": 3,
+          "line": 163,
+          "title": "5.1 对象与场景的主结果"
+        },
+        {
+          "level": 3,
+          "line": 184,
+          "title": "5.2 对比先生成、后拟合路线"
+        },
+        {
+          "level": 3,
+          "line": 199,
+          "title": "5.3 消融：从无时间步控制到完整模型"
+        },
+        {
+          "level": 2,
+          "line": 215,
+          "title": "6. 技术边界与启发：生成一致性不是真实观测"
+        }
+      ],
       "slug": "DiffusionGS",
+      "tags": [
+        "Novel View Synthesis",
+        "3D Reconstruction",
+        "Image-to-3D",
+        "Single-View",
+        "3D Gaussian Splatting",
+        "Generative Inference",
+        "Transformer",
+        "Diffusion",
+        "Rasterization",
+        "3D Consistency"
+      ],
       "title": "Baking Gaussian Splatting into Diffusion Denoiser for Fast and Scalable Single-stage Image-to-3D Generation and Reconstruction"
     },
     {
       "arxiv_id": "2410.17242v2",
       "created_at": "2026-11-27 07:03:36",
       "doi": null,
+      "excerpt": "研究新视角合成对三维归纳偏置的依赖，利用 Transformer 直接从稀疏视图预测目标图像，并比较场景潜变量与无独立场景表示的架构在合成质量、效率及泛化能力上的差异。",
       "paper_id": "017",
       "paths": {
         "full_post": "source/_posts/LVSM_Full.md",
@@ -270,10 +1918,112 @@
         "full_post": "c0e9c049450d0c8af6e81c0112613f817e365719371254dfdc361d916a824844",
         "public_post": "bd15c4c1b812b880943d4c419b7f940102e6af854627e178b13e4ef4fa4e5f9b"
       },
+      "sections": [
+        {
+          "level": 2,
+          "line": 22,
+          "title": "1. 从三维重建到直接的新视角合成"
+        },
+        {
+          "level": 3,
+          "line": 28,
+          "title": "1.1 两种不同层级的三维归纳偏置"
+        },
+        {
+          "level": 3,
+          "line": 41,
+          "title": "1.2 核心技术逻辑：表示压缩还是直接条件预测？"
+        },
+        {
+          "level": 2,
+          "line": 54,
+          "title": "2. 统一的输入、输出与训练目标"
+        },
+        {
+          "level": 3,
+          "line": 56,
+          "title": "2.1 将相机条件和图像变成 token"
+        },
+        {
+          "level": 3,
+          "line": 82,
+          "title": "2.2 直接预测 RGB 而不是三维渲染参数"
+        },
+        {
+          "level": 2,
+          "line": 100,
+          "title": "3. 两种 Transformer 如何利用观测信息？"
+        },
+        {
+          "level": 3,
+          "line": 106,
+          "title": "3.1 Encoder-Decoder：学习目标无关的场景 latent"
+        },
+        {
+          "level": 3,
+          "line": 124,
+          "title": "3.2 Decoder-Only：让目标直接访问观测上下文"
+        },
+        {
+          "level": 3,
+          "line": 136,
+          "title": "3.3 多层双向交互为什么重要？"
+        },
+        {
+          "level": 3,
+          "line": 153,
+          "title": "3.4 信息瓶颈与算术成本的权衡"
+        },
+        {
+          "level": 2,
+          "line": 163,
+          "title": "4. 训练与推理条件"
+        },
+        {
+          "level": 2,
+          "line": 171,
+          "title": "5. 实验证据：质量、结构与可扩展性"
+        },
+        {
+          "level": 3,
+          "line": 173,
+          "title": "5.1 主比较：取消显式三维表示是否牺牲RGB质量？"
+        },
+        {
+          "level": 3,
+          "line": 195,
+          "title": "5.2 结构消融：全双向信息流是否必要？"
+        },
+        {
+          "level": 3,
+          "line": 211,
+          "title": "5.3 训练时只使用4视图，测试时增加观测会怎样？"
+        },
+        {
+          "level": 3,
+          "line": 221,
+          "title": "5.4 较小模型能否在学术算力下训练？"
+        },
+        {
+          "level": 2,
+          "line": 225,
+          "title": "6. 能力边界与研究启发"
+        }
+      ],
       "slug": "LVSM",
+      "tags": [
+        "Novel View Synthesis",
+        "Single-View",
+        "Sparse-View",
+        "Multi-View",
+        "Latent Representation",
+        "Feed-Forward",
+        "Transformer",
+        "Inductive Bias"
+      ],
       "title": "LVSM: A Large View Synthesis Model with Minimal 3D Inductive Bias"
     }
   ],
-  "schema_version": 1,
+  "schema_version": 2,
   "source": "public projection of local paper-index.json"
 }
